@@ -1,0 +1,49 @@
+import { auth } from "./firebaseconfig";
+import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
+
+// Google Sign-In
+export const signInWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    console.log("Google Sign-In Success:", result.user);
+    return result.user;
+  } catch (error) {
+    console.error("Google Sign-In Error:", error);
+    throw error;
+  }
+};
+
+// Email/Password Sign-In
+export const loginWithEmail = async (email, password) => {
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    console.log("Email Login Success:", result.user);
+    return result.user;
+  } catch (error) {
+    console.error("Email Login Error:", error);
+    throw error;
+  }
+};
+
+// Email/Password Sign-Up
+export const signUpWithEmail = async (email, password) => {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    console.log("Sign-Up Success:", result.user);
+    return result.user;
+  } catch (error) {
+    console.error("Sign-Up Error:", error);
+    throw error;
+  }
+};
+
+// Logout
+export const logout = async () => {
+  try {
+    await signOut(auth);
+    console.log("User Logged Out");
+  } catch (error) {
+    console.error("Logout Error:", error);
+  }
+};
