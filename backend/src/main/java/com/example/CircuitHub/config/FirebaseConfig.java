@@ -1,6 +1,7 @@
 package com.example.CircuitHub.config;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -20,14 +21,13 @@ public class FirebaseConfig {
     public void initializeFirebase() {
         try {
             String firebaseConfigJson = System.getenv("FIREBASE_CONFIG_JSON");
-if (firebaseConfigJson == null) {
-    System.err.println("❌ Environment variable FIREBASE_CONFIG_JSON is not set");
-} else {
-    System.out.println("✅ Environment variable length: " + firebaseConfigJson.length());
-}
+        if (firebaseConfigJson == null) {
+            System.err.println("❌ Environment variable FIREBASE_CONFIG_JSON is not set");
+        } else {
+            System.out.println("✅ Environment variable length: " + firebaseConfigJson.length());
+        }
 
-
-            InputStream serviceAccount = new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8));
+        //InputStream serviceAccount = new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8));
 
             // Deprecated method (commented out)
             /*
@@ -38,9 +38,9 @@ if (firebaseConfigJson == null) {
             */
 
             // ✅ Updated recommended builder usage
+            FileInputStream serviceAccount = new FileInputStream("backend/src/main/resources/firebase-service-account.json");
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setStorageBucket("ccs-gadgethub.appspot.com")
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {

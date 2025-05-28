@@ -3,7 +3,7 @@ import { auth } from "../../firebaseconfig";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import logo from "../../assets/CCSGadgetHub.png";
+import logo from "../../assets/circuithubLogo.png";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -34,7 +34,7 @@ const Register = () => {
 
       // 4. Sync with backend
       await axios.post(
-        "https://ccs-gadgethubb.onrender.com/api/sync/user",
+        "http://localhost:8080/api/sync/user",
         {
           uid: user.uid,
           email: user.email,
@@ -70,7 +70,7 @@ const Register = () => {
 
   return (
     <div className="login-page">
-      <img src={logo} alt="CCS Gadget Hub Logo" className="login-logo" />
+      <img src={logo} alt="CircuitHub Logo" className="login-logo" />
       <form className="login-form-container" onSubmit={handleRegister}>
         {error && <div className="login-error">{error}</div>}
 

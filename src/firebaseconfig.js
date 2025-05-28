@@ -7,13 +7,13 @@ import { getFirestore } from "firebase/firestore"; // ✅ ADD THIS
 
 // Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBVgacn_-wnDHkJcH9lS6nY9FqhjM5M0nE",
-  authDomain: "ccs-gadgethub.firebaseapp.com",
-  projectId: "ccs-gadgethub",
-  storageBucket: "ccs-gadgethub.appspot.com",
-  messagingSenderId: "470573412326",
-  appId: "1:470573412326:web:02af5e8f0c13f2590a3027",
-  measurementId: "G-NNC1R8YVTW"
+  apiKey: "AIzaSyDDo_qvy5B5nG_ylv9p9x_Il7rGDhSqQQY",
+  authDomain: "circuithub-75f4a.firebaseapp.com",
+  projectId: "circuithub-75f4a",
+  storageBucket: "circuithub-75f4a.firebasestorage.app",
+  messagingSenderId: "143046842577",
+  appId: "1:143046842577:web:2cd6d71c3f919d1a5acdf0",
+  measurementId: "G-5XD3DGTZ3P"
 };
 
 // Initialize Firebase
