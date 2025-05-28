@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 import { db } from "../../firebaseconfig";
 import {
   doc,
@@ -86,7 +86,7 @@ const AdminEditItem = () => {
     <div className="add-item-page">
       {/* Navbar */}
       <div className="navbar">
-        <img src={logo} alt="CCS Gadget Hub Logo" />
+        <img src={logo} alt="CircuitHub Logo" />
         <nav>
           {[
             { label: "Dashboard", to: "/admin-dashboard" },

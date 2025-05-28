@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProfileUpdateDto {
     private String uid;
     private String firstName;

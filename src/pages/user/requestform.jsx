@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { db, auth } from "../../firebaseconfig";
 import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 
 const navLinks = [
   { label: "Dashboard", to: "/dashboard" },
@@ -119,10 +119,52 @@ const RequestForm = () => {
     }
   }, [startBlock, durationBlocks]);
 
+  // const handleConfirmRequest = async () => {
+  //   try {
+  //     const user = auth.currentUser;
+  //     if (!user) return alert("Please log in first.");
+  //
+  //     const startTime = parseFloat(startBlock);
+  //     const endTime = startTime + parseFloat(durationBlocks);
+  //
+  //     const requestData = {
+  //       userId: user.uid,
+  //       userName: user.displayName || user.email || "Unknown User",
+  //       itemId: itemId,
+  //       itemName: item.name,
+  //       borrowDate,
+  //       startTime: formatTime(Math.floor(startTime), startTime % 1 === 0.5 ? 30 : 0),
+  //       returnTime,
+  //       reason,
+  //       timeRange: formatTimeRange(startTime, endTime),
+  //       status: "Pending",
+  //       createdAt: serverTimestamp(),
+  //     };
+  //
+  //     await addDoc(collection(db, "borrowRequests"), requestData);
+  //     setShowConfirmModal(false);
+  //     setShowSuccessModal(true);
+  //   } catch (err) {
+  //     console.error("Error submitting request:", err);
+  //     alert("Failed to submit request.");
+  //   }
+  // };
+
   const handleConfirmRequest = async () => {
     try {
       const user = auth.currentUser;
       if (!user) return alert("Please log in first.");
+
+      // Parse and compare dates
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // normalize to midnight
+      const selectedDate = new Date(borrowDate);
+      selectedDate.setHours(0, 0, 0, 0); // normalize too
+
+      if (selectedDate < today) {
+        alert("You cannot select a past date.");
+        return;
+      }
 
       const startTime = parseFloat(startBlock);
       const endTime = startTime + parseFloat(durationBlocks);
@@ -164,7 +206,7 @@ const RequestForm = () => {
   return (
     <div className="items-page">
       <div className="navbar">
-        <img src={logo} alt="CCS Gadget Hub Logo" />
+        <img src={logo} alt="CircuitHub Logo" />
         <nav>
           {navLinks.map((link) => (
             <Link

@@ -40,7 +40,7 @@ public class ItemController {
     }
 
     // For multipart form data (with image)
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addItemWithImage(
             @RequestParam("name") String name,
             @RequestParam("description") String description,

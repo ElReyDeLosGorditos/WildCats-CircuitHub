@@ -26,6 +26,7 @@ import AdminManageUsers from "./pages/admin/admin-users";
 import ViewUser from "./pages/admin/view-user";
 import EditUser from "./pages/admin/edit-user";
 import AddUser from "./pages/admin/add-user";
+import AdminRegister from "./pages/admin/admin-register.jsx";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
         <Route path="/view-request/:id" element={<ViewRequest />} />
 
         {/* Admin Routes */}
+        <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/admin-items" element={<ManageItems />} />
         <Route path="/add-item" element={<AddItem />} />

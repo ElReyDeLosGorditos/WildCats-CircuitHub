@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 
@@ -57,7 +57,7 @@ const AdminManageUsers = () => {
     <div className="admin-dashboard">
       {/* Navbar */}
       <div className="navbar">
-        <img src={logo} alt="CCS Gadget Hub Logo" />
+        <img src={logo} alt="CircuitHub Logo" />
         <nav>
           {[
             { label: "Dashboard", to: "/admin-dashboard" },

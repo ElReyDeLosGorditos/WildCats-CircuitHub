@@ -26,4 +26,21 @@ public class Item {
         this.imagePath = imagePath;
         this.createdAt = createdAt;
     }
+
+    // Generate getters and setters for all fields (or at least getters)
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public String getDescription() { return description; }
+    public String getCondition() { return condition; }
+    public String getStatus() { return status; }
+    public String getImagePath() { return imagePath; }
+    public String getCreatedAt() { return createdAt; }
+
+    public void setId(String id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setDescription(String description) { this.description = description; }
+    public void setCondition(String condition) { this.condition = condition; }
+    public void setStatus(String status) { this.status = status; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

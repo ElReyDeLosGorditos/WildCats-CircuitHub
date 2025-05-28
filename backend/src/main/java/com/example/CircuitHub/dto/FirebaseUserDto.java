@@ -12,16 +12,18 @@ public class FirebaseUserDto {
     private String email;
     private String firstName;
     private String lastName;
+    private String role;
 
     // No-argument constructor
     public FirebaseUserDto() {}
 
     // All-argument constructor
-    public FirebaseUserDto(String uid, String email, String firstName, String lastName) {
+    public FirebaseUserDto(String uid, String email, String firstName, String lastName, String role) {
         this.uid = uid;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.role = role;
     }
 
     // Getters and setters
@@ -55,5 +57,13 @@ public class FirebaseUserDto {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

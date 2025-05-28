@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { db, auth } from "../../firebaseconfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 
 const MyRequests = () => {
   const location = useLocation();

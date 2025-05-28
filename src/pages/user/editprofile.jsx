@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { db } from "../../firebaseconfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 
 const navLinks = [
   { label: "Dashboard", to: "/dashboard" },

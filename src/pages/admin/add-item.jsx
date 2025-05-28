@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 
 const AddItem = () => {
   const location = useLocation();
@@ -36,7 +36,8 @@ const AddItem = () => {
     }
 
     try {
-      await axios.post("https://ccs-gadgethubb.onrender.com/api/items", formData, {
+      // await axios.post("https://ccs-gadgethubb.onrender.com/api/items", formData, {
+      await axios.post("http://localhost:8080/api/items", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

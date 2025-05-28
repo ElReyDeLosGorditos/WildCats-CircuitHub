@@ -4,7 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 
 const navLinks = [
   { label: "Dashboard", to: "/dashboard" },
@@ -52,7 +52,7 @@ const ItemDetails = () => {
     <div className="items-page">
       {/* Navbar */}
       <div className="navbar">
-        <img src={logo} alt="CCS Gadget Hub Logo" />
+        <img src={logo} alt="CircuitHub Logo" />
         <nav>
           {navLinks.map((link) => (
             <Link

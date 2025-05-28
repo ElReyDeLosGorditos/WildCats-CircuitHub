@@ -41,6 +41,7 @@ public class FirebaseConfig {
             FileInputStream serviceAccount = new FileInputStream("backend/src/main/resources/firebase-service-account.json");
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setStorageBucket("circuithub-75f4a.firebasestorage.app")
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {

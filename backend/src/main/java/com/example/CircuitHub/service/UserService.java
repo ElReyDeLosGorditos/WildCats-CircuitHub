@@ -67,7 +67,7 @@ public class UserService {
                         dto.getFirstName() != null ? dto.getFirstName() : "Unnamed",
                         dto.getLastName() != null ? dto.getLastName() : "",
                         dto.getEmail(),
-                        "student",
+                        dto.getRole() != null ? dto.getRole() : "student",
                         LocalDateTime.now().toString(),
                         "",
                         "",

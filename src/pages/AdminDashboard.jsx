@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import logo from "../assets/CCSGadgetHub1.png";
+import logo from "../assets/circuithubLogo2.png";
 import "../admin.css";
 import { db } from "../firebaseconfig";
 import {

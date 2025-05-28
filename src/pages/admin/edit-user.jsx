@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 
 const EditUser = () => {
     const { id } = useParams();
@@ -74,7 +74,7 @@ const EditUser = () => {
         <div className="admin-dashboard">
             {/* Navbar */}
             <div className="navbar">
-                <img src={logo} alt="CCS Gadget Hub Logo" />
+                <img src={logo} alt="CircuitHub Logo" />
                 <nav>
                     {[
                         { label: "Dashboard", to: "/admin-dashboard" },
