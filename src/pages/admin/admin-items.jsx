@@ -19,6 +19,7 @@ const AdminManageItems = () => {
       try {
         const snapshot = await getDocs(collection(db, "items"));
         const itemList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        console.log("Fetched items:", itemList);
         setItems(itemList);
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -31,7 +32,7 @@ const AdminManageItems = () => {
   const filteredItems = items.filter((item) => {
     const matchesSearch = item.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus =
-      statusFilter === "all" || item.status?.toLowerCase() === statusFilter;
+        statusFilter === "all" || item.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -97,8 +98,8 @@ const AdminManageItems = () => {
             className="admin-filter-dropdown"
           >
             <option value="all">All</option>
-            <option value="available">Available</option>
-            <option value="borrowed">Not Available</option>
+            <option value="Available">Available</option>
+            <option value="Borrowed">Not Available</option>
           </select>
         </div>
 

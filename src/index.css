@@ -169,7 +169,7 @@ h2 {
 /* Dashboard Page */
 .dashboard-page {
   min-height: 100vh;
-  background-color: #FAF3E0;
+  background-color: #f0ecf8 ;
 }
 
 /* Navbar */
@@ -340,7 +340,7 @@ h2 {
 /* Items Page */
 .items-page {
   min-height: 100vh;
-  background-color: #faf3e0;
+  background-color: #f0ecf8;
 }
 
 .items-heading {
@@ -478,7 +478,7 @@ h2 {
 /* Request Form */
 
 .request-form-page {
-  background-color: #faf3e0;
+  background-color: #f0ecf8;
   min-height: 100vh;
   padding: 40px 0;
   display: flex;
@@ -798,7 +798,7 @@ h2 {
 
 /* Profile Page */
 .profile-page {
-  background-color: #faf3e0;
+  background-color: #f0ecf8;
   min-height: 100vh;
   padding: 40px 60px;
 }

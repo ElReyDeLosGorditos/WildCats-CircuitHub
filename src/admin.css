@@ -1,28 +1,28 @@
 /* Admin Dashboard Page */
 .admin-dashboard {
     min-height: 100vh;
-    background-color: #FAF3E0;
+    background-color: #E6E6FA;
   }
-  
+
   .admin-dashboard-container {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
   }
-  
+
   .admin-welcome {
     font-size: 30px;
     font-weight: 700;
     margin-bottom: 20px;
     color: #213547;
   }
-  
+
   .admin-subtext {
     font-size: 16px;
     color: #666;
     margin-bottom: 30px;
   }
-  
+
   /* Summary Cards */
   .admin-cards {
     display: flex;
@@ -30,7 +30,7 @@
     margin-bottom: 30px;
     flex-wrap: wrap;
   }
-  
+
   .admin-card {
     flex: 1;
     background-color: #fff;
@@ -39,24 +39,24 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   }
-  
+
   .admin-card h3 {
     font-size: 28px;
     color: #d96528;
   }
-  
+
   .admin-card p {
     font-size: 15px;
     color: #444;
   }
-  
+
   /* Side-by-side Columns */
   .admin-columns {
     display: flex;
     gap: 30px;
     flex-wrap: wrap;
   }
-  
+
   .admin-activity-box,
   .admin-pending-box {
     flex: 1;
@@ -65,52 +65,52 @@
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   }
-  
+
   .admin-activity-box h3,
   .admin-pending-box h3 {
     margin-bottom: 16px;
     font-size: 18px;
     color: #333;
   }
-  
+
   .admin-activity-box ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  
+
   .admin-activity-box li {
     margin-bottom: 10px;
     font-size: 15px;
     color: #444;
   }
-  
+
   .admin-activity-box li span {
     color: #999;
     font-size: 13px;
   }
-  
+
   /* Pending Requests */
   .pending-request {
     margin-bottom: 16px;
     border-bottom: 1px solid #eee;
     padding-bottom: 12px;
   }
-  
+
   .pending-request p {
     margin: 0;
     font-size: 15px;
   }
-  
+
   .pending-request span {
     font-size: 13px;
     color: #999;
   }
-  
+
   .review-btn-row {
     margin-top: 10px;
   }
-  
+
   .review-request-btn {
     background-color: #E26901;
     color: white;
@@ -120,11 +120,11 @@
     border-radius: 6px;
     cursor: pointer;
   }
-  
+
   .review-request-btn:hover {
     background-color: #b8501b;
   }
-  
+
   .section-header {
     margin-top: 25px;
     font-size: 20px;
@@ -135,23 +135,23 @@
   .clickable {
     cursor: pointer;
   }
-  
+
   .admin-card.clickable:hover {
     background-color: #f5f5f5;
     transition: background-color 0.2s ease;
   }
-  
+
   .admin-activity-box.clickable:hover {
     background-color: #f5f5f5;
     transition: background-color 0.2s ease;
   }
-  
-  
-  
+
+
+
   /* Manage Items Page (Admin) */
 .admin-manage-items-page {
   min-height: 100vh;
-  background-color: #faf3e0;
+  background-color: #E6E6FA;
 }
 
 .admin-manage-header {
@@ -793,7 +793,7 @@
 }
 
 .admin-users-table th {
-  background-color: #faf3e0;
+  background-color: #BDB5D5;
   font-size: 16px;
   font-weight: bold;
 }

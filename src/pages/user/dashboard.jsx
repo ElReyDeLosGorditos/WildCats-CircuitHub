@@ -121,7 +121,7 @@ const Dashboard = () => {
         <h1 className="dashboard-greeting">
           Welcome back{userData?.firstName ? `, ${userData.firstName}!` : "!"}
         </h1>
-        <p className="dashboard-subtext">Here's a quick overview of your gadget hub activity.</p>
+        <p className="dashboard-subtext">Here's a quick overview of your CircuitHub activity.</p>
 
         <div className="summary-cards">
           <div className="summary-card">
