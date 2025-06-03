@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/circuithubLogo2.png";
+
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebaseconfig";
+import { ref, getDownloadURL } from "firebase/storage";
+import { db, storage } from "../../firebaseconfig";
+
+
 
 const Items = () => {
   const [items, setItems] = useState([]);
@@ -11,22 +15,45 @@ const Items = () => {
 
   const location = useLocation();
 
+
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "items"));
-        const fetchedItems = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+        const fetchedItems = await Promise.all(
+            querySnapshot.docs.map(async (doc) => {
+              const data = doc.data();
+              let imageUrl = "";
+
+              if (data.imagePath && !data.imagePath.startsWith("http")) {
+                try {
+                  const imageRef = ref(storage, data.imagePath);
+                  imageUrl = await getDownloadURL(imageRef);
+                } catch (err) {
+                  console.warn("Failed to get image URL:", err);
+                }
+              } else if (data.imagePath?.startsWith("http")) {
+                imageUrl = data.imagePath; // Already a valid URL
+              }
+
+              return {
+                id: doc.id,
+                ...data,
+                imageUrl, // add the download URL
+              };
+            })
+        );
+
         setItems(fetchedItems);
       } catch (error) {
-        console.error("Failed to fetch items from Firestore:", error);
+        console.error("Failed to fetch items or images:", error);
       }
     };
 
     fetchItems();
   }, []);
+
 
   const navLinks = [
     { label: "Dashboard", to: "/dashboard" },
@@ -109,19 +136,24 @@ const Items = () => {
         <div className="items-grid">
           {filteredItems.length > 0 ? (
             filteredItems.map((item) => (
-              <div key={item.id} className="item-box">
-                <img src={item.imagePath} alt={item.name} className="item-image" />
-                <h3>{item.name}</h3>
-                <p className="item-status">
-                  {item.status === "Available" ? "Available" : "Not Available"}
-                </p>
-                <Link to={`/useritem-details/${item.id}`} className="item-details-btn">
-                  View Details
-                </Link>
-              </div>
+                <div key={item.id} className="item-box">
+                  <img
+                      src={item.imageUrl || "https://placehold.co/150x150?text=No+Image"}
+                      alt={item.name}
+                      className="item-image"
+                  />
+
+                  <h3>{item.name}</h3>
+                  <p className="item-status">
+                    {item.status === "Available" ? "Available" : "Not Available"}
+                  </p>
+                  <Link to={`/useritem-details/${item.id}`} className="item-details-btn">
+                    View Details
+                  </Link>
+                </div>
             ))
           ) : (
-            <p>No items found.</p>
+              <p>No items found.</p>
           )}
         </div>
       </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/circuithubLogo2.png";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../firebaseconfig";
+import { db , storage} from "../../firebaseconfig";
 
 const AdminManageItems = () => {
   const location = useLocation();

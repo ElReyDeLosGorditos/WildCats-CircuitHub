@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { db } from "../../firebaseconfig";
+import { db , storage} from "../../firebaseconfig";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import logo from "../../assets/circuithubLogo2.png";
+
 
 
 const AddItem = () => {

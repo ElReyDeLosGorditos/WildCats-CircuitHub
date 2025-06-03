@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import logo from "../../assets/circuithubLogo2.png";
-import { db } from "../../firebaseconfig";
+import { db ,storage } from "../../firebaseconfig";
 import { doc, getDoc } from "firebase/firestore";
 
 const AdminViewItem = () => {

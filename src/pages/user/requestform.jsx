@@ -58,11 +58,18 @@ const RequestForm = () => {
 
   const generateBlocks = () => {
     const blocks = [];
-    for (let time = 7.5; time <= 20.0; time += 0.5) {
-      blocks.push({ value: time, label: formatBlockLabel(time) });
+    let hour = 7.5; // 7:30 AM as 7.5
+    const endHour = 21.0; // 9:00 PM
+
+    while (hour <= endHour) {
+      const label = formatTime(Math.floor(hour), hour % 1 === 0.5 ? 30 : 0);
+      blocks.push({ value: hour.toFixed(2), label }); // value is float string like "7.50"
+      hour += 0.5;
     }
+
     return blocks;
   };
+
 
   const formatBlockLabel = (value) => {
     const startHour = Math.floor(value);
@@ -88,9 +95,11 @@ const RequestForm = () => {
     return `${formatTime(startHour, startMin)} - ${formatTime(endHour, endMin)}`;
   };
 
-  const isBlockUnavailable = (time) => {
-    return unavailablePeriods.some((period) => time >= period.start && time < period.end);
+  const isBlockUnavailable = (value) => {
+    const numericValue = parseFloat(value);
+    return unavailablePeriods.some(period => numericValue >= period.start && numericValue < period.end);
   };
+
 
   const getAvailableDurations = (start) => {
     const durations = [];
@@ -251,75 +260,106 @@ const RequestForm = () => {
           <div className="input-row slot-select-row">
             <div className="full-width">
               <label>Select Time Slot (Start):</label>
-              <select value={startBlock} onChange={(e) => { setStartBlock(e.target.value); setDurationBlocks(""); }} required>
+              <select
+                  value={startBlock}
+                  onChange={(e) => {
+                    setStartBlock(e.target.value);
+                    setDurationBlocks("");
+                  }}
+                  required
+              >
                 <option value="">-- Select Start Slot --</option>
-                {generateBlocks().map(({ value, label }) => (
-                  <option
-                    key={value}
-                    value={value}
-                    disabled={isBlockUnavailable(value)}
-                    style={{ color: isBlockUnavailable(value) ? "red" : "black" }}
-                  >
-                    {label} {isBlockUnavailable(value) ? "(Unavailable)" : ""}
-                  </option>
+                {generateBlocks().map(({value, label}) => (
+                    <option
+                        key={value}
+                        value={value}
+                        disabled={isBlockUnavailable(value)}
+                        style={{color: isBlockUnavailable(value) ? "red" : "black"}}
+                    >
+                      {label} {isBlockUnavailable(value) ? "(Unavailable)" : ""}
+                    </option>
                 ))}
               </select>
             </div>
+
             <div className="full-width">
               <label>Select Duration:</label>
-              <select value={durationBlocks} onChange={(e) => setDurationBlocks(e.target.value)} required disabled={!startBlock}>
+              <select
+                  value={durationBlocks}
+                  onChange={(e) => setDurationBlocks(e.target.value)}
+                  required
+                  disabled={!startBlock}
+              >
                 <option value="">-- Select Duration --</option>
                 {startBlock &&
-                  getAvailableDurations(parseFloat(startBlock)).map((duration, idx) => (
-                    <option key={idx} value={duration}>
-                      {duration === 0.5 ? "30 minutes" : `${Math.floor(duration)} hour${duration > 1 ? "s" : ""}${duration % 1 !== 0 ? " 30 minutes" : ""}`}
-                    </option>
-                  ))}
+                    getAvailableDurations(parseFloat(startBlock)).map((duration, idx) => (
+                        <option key={idx} value={duration}>
+                          {duration === 0.5
+                              ? "30 minutes"
+                              : `${Math.floor(duration)} hour${duration > 1 ? "s" : ""}${
+                                  duration % 1 !== 0 ? " 30 minutes" : ""
+                              }`}
+                        </option>
+                    ))}
+              </select>
+            </div>
+
+            <div className="full-width">
+              <label>Return Time:</label>
+              <select disabled value={returnTime || ""}>
+                <option>
+                  {returnTime && !returnTime.includes("Invalid")
+                      ? `${returnTime} (+10 mins grace period)`
+                      : returnTime || "Return time will be shown here"}
+                </option>
               </select>
             </div>
           </div>
 
-          {startBlock && durationBlocks && (
-            <div className="selected-time-slot">
-              Selected Time Slot: {formatTimeRange(parseFloat(startBlock), parseFloat(startBlock) + parseFloat(durationBlocks))}
-            </div>
-          )}
-
-          <div className="input-row full-width">
-            <label>Expected Return Time:</label>
-            <div className="estimated-return">
-              {returnTime && !returnTime.includes("Invalid")
-                ? `${returnTime} (+10 mins grace period)`
-                : returnTime || "Return time will be shown here"}
-            </div>
-          </div>
 
           <div className="input-row full-width">
             <label>Terms and Agreement</label>
-            <div style={{ fontSize: "14px", color: "#444" }}>
-              <p>Borrowed items must be returned on or before the due time.</p>
-              <p>Failure to return on time may result in penalties.</p>
-              <p>Damaged items must be reported immediately.</p>
-              <p>Borrowers must comply with all borrowing policies of the department.</p>
+            <div style={{fontSize: "14px", color: "#444"}}>
+
+              <p style={{marginBottom: "12px"}}>
+                The borrower or group leader, along with the entire group, hereby agrees to take full responsibility
+                for the care and proper use of the equipment and all associated accessories. We commit to preserving
+                their condition as received prior to use.
+              </p>
+              <p style={{marginBottom: "12px"}}>
+                We accept full accountability and agree to pay for any damages or losses caused by vandalism, theft,
+                carelessness, abuse, or pilferage, as determined during or after inspection of our laboratory or field
+                work.
+              </p>
+              <p style={{marginBottom: "12px"}}>
+                We understand that no borrowed equipment shall be brought home and must be returned to the laboratory
+                assistant in charge at the end of the laboratory or field session.
+              </p>
+              <p style={{marginBottom: "12px"}}>
+                Failure to return the equipment on time may result in penalties. Any damaged items must be reported
+                immediately. All borrowers must comply with the department’s borrowing policies.
+              </p>
+
             </div>
+
             <div className="checkbox-row">
               <label htmlFor="agree">
                 <input
-                  type="checkbox"
-                  id="agree"
-                  checked={agree}
-                  onChange={() => setAgree(!agree)}
+                    type="checkbox"
+                    id="agree"
+                    checked={agree}
+                    onChange={() => setAgree(!agree)}
                 />
                 I agree to the terms and conditions.
               </label>
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+          <div style={{display: "flex", justifyContent: "flex-end", marginTop: "20px"}}>
             <button
-              type="submit"
-              className="submit-btn"
-              disabled={!agree}
+                type="submit"
+                className="submit-btn"
+                disabled={!agree}
             >
               Submit Request
             </button>
@@ -328,16 +368,18 @@ const RequestForm = () => {
       </div>
 
       {showConfirmModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3><strong>{item?.name || "Item"}</strong></h3>
-            <p><strong>Borrow Date:</strong><br />{borrowDate}</p>
-            <p><strong>Reason:</strong><br />{reason}</p>
-            <p><strong>Time Slot:</strong><br />{formatTimeRange(parseFloat(startBlock), parseFloat(startBlock) + parseFloat(durationBlocks))}</p>
-            <p><strong>Return Time:</strong><br />{returnTime} (+10 mins grace)</p>
-            <div className="modal-actions-centered">
-              <button className="confirm-btn" onClick={handleConfirmRequest}>Confirm</button>
-              <button className="cancel-btn centered-cancel" onClick={() => setShowConfirmModal(false)}>Cancel</button>
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3><strong>{item?.name || "Item"}</strong></h3>
+              <p><strong>Borrow Date:</strong><br/>{borrowDate}</p>
+              <p><strong>Reason:</strong><br/>{reason}</p>
+              <p><strong>Time
+                Slot:</strong><br/>{formatTimeRange(parseFloat(startBlock), parseFloat(startBlock) + parseFloat(durationBlocks))}
+              </p>
+              <p><strong>Return Time:</strong><br/>{returnTime} (+10 mins grace)</p>
+              <div className="modal-actions-centered">
+                <button className="confirm-btn" onClick={handleConfirmRequest}>Confirm</button>
+                <button className="cancel-btn centered-cancel" onClick={() => setShowConfirmModal(false)}>Cancel</button>
             </div>
           </div>
         </div>

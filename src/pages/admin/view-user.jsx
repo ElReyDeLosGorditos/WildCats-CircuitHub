@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import logo from "../../assets/circuithubLogo2.png";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebaseconfig";
+import { db ,storage } from "../../firebaseconfig";
 
 const ViewUser = () => {
   const { id } = useParams();

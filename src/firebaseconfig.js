@@ -4,6 +4,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"; // ✅ ADD THIS
+import { getStorage } from "firebase/storage"; // ✅ Make sure this is included
 
 
 // Firebase Configuration
@@ -22,6 +23,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app); // ✅ ADD THIS
+const storage = getStorage(app);
 
 // Export
-export { auth, provider, db }; // ✅ ALSO EXPORT db
+export { auth, provider, db , storage}; // ✅ ALSO EXPORT db
