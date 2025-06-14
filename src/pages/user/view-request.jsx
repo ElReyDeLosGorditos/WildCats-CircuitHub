@@ -3,6 +3,7 @@ import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import logo from "../../assets/circuithubLogo2.png";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
+import "../../components/css/view-request.css"
 
 const ViewRequest = () => {
   const { id } = useParams();

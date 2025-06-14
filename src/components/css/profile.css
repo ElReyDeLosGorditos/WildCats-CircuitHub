@@ -1,0 +1,76 @@
+
+
+/* Profile Page */
+/*.profile-page {*/
+/*    background-color: #f0ecf8;*/
+/*    min-height: 100vh;*/
+/*    padding: 40px 60px;*/
+/*}*/
+
+.profile-container {
+    display: flex;
+    gap: 60px;
+    margin-top: 20px;
+    align-items: flex-start;
+}
+
+.profile-image {
+    width: 260px;
+    height: 260px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-size: 14px;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-edit {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.edit-btn {
+    background-color: #d96528;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.4;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-btn:hover {
+    background-color: #b8501b;
+}
+
+.profile-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.profile-label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #000;
+}
+
+.profile-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 40px;
+}

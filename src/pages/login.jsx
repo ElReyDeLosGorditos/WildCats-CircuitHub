@@ -4,6 +4,8 @@ import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/circuithubLogo.png";
+import "../components/css/login.css"
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
