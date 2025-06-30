@@ -59,73 +59,74 @@ const AdminViewItem = () => {
   }
 
   return (
-    <div className="admin-dashboard">
-      {/* Navbar */}
-      <div className="navbar">
-        <img src={logo} alt="CircuitHub Logo" />
-        <nav>
-          {[
-            { label: "Dashboard", to: "/admin-dashboard" },
-            { label: "Manage Items", to: "/admin-items" },
-            { label: "Requests", to: "/admin-requests" },
-            { label: "Manage Users", to: "/admin-users" },
-          ].map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={
-                location.pathname === link.to
-                  ? "navbar-link active-link"
-                  : "navbar-link"
-              }
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div style={{ marginLeft: "auto" }}>
-          <Link to="/" className="logout-link">
-            Log Out
-          </Link>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="admin-dashboard-container">
-        <div style={{ marginBottom: "20px" }}>
-          <Link to="/admin-items" className="back-arrow">
-            ← Back to Items
-          </Link>
+      <div className="admin-dashboard">
+        {/* Navbar */}
+        <div className="navbar">
+          <img src={logo} alt="CircuitHub Logo" />
+          <nav>
+            {[ /* nav links */ ].map((link) => (
+                <Link
+                    key={link.to}
+                    to={link.to}
+                    className={location.pathname === link.to ? "navbar-link active-link" : "navbar-link"}
+                >
+                  {link.label}
+                </Link>
+            ))}
+          </nav>
+          <div style={{ marginLeft: "auto" }}>
+            <Link to="/" className="logout-link">Log Out</Link>
+          </div>
         </div>
 
-        <div className="view-item-box">
-          <img
-            src={
-              item.imagePath?.startsWith("http")
-                ? item.imagePath
-                : `http://localhost:8080/${item.imagePath}`
-            }
-            alt={item.name}
-            className="view-item-image"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "https://via.placeholder.com/150";
-            }}
-          />
-          <h2>{item.name}</h2>
-          <p>
-            <strong>Description:</strong> {item.description}
-          </p>
-          <p>
-            <strong>Condition:</strong> {item.condition}
-          </p>
-          <p>
-            <strong>Status:</strong> {item.status}
-          </p>
+        {/* Content */}
+        <div className="equipment-wrapper">
+          <div className="admin-dashboard-container">
+            <div style={{ marginBottom: "20px" }}>
+              <Link to="/admin-items" className="back-arrow">← Back to Items</Link>
+            </div>
+
+            <div className="equipment-card">
+              <div className="equipment-image-container">
+                <img
+                    src={
+                      item.imagePath?.startsWith("http")
+                          ? item.imagePath
+                          : `http://localhost:8080/${item.imagePath}`
+                    }
+                    alt={item.name}
+                    className="equipment-image"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://via.placeholder.com/150";
+                    }}
+                />
+              </div>
+
+              <div className="equipment-details">
+                <div className="detail-group">
+                  <label>Equipment Name</label>
+                  <div className="detail-box">{item.name}</div>
+                </div>
+                <div className="detail-group">
+                  <label>Category</label>
+                  <div className="detail-box">{item.description}</div>
+                </div>
+                <div className="detail-group">
+                  <label>Condition</label>
+                  <div className="detail-box">{item.condition}</div>
+                </div>
+                <div className="detail-group">
+                  <label>Status</label>
+                  <div className="detail-box">{item.status}</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
   );
+
 };
 
 export default AdminViewItem;

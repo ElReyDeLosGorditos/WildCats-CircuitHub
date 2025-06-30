@@ -1,0 +1,53 @@
+/* --- Page Wrapper --- */
+.admin-dashboard {
+    background-color: #E6E6FA;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- User Box --- */
+.view-user-box {
+    background-color: #946bb1;
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: 2rem auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+}
+
+.view-user-box:hover {
+    transform: translateY(-2px);
+}
+
+.view-user-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* --- Info Display --- */
+.view-user-box p {
+    font-size: 1.05rem;
+    margin: 0.7rem 0;
+}
+
+.view-user-box strong {
+    color: #ffe9a7;
+}
+
+/* --- Back Arrow --- */
+.back-arrow {
+    display: inline-block;
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+    color: #213547;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.back-arrow:hover {
+    color: #1a4e9d;
+}

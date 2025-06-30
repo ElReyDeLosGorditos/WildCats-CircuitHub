@@ -14,7 +14,7 @@ import MyRequests from "./pages/user/my-requests";
 import ViewRequest from "./pages/user/view-request";
 
 // Admin pages
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ManageItems from "./pages/admin/admin-items";
 import AddItem from "./pages/admin/add-item";
 import ViewItem from "./pages/admin/view-item"; // ✅ Uses :id param now

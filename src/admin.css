@@ -604,6 +604,11 @@
 
 
 
+
+
+
+
+
 /* Admin Requests Page */
 .admin-requests-grid {
   display: grid;
@@ -1097,4 +1102,232 @@
 
 .edit-save-btn:hover {
   background-color: #b8501b;
+}
+
+
+
+
+
+
+.equipment-card {
+  display: flex;
+  background-color: #946bb1;
+  padding: 2rem;
+  border-radius: 10px;
+  color: #1e1e1e;
+  font-family: 'Arial', sans-serif;
+  align-items: center;
+  gap: 2rem;
+}
+
+.equipment-image-container {
+  background-color: #6d4a99;
+  padding: 1.5rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Highlight effect */
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.equipment-image-container:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.5);
+}
+
+.equipment-image {
+  width: 350px;
+  max-width: 100%;
+  border-radius: 15px;
+  object-fit: contain;
+}
+
+.equipment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1;
+  max-width: 350px; /* Match the image width */
+}
+
+.detail-group label {
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+
+.detail-box {
+  background-color: #d4b9e9;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-family: 'Courier New', monospace;
+  width: 100%;
+}
+
+.equipment-wrapper {
+  padding: 0 15%;
+}
+
+@media (max-width: 768px) {
+  .equipment-wrapper {
+    padding: 0 5%;
+  }
+
+  .equipment-card {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .equipment-image-container {
+    margin-bottom: 1rem;
+  }
+
+  .equipment-details {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .detail-box {
+    font-size: 1rem;
+  }
+}
+
+
+
+
+
+
+
+.equipment-inventory-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.equipment-category-sidebar {
+  width: 220px;
+  background: #e0d1ea;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.category-btn {
+  display: block;
+  width: 100%;
+  background: #2e0639;
+  color: white;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.equipment-list-section {
+  flex-grow: 1;
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inventory-title {
+  font-size: 24px;
+  color: white;
+}
+
+.add-item-btn {
+  background: #2e0639;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.inventory-search-bar {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.equipment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.equipment-card {
+  display: flex;
+  align-items: center;
+  background: #a47ac3;
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+}
+
+.equipment-image {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  background: white;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.equipment-details {
+  flex: 2;
+}
+
+.equipment-status-section {
+  flex: 1;
+  text-align: right;
+}
+
+.status-label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.equipment-status {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.equipment-status.available {
+  color: #b5ffb5;
+}
+
+.equipment-status.borrowed {
+  color: #ffbbbb;
+}
+
+.equipment-edit-icon {
+  margin-left: 20px;
+}
+
+.equipment-inventory-wrapper {
+  padding: 0 15%;
+}
+
+@media (max-width: 768px) {
+  .equipment-inventory-wrapper {
+    padding: 0 5%;
+  }
+
+  .equipment-inventory-container {
+    flex-direction: column;
+  }
+
+  .equipment-category-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 }

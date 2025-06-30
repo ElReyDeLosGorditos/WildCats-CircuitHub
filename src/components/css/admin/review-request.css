@@ -1,0 +1,143 @@
+/* --- Admin Request Review Page --- */
+
+.admin-dashboard {
+    background-color: #f4f7fc;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Navbar --- */
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #213547;
+    padding: 12px 24px;
+    color: white;
+}
+
+.navbar img {
+    height: 45px;
+    margin-right: 20px;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 24px;
+}
+
+.navbar-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.navbar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.active-link {
+    background-color: white;
+    color: #213547;
+}
+
+.logout-link {
+    background-color: #ff5c5c;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: background-color 0.2s;
+}
+
+.logout-link:hover {
+    background-color: #e64848;
+}
+
+/* --- Main Container --- */
+.admin-dashboard-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* --- Back Link --- */
+.back-arrow {
+    font-size: 22px;
+    text-decoration: none;
+    color: #213547;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.back-arrow:hover {
+    color: #1a4e9d;
+}
+
+/* --- Request Box --- */
+.request-details-box {
+    background-color: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.request-details-box h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #213547;
+}
+
+.section-header {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #1a3c7c;
+}
+
+.request-details-box p {
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.request-details-box strong {
+    color: #333;
+}
+
+/* --- Action Buttons --- */
+.request-action-btns {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.approve-btn,
+.deny-btn {
+    padding: 10px 20px;
+    font-size: 15px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.approve-btn {
+    background-color: #28a745;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.deny-btn {
+    background-color: #dc3545;
+}
+
+.deny-btn:hover {
+    background-color: #c82333;
+}

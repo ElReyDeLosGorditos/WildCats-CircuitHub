@@ -1,0 +1,153 @@
+/* --- Edit User Page --- */
+.admin-dashboard {
+    background-color: #f4f7fc;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Navbar Styles --- */
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #213547;
+    padding: 12px 24px;
+    color: white;
+}
+
+.navbar img {
+    height: 45px;
+    margin-right: 20px;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 24px;
+}
+
+.navbar-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.navbar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.active-link {
+    background-color: white;
+    color: #213547;
+}
+
+.logout-link {
+    background-color: #ff5c5c;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: background 0.2s;
+}
+
+.logout-link:hover {
+    background-color: #e64848;
+}
+
+/* --- Content Container --- */
+.admin-dashboard-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* --- Back Arrow --- */
+.back-arrow {
+    font-size: 22px;
+    text-decoration: none;
+    color: #213547;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.back-arrow:hover {
+    color: #1a4e9d;
+}
+
+/* --- Edit Box --- */
+.edit-user-box {
+    background-color: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.edit-user-title {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #213547;
+}
+
+/* --- Form --- */
+.edit-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-row label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #444;
+}
+
+.input-row input,
+.input-row select {
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fafafa;
+}
+
+.edit-btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cancel-link {
+    color: #888;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background-color: #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.cancel-link:hover {
+    background-color: #e0e0e0;
+}
+
+.edit-save-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-save-btn:hover {
+    background-color: #0056b3;
+}

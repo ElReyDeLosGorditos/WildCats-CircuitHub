@@ -1,0 +1,157 @@
+/* --- Main Page Container --- */
+.admin-dashboard {
+    background-color: #f9fafc;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+/* --- Navbar --- */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    gap: 20px;
+}
+
+.navbar img {
+    height: 40px;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 12px;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.navbar-link:hover {
+    background-color: #f0f0f0;
+}
+
+.active-link {
+    background-color: #213547;
+    color: #fff;
+}
+
+.logout-link {
+    text-decoration: none;
+    color: #dc3545;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.logout-link:hover {
+    background-color: #f8d7da;
+}
+
+/* --- Dashboard Container --- */
+.admin-dashboard-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* --- Back Arrow --- */
+.back-arrow {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-arrow:hover {
+    color: #007bff;
+}
+
+/* --- Add User Box --- */
+.add-user-box {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.add-user-title {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #213547;
+}
+
+/* --- Form Styling --- */
+.add-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.input-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-row label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
+}
+
+.input-row input,
+.input-row select {
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fefefe;
+}
+
+/* --- Button Row --- */
+.edit-btn-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.cancel-link {
+    padding: 10px 16px;
+    background-color: #e9ecef;
+    color: #333;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.cancel-link:hover {
+    background-color: #d6d8db;
+}
+
+.edit-save-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-save-btn:hover {
+    background-color: #218838;
+}

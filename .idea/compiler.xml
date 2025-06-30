@@ -7,7 +7,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="CircuitHub" />
       </profile>
       <profile name="Annotation profile for GadgetHub" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -20,6 +19,9 @@
         <module name="Circuithub (1)" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="CircuitHub" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

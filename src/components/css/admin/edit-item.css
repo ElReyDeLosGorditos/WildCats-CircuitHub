@@ -1,0 +1,143 @@
+/* --- Page Wrapper --- */
+.add-item-page {
+    min-height: 100vh;
+    background-color: #f2f5fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Navbar --- */
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #213547;
+    padding: 12px 24px;
+    color: white;
+}
+
+.navbar img {
+    height: 45px;
+    margin-right: 20px;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 24px;
+}
+
+.navbar-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.navbar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.active-link {
+    background-color: white;
+    color: #213547;
+}
+
+/* --- Logout Link --- */
+.logout-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background-color: #ff5c5c;
+    margin-left: 20px;
+    transition: background 0.2s;
+}
+
+.logout-link:hover {
+    background-color: #e64848;
+}
+
+/* --- Back Arrow --- */
+.back-arrow {
+    display: inline-block;
+    font-size: 24px;
+    margin: 20px 0;
+    text-decoration: none;
+    color: #213547;
+}
+
+.back-arrow:hover {
+    color: #1a4e9d;
+}
+
+/* --- Container --- */
+.add-item-container {
+    background-color: white;
+    max-width: 700px;
+    margin: 20px auto 40px;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.add-item-container h2 {
+    text-align: center;
+    color: #213547;
+    margin-bottom: 24px;
+}
+
+/* --- Form --- */
+.add-item-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.add-item-form label {
+    font-weight: 500;
+    color: #333;
+}
+
+.add-item-form input[type="text"],
+.add-item-form input[type="file"],
+.add-item-form textarea,
+.add-item-form select {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 4px;
+}
+
+.add-item-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* --- Image Preview --- */
+.add-item-form img {
+    max-width: 150px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* --- Submit Button --- */
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}

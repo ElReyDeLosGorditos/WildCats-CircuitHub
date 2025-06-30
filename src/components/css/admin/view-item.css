@@ -1,0 +1,110 @@
+/* --- Overall Page --- */
+.admin-dashboard {
+    min-height: 100vh;
+    background-color: #E6E6FA;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Navbar & Container already styled earlier --- */
+
+/* --- Content Wrapper (centered) --- */
+.equipment-wrapper {
+    padding: 0 15%;
+}
+
+@media (max-width: 768px) {
+    .equipment-wrapper {
+        padding: 0 5%;
+    }
+}
+
+/* --- Card Box --- */
+.equipment-card {
+    display: flex;
+    align-items: center;
+    background-color: #946bb1;
+    padding: 2rem;
+    border-radius: 12px;
+    gap: 2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Image Container with Highlight Effect --- */
+.equipment-image-container {
+    background-color: #6d4a99;
+    padding: 1.5rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.equipment-image-container:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+}
+
+/* --- Actual Image --- */
+.equipment-image {
+    width: 350px;
+    max-width: 100%;
+    border-radius: 15px;
+    object-fit: contain;
+}
+
+/* --- Details Section --- */
+.equipment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    flex: 1;
+    max-width: 350px;
+}
+
+.detail-group label {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #fff;
+    margin-bottom: 0.3rem;
+}
+
+.detail-box {
+    background-color: #d4b9e9;
+    padding: 0.6rem 0.9rem;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-family: 'Courier New', monospace;
+    width: 100%;
+    color: #1e1e1e;
+}
+
+/* --- Responsive Layout --- */
+@media (max-width: 768px) {
+    .equipment-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .equipment-details {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .detail-box {
+        font-size: 1rem;
+    }
+}
+
+/* --- Link Reset & Back Arrow --- */
+.back-arrow {
+    display: inline-block;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #213547;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.back-arrow:hover {
+    color: #1a4e9d;
+}

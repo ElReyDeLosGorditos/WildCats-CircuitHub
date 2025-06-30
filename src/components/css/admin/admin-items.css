@@ -1,0 +1,290 @@
+/* --- Page Layout --- */
+.admin-dashboard {
+    background-color: #f9fafc;
+    min-height: 100vh;
+    padding-bottom: 60px;
+}
+
+/* --- Navbar --- */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    gap: 20px;
+}
+
+.navbar img {
+    height: 40px;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 12px;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.navbar-link:hover {
+    background-color: #f0f0f0;
+}
+
+.active-link {
+    background-color: #213547;
+    color: #fff;
+}
+
+.logout-link {
+    text-decoration: none;
+    color: #dc3545;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.logout-link:hover {
+    background-color: #f8d7da;
+}
+
+/* --- Inventory Container --- */
+.equipment-inventory-wrapper {
+    padding: 30px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.equipment-inventory-container {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    max-width: 1300px;
+}
+
+/* --- Sidebar (Optional) --- */
+.equipment-category-sidebar {
+    width: 180px;
+}
+
+.category-btn {
+    background-color: #213547;
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    width: 100%;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.category-btn:hover {
+    background-color: #1a2c3c;
+}
+
+/* --- Main Content --- */
+.equipment-list-section {
+    flex: 1;
+}
+
+/* --- Header --- */
+.inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.inventory-title {
+    font-size: 24px;
+    color: #213547;
+    font-weight: bold;
+}
+
+.add-item-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.add-item-btn:hover {
+    background-color: #218838;
+}
+
+/* --- Search and Filter --- */
+.inventory-search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.admin-search-bar,
+.admin-filter-dropdown {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+/* --- Equipment List --- */
+.equipment-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.equipment-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.equipment-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.equipment-card:hover {
+    transform: translateY(-4px);
+}
+
+.equipment-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.equipment-details h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #213547;
+}
+
+.equipment-category {
+    color: #666;
+    font-size: 14px;
+}
+
+/* --- Status Section --- */
+.equipment-status-section {
+    margin-top: auto;
+}
+
+.status-label {
+    font-size: 12px;
+    color: #888;
+}
+
+.equipment-status {
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* Status Colors */
+.equipment-status.available {
+    color: #28a745;
+}
+
+.equipment-status.borrowed {
+    color: #dc3545;
+}
+
+/* --- Edit Icon --- */
+.equipment-edit-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.equipment-edit-icon button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* --- Modal --- */
+.admin-item-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.admin-item-modal {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.admin-item-modal-message {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.admin-item-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.admin-item-yes-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.admin-item-no-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.admin-item-yes-btn:hover {
+    background-color: #c82333;
+}
+
+.admin-item-no-btn:hover {
+    background-color: #5a6268;
+}
