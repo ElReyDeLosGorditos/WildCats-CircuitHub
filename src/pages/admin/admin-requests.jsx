@@ -120,7 +120,6 @@ const AdminRequests = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="admin-filter-dropdown"
           >
-            <option value="All">All</option>
             <option value="Pending">Pending</option>
             <option value="Approved">Approved</option>
             <option value="Denied">Denied</option>

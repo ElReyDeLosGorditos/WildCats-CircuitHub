@@ -158,6 +158,20 @@ const RequestForm = () => {
     return durations;
   };
 
+  // Pre-caution if user tries to paste or manipulate the date manually
+  useEffect(() => {
+    if (borrowDate) {
+      const selected = new Date(borrowDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      selected.setHours(0, 0, 0, 0);
+
+      if (selected < today) {
+        setBorrowDate(""); // Clear invalid date
+      }
+    }
+  }, [borrowDate]);
+
   // Effect to calculate and update the return time whenever startBlock or durationBlocks change
   useEffect(() => {
     if (startBlock && durationBlocks) {
@@ -381,9 +395,13 @@ const RequestForm = () => {
               <label>Date of Borrowing:</label>
               <input
                   type="date"
+                  id="borrowDate"
                   value={borrowDate}
                   onChange={(e) => setBorrowDate(e.target.value)}
-                  required
+                  min={new Date().toISOString().split("T")[0]} // today
+                  max={new Date(new Date().setMonth(new Date().getMonth() + 5))
+                      .toISOString()
+                      .split("T")[0]} // two months from today
               />
             </div>
 
@@ -478,16 +496,31 @@ const RequestForm = () => {
                 Failure to return the equipment on time may result in penalties. Any damaged items must be reported
                 immediately. All borrowers must comply with the department’s borrowing policies.
               </p>
-              <div className="checkbox-row">
-                <label htmlFor="agree" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                  <input type="checkbox" id="agree" checked={agree} onChange={() => setAgree(!agree)} style={{ marginRight: '8px' }} />
-                  I agree to the terms and conditions.
-                </label>
+              <div className="checkbox-row" style={{marginTop: '1rem'}}>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                  <input
+                      type="checkbox"
+                      id="agree"
+                      checked={agree}
+                      onChange={() => setAgree(!agree)}
+                      style={{
+                        width: '16px',
+                        height: '16px',
+                        margin: 0,
+                        marginRight: '8px',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                      }}
+                  />
+                  <label>
+                    I agree to the terms and conditions.
+                  </label>
+                </div>
               </div>
             </div>
 
             {/* Submit Button */}
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+            <div style={{display: "flex", justifyContent: "flex-end", marginTop: "20px"}}>
               <button
                   type="submit"
                   className="submit-btn"
@@ -503,7 +536,7 @@ const RequestForm = () => {
         {showConfirmModal && (
             <div className="modal-overlay">
               <div className="modal">
-                <h3>Confirm Request</h3>
+              <h3>Confirm Request</h3>
                 <p><strong>Items:</strong><br/>{selectedItems.map(item => item.name).join(", ")}</p>
                 <p><strong>Date:</strong> {borrowDate}</p>
                 <p><strong>Reason:</strong> {reason}</p>
