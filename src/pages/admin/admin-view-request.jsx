@@ -84,6 +84,7 @@ const AdminViewRequest = () => {
                         { label: "Dashboard", to: "/admin-dashboard" },
                         { label: "Manage Items", to: "/admin-items" },
                         { label: "Requests", to: "/admin-requests" },
+                        {label: "Maintenance", to: "/equipment-maintenance"},
                         { label: "Manage Users", to: "/admin-users" },
                     ].map((link) => (
                         <Link

@@ -27,6 +27,7 @@ import ViewUser from "./pages/admin/view-user";
 import EditUser from "./pages/admin/edit-user";
 import AddUser from "./pages/admin/add-user";
 import AdminRegister from "./pages/admin/admin-register.jsx";
+import EquipmentMaintenance from "./pages/admin/equipment-maintenance.jsx";
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
         <Route path="/view-user/:id" element={<ViewUser />} />
         <Route path="/edit-user/:id" element={<EditUser />} />
         <Route path="/add-user" element={<AddUser />} />
+        <Route path="/equipment-maintenance" element={<EquipmentMaintenance />} />
       </Routes>
     </Router>
   );
