@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/maintenance")
@@ -25,38 +26,39 @@ public class MaintenanceController {
     // Create a maintenance request
     @PostMapping("/request")
     public ResponseEntity<String> requestMaintenance(@RequestBody Maintenance maintenance) {
-        maintenanceService.requestMaintenance(maintenance);
-        return ResponseEntity.ok("Maintenance request submitted successfully.");
+        System.out.println("Received Maintenance Data: " + maintenance.toString());
+        Maintenance savedMaintenance = maintenanceService.requestMaintenance(maintenance);
+        return ResponseEntity.ok("Maintenance request submitted successfully. ID: " + savedMaintenance.getMaintenanceId());
     }
 
     // Get all maintenance records
     @GetMapping("/all")
-    public ResponseEntity<List<Maintenance>> getAllMaintenance() {
+    public ResponseEntity<List<Maintenance>> getAllMaintenance() throws ExecutionException, InterruptedException {
         return ResponseEntity.ok(maintenanceService.getAllMaintenance());
     }
 
     // Get pending maintenance requests
     @GetMapping("/pending")
-    public ResponseEntity<List<Maintenance>> getPendingRequests() {
+    public ResponseEntity<List<Maintenance>> getPendingRequests() throws ExecutionException, InterruptedException {
         return ResponseEntity.ok(maintenanceService.getPendingRequests());
     }
 
     // Get under maintenance list
-    @GetMapping("/in-progress")
-    public ResponseEntity<List<Maintenance>> getUnderMaintenance() {
-        return ResponseEntity.ok(maintenanceService.getUnderMaintenance());
-    }
+//    @GetMapping("/in-progress")
+//    public ResponseEntity<List<Maintenance>> getUnderMaintenance() {
+//        return ResponseEntity.ok(maintenanceService.getUnderMaintenance());
+//    }
 
     // Dashboard view
-    @GetMapping("/dashboard")
-    public ResponseEntity<List<Maintenance>> getDashboardOverview() {
-        return ResponseEntity.ok(maintenanceService.getDashboardOverview());
-    }
+//    @GetMapping("/dashboard")
+//    public ResponseEntity<List<Maintenance>> getDashboardOverview() {
+//        return ResponseEntity.ok(maintenanceService.getDashboardOverview());
+//    }
 
     // Update status and progress
     @PutMapping("/{id}/update-progress")
     public ResponseEntity<String> updateProgress(
-            @PathVariable int id,
+            @PathVariable String id,  // ID is now a String (Firestore auto-generated ID)
             @RequestParam String status,
             @RequestParam String progress) {
 
@@ -70,7 +72,7 @@ public class MaintenanceController {
 
     // Delete maintenance by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMaintenance(@PathVariable int id) {
+    public ResponseEntity<String> deleteMaintenance(@PathVariable String id) throws ExecutionException, InterruptedException {  // ID is now a String
         boolean deleted = maintenanceService.deleteMaintenance(id);
         if (deleted) {
             return ResponseEntity.ok("Maintenance request deleted.");
@@ -81,7 +83,7 @@ public class MaintenanceController {
 
     // Get maintenance by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Maintenance> getMaintenanceById(@PathVariable int id) {
+    public ResponseEntity<Maintenance> getMaintenanceById(@PathVariable String id) throws ExecutionException, InterruptedException {
         Optional<Maintenance> maintenance = maintenanceService.getMaintenanceById(id);
         return maintenance.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

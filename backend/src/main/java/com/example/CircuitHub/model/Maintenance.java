@@ -1,76 +1,117 @@
 package com.example.CircuitHub.model;
+
+import com.example.CircuitHub.serializer.LocalDateSerializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.time.LocalDate;
+
 
 public class Maintenance {
 
-    private int maintenanceId;
+    private String maintenanceId;  // Firestore auto-generated ID
     private String equipmentName;
     private String issue;
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate requestDate;
-    private LocalDate scheduleDate;
-    private LocalDate completionDate;
-    private int technicianId;
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    private LocalDate scheduleDate;
+//    private LocalDate completionDate;
+//    private int technicianId;
     private String status;
-    private String progress;
 
     // Constructors
     public Maintenance() {}
 
-    public Maintenance(int maintenanceId, String equipmentName, String issue,
-                       LocalDate requestDate, LocalDate scheduleDate, LocalDate completionDate,
-                       int technicianId, String status, String progress) {
-        this.maintenanceId = maintenanceId;
+    public Maintenance(String equipmentName, String issue, LocalDate requestDate,
+                       String status) {
         this.equipmentName = equipmentName;
         this.issue = issue;
         this.requestDate = requestDate;
-        this.scheduleDate = scheduleDate;
-        this.completionDate = completionDate;
-        this.technicianId = technicianId;
+//        this.scheduleDate = scheduleDate;
+//        this.completionDate = completionDate;
+//        this.technicianId = technicianId;
         this.status = status;
-        this.progress = progress;
     }
 
     // Getters and Setters
 
-    public int getMaintenanceId() { return maintenanceId; }
-    public void setMaintenanceId(int maintenanceId) { this.maintenanceId = maintenanceId; }
+    public String getMaintenanceId() {
+        return maintenanceId;
+    }
 
-    public String getEquipmentName() { return equipmentName; }
-    public void setEquipmentName(String equipmentName) { this.equipmentName = equipmentName; }
+    public void setMaintenanceId(String maintenanceId) {
+        this.maintenanceId = maintenanceId;
+    }
 
-    public String getIssue() { return issue; }
-    public void setIssue(String issue) { this.issue = issue; }
+    public String getEquipmentName() {
+        return equipmentName;
+    }
 
-    public LocalDate getRequestDate() { return requestDate; }
-    public void setRequestDate(LocalDate requestDate) { this.requestDate = requestDate; }
+    public void setEquipmentName(String equipmentName) {
+        this.equipmentName = equipmentName;
+    }
 
-    public LocalDate getScheduleDate() { return scheduleDate; }
-    public void setScheduleDate(LocalDate scheduleDate) { this.scheduleDate = scheduleDate; }
+    public String getIssue() {
+        return issue;
+    }
 
-    public LocalDate getCompletionDate() { return completionDate; }
-    public void setCompletionDate(LocalDate completionDate) { this.completionDate = completionDate; }
+    public void setIssue(String issue) {
+        this.issue = issue;
+    }
 
-    public int getTechnicianId() { return technicianId; }
-    public void setTechnicianId(int technicianId) { this.technicianId = technicianId; }
+    public LocalDate getRequestDate() {
+        return requestDate;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setRequestDate(LocalDate requestDate) {
+        this.requestDate = requestDate;
+    }
 
-    public String getProgress() { return progress; }
-    public void setProgress(String progress) { this.progress = progress; }
+//    public LocalDate getScheduleDate() {
+//        return scheduleDate;
+//    }
+//
+//    public void setScheduleDate(LocalDate scheduleDate) {
+//        this.scheduleDate = scheduleDate;
+//    }
+
+//    public LocalDate getCompletionDate() {
+//        return completionDate;
+//    }
+//
+//    public void setCompletionDate(LocalDate completionDate) {
+//        this.completionDate = completionDate;
+//    }
+//
+//    public int getTechnicianId() {
+//        return technicianId;
+//    }
+//
+//    public void setTechnicianId(int technicianId) {
+//        this.technicianId = technicianId;
+//    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     @Override
     public String toString() {
         return "Maintenance{" +
-                "maintenanceId=" + maintenanceId +
+                "maintenanceId='" + maintenanceId + '\'' +
                 ", equipmentName='" + equipmentName + '\'' +
                 ", issue='" + issue + '\'' +
                 ", requestDate=" + requestDate +
-                ", scheduleDate=" + scheduleDate +
-                ", completionDate=" + completionDate +
-                ", technicianId=" + technicianId +
+                // ", scheduleDate=" + scheduleDate +
+//                ", completionDate=" + completionDate +
+//                ", technicianId=" + technicianId +
                 ", status='" + status + '\'' +
-                ", progress='" + progress + '\'' +
                 '}';
     }
 }

@@ -401,7 +401,7 @@ const RequestForm = () => {
                   min={new Date().toISOString().split("T")[0]} // today
                   max={new Date(new Date().setMonth(new Date().getMonth() + 5))
                       .toISOString()
-                      .split("T")[0]} // two months from today
+                      .split("T")[0]} // 5 months from today
               />
             </div>
 
