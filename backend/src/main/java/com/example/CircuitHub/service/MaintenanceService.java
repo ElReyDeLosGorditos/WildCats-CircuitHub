@@ -32,7 +32,9 @@ public class MaintenanceService {
         data.put("equipmentName", maintenance.getEquipmentName());
         data.put("issue", maintenance.getIssue());
         data.put("status", maintenance.getStatus());
-        data.put("date", maintenance.getRequestDate());
+
+        // 🔧 Format LocalDate to String
+        data.put("requestDate", maintenance.getRequestDate().toString());
 
         DocumentReference ref = firestore.collection("maintenance").document();
         ApiFuture<WriteResult> future = ref.set(data);
