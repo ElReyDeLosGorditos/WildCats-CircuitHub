@@ -45,11 +45,12 @@ public class ItemController {
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("condition") String condition,
-            @RequestParam(value = "image", required = false) MultipartFile image
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam("quantity") int quantity
     ) {
         try {
             System.out.println("Received multipart request: " + name);
-            Item newItem = itemService.saveItem(name, description, condition, image);
+            Item newItem = itemService.saveItem(name, description, condition, image, quantity);
             return ResponseEntity.ok(newItem);
         } catch (Exception e) {
             System.out.println("Error adding item with image: " + e.getMessage());
@@ -70,6 +71,7 @@ public class ItemController {
             String name = itemData.get("name");
             String description = itemData.get("description");
             String condition = itemData.get("condition");
+            int quantity = Integer.parseInt(itemData.getOrDefault("quantity", "0"));
             
             // Create a map for storing in Firestore
             String itemId = UUID.randomUUID().toString();
@@ -81,6 +83,7 @@ public class ItemController {
             dbItemData.put("status", "Available");
             dbItemData.put("createdAt", LocalDateTime.now().toString());
             dbItemData.put("imagePath", "https://placehold.co/150");
+            dbItemData.put("quantity", quantity);
 
             // Save to Firestore
             FirestoreClient.getFirestore().collection("items").document(itemId).set(dbItemData).get();
@@ -157,6 +160,7 @@ public class ItemController {
             if (itemData.containsKey("description")) updates.put("description", itemData.get("description"));
             if (itemData.containsKey("condition")) updates.put("condition", itemData.get("condition"));
             if (itemData.containsKey("status")) updates.put("status", itemData.get("status"));
+            if (itemData.containsKey("quantity")) updates.put("quantity", Integer.parseInt(itemData.get("quantity")));
             
             // Update in Firestore
             docRef.update(updates).get();

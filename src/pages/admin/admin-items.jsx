@@ -143,9 +143,10 @@ const AdminManageItems = () => {
                         <div className="equipment-details">
                           <h3>{item.name || "Unnamed Item"}</h3>
                           <p className="equipment-category">{item.description}</p>
+                          <p className="equipment-quantity">Quantity: {item.quantity ?? "N/A"}</p>
                         </div>
                         <div className="equipment-status-section">
-                          <p className="status-label">Borrow Status</p>
+                        <p className="status-label">Borrow Status</p>
                           <p className={`equipment-status ${item.status?.toLowerCase()}`}>
                             {item.status === "Borrowed" ? "Not Available" : item.status}
                           </p>

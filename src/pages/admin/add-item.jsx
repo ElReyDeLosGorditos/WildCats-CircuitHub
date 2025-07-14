@@ -17,6 +17,7 @@ const AddItem = () => {
   const [itemImage, setItemImage] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState("");
+  const [itemQuantity, setItemQuantity] = useState(1);
 
   const handleImageChange = (e) => {
     setItemImage(e.target.files[0]);
@@ -45,6 +46,7 @@ const AddItem = () => {
         condition: itemCondition,
         imagePath: imageUrl,
         status: "Available",
+        quantity: itemQuantity,
         createdAt: new Date(),
       });
 
@@ -131,8 +133,20 @@ const AddItem = () => {
             </label>
 
             <label>
+              Quantity:
+              <input
+                  type="number"
+                  value={itemQuantity}
+                  onChange={(e) => setItemQuantity(parseInt(e.target.value))}
+                  min={1}
+                  placeholder="Enter quantity..."
+                  required
+              />
+            </label>
+
+            <label>
               Upload Image:
-              <input type="file" accept="image/*" onChange={handleImageChange} />
+              <input type="file" accept="image/*" onChange={handleImageChange}/>
             </label>
 
             <button type="submit" className="submit-btn">
