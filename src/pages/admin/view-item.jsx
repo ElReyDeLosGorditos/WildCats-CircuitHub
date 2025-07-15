@@ -117,6 +117,10 @@ const AdminViewItem = () => {
                   <div className="detail-box">{item.condition}</div>
                 </div>
                 <div className="detail-group">
+                  <label>Quantity</label>
+                  <div className="detail-box">{item.quantity ?? "N/A"}</div>
+                </div>
+                <div className="detail-group">
                   <label>Status</label>
                   <div className="detail-box">{item.status}</div>
                 </div>

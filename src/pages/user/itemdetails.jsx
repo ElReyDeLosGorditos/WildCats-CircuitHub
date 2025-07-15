@@ -116,10 +116,13 @@ const ItemDetails = () => {
                 {item.condition}
                 {item.conditionDescription ? `: ${item.conditionDescription}` : ""}
               </p>
+
+              <h3>Quantity</h3>
+              <p>{item.quantity ?? "N/A"}</p>
             </div>
 
             <div className="details-right">
-              <h3>Status:</h3>
+            <h3>Status:</h3>
               <p className={`status-text ${item.status === "Available" ? "available" : "not-available"}`}>
                 {item.status === "Available" ? "Available" : "Not Available"}
               </p>

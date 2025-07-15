@@ -25,7 +25,7 @@ public class ItemService {
         this.firestore = FirestoreClient.getFirestore();
     }
 
-    public Item saveItem(String name, String description, String condition, MultipartFile image)
+    public Item saveItem(String name, String description, String condition, MultipartFile image, int quantity)
             throws IOException, ExecutionException, InterruptedException {
 
         String itemId = UUID.randomUUID().toString();
@@ -59,11 +59,12 @@ public class ItemService {
         data.put("status", "Available");
         data.put("imagePath", imageUrl);
         data.put("createdAt", createdAt);
+        data.put("quantity", quantity);
 
         firestore.collection("items").document(itemId).set(data).get();
 
         // Fixed constructor call - removed the colon and added the comma properly
-        return new Item(itemId, name, description, condition, "Available", imageUrl, createdAt);
+        return new Item(itemId, name, description, condition, "Available", imageUrl, createdAt, quantity);
     }
 
     public List<Item> getAllItems() throws ExecutionException, InterruptedException {
