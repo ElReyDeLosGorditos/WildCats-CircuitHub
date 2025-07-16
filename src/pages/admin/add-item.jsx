@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { db , storage} from "../../firebaseconfig";
+import { useLocation, useNavigate } from "react-router-dom";
+import { db, storage } from "../../firebaseconfig";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import logo from "../../assets/circuithubLogo2.png";
-
-
+import "../../components/css/admin/add-item.css";
 
 const AddItem = () => {
   const location = useLocation();
@@ -60,100 +58,72 @@ const AddItem = () => {
   };
 
   return (
-      <div className="add-item-page">
-        {/* Navbar */}
-        <div className="navbar">
-          <img src={logo} alt="CCS Gadget Hub Logo" />
-          <nav>
-            {[
-              { label: "Dashboard", to: "/admin-dashboard" },
-              { label: "Manage Items", to: "/admin-items" },
-              { label: "Requests", to: "/admin-requests" },
-              {label: "Maintenance", to: "/equipment-maintenance"},
-              { label: "Manage Users", to: "/admin-users" },
-            ].map((link) => (
-                <Link
-                    key={link.to}
-                    to={link.to}
-                    className={location.pathname === link.to ? "navbar-link active-link" : "navbar-link"}
-                >
-                  {link.label}
-                </Link>
-            ))}
-          </nav>
-          <div style={{ marginLeft: "auto" }}>
-            <Link to="/" className="logout-link">Log Out</Link>
+      <div className="popup-modal-overlay" onClick={() => navigate("/admin-items")}>
+        <div className="popup-modal-content add-popup" onClick={(e) => e.stopPropagation()}>
+          <div className="AT-card-header">
+            <h2 className="AT-page-title">Add Equipment</h2>
           </div>
-        </div>
 
-        <div style={{ width: "100%", maxWidth: "800px", margin: "0 auto" }}>
-          <Link to="/admin-items" className="back-arrow">←</Link>
-        </div>
-
-        {/* Content */}
-        <div className="add-item-container">
-          <h2>Add New Item</h2>
-
-          {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
-
-          <form className="add-item-form" onSubmit={handleSubmit}>
-            <label>
-              Item Name:
+          <div className="AT-item-content">
+            <div className="AT-image-container">
               <input
-                  type="text"
-                  value={itemName}
-                  onChange={(e) => setItemName(e.target.value)}
-                  placeholder="Enter item name..."
-                  required
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="AT-file-input"
               />
-            </label>
-
-            <label>
-              Description:
-              <textarea
-                  value={itemDescription}
-                  onChange={(e) => setItemDescription(e.target.value)}
-                  placeholder="Enter item description..."
-                  required
-              />
-            </label>
-
-            <label>
-              Condition:
-              <select
-                  value={itemCondition}
-                  onChange={(e) => setItemCondition(e.target.value)}
-              >
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-                <option value="Poor">Poor</option>
-              </select>
-            </label>
-
-            <label>
-              Upload Image:
-              <input type="file" accept="image/*" onChange={handleImageChange} />
-            </label>
-
-            <button type="submit" className="submit-btn">
-              Add Item
-            </button>
-          </form>
-        </div>
-
-        {/* Success Modal */}
-        {showSuccessModal && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                Item added successfully!
-                <div style={{ marginTop: "20px" }}>
-                  <Link to="/admin-items" className="modal-link">
-                    Back to Items Page
-                  </Link>
-                </div>
-              </div>
+              {itemImage && (
+                  <img
+                      src={URL.createObjectURL(itemImage)}
+                      alt="Preview"
+                      className="AT-equipment-image"
+                  />
+              )}
             </div>
-        )}
+
+            <div className="AT-info-fields">
+              <form onSubmit={handleSubmit} className="AT-item-form">
+                <div className="AT-field-group">
+                  <label>Equipment Name</label>
+                  <input
+                      type="text"
+                      className="AT-field-box"
+                      value={itemName}
+                      onChange={(e) => setItemName(e.target.value)}
+                      placeholder="Enter item name..."
+                  />
+                </div>
+
+                <div className="AT-field-group">
+                  <label>Condition</label>
+                  <select
+                      className="AT-field-box"
+                      value={itemCondition}
+                      onChange={(e) => setItemCondition(e.target.value)}
+                  >
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Poor">Poor</option>
+                  </select>
+                </div>
+
+                <div className="AT-field-group large">
+                  <label>Description</label>
+                  <textarea
+                      className="AT-field-box"
+                      value={itemDescription}
+                      onChange={(e) => setItemDescription(e.target.value)}
+                      placeholder="Enter item description..."
+                  />
+                </div>
+
+                <button type="submit" className="AT-submit-button">Add Item</button>
+              </form>
+            </div>
+          </div>
+
+          {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+        </div>
       </div>
   );
 };
