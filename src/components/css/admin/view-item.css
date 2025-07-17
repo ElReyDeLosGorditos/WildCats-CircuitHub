@@ -1,130 +1,34 @@
-.vt-item-card {
-    width: 60vw;
-    height: 80vh;
-    background-color: #a283bc;
-    font-family: 'Segoe UI', sans-serif;
-    border-radius: 16px;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-/* Header at top */
-.vt-card-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.vt-page-title {
+.AT-back-button {
+    position: absolute;
+    left: 20px;
     font-size: 24px;
-    color: #f0f0f0;
-    font-weight: bold;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
 }
 
-/* Layout: image on left, fields on right */
-.vt-item-content {
-    display: flex;
-    flex: 1;
-    gap: 30px;
-    overflow-y: auto;
-}
-
-/* Image block */
-.vt-image-container {
-    flex: 0 0 280px;
-    background-color: rgba(109, 74, 153, 0);
-    padding: 20px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.vt-equipment-image {
-    max-width: 100%;
-    max-height: 250px;
-    object-fit: contain;
-    border-radius: 12px;
-}
-
-/* Info fields */
-.vt-info-fields {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    justify-content: flex-start;
-    padding-right: 5px;
-}
-
-.vt-field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.vt-field-group.large .vt-field-box {
-    height: 150px;
-}
-
-.vt-field-group label {
-    font-weight: bold;
-    color: #1e1e1e;
-    font-size: 0.9rem;
-}
-
-.vt-field-box {
-    background-color: #d9c6e3;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 1rem;
-    color: #1e1e1e;
-    overflow-y: auto;
-}
-
-/* Modal structure */
-.popup-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+.AT-image-label {
     width: 100%;
     height: 100%;
-    background: rgba(30, 0, 50, 0.5);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    z-index: 999;
-    animation: fadeIn 0.5s ease forwards;
-    backdrop-filter: blur(2px);
+    justify-content: center;
+    cursor: pointer;
+    color: #000;
+    text-align: center;
 }
 
-.popup-modal-content {
-    animation: popUp 0.5s ease forwards;
+.AT-image-icon {
+    font-size: 48px;
 }
 
-/* Custom scrollbar for info fields */
-.vt-info-fields::-webkit-scrollbar {
-    width: 8px;
+.AT-image-text {
+    font-size: 16px;
+    font-weight: bold;
 }
 
-.vt-info-fields::-webkit-scrollbar-track {
-    background: #c4acd6; /* subtle track inside field */
-    border-radius: 10px;
-}
-
-.vt-info-fields::-webkit-scrollbar-thumb {
-    background-color: #6d4a99; /* matches image box bg */
-    border-radius: 10px;
-    border: 2px solid #c4acd6; /* spacing */
-}
-
-/* For Firefox */
-.vt-info-fields {
-    scrollbar-width: thin;
-    scrollbar-color: #6d4a99 #c4acd6;
+.AT-file-input {
+    display: none;
 }

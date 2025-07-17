@@ -1,4 +1,4 @@
-/* === Modal Overlay & Animation === */
+/* Overlay */
 .popup-modal-overlay {
     position: fixed;
     top: 0;
@@ -18,7 +18,7 @@
     animation: popUp 0.5s ease forwards;
 }
 
-/* === Main Add Item Modal Container === */
+/* Modal container */
 .AT-item-card {
     width: 60vw;
     height: 80vh;
@@ -33,7 +33,7 @@
     overflow: hidden;
 }
 
-/* === Header === */
+/* Header */
 .AT-card-header {
     display: flex;
     justify-content: center;
@@ -47,7 +47,7 @@
     font-weight: bold;
 }
 
-/* === Content Section (Image + Form Fields) === */
+/* Layout */
 .AT-item-content {
     display: flex;
     flex: 1;
@@ -55,25 +55,15 @@
     overflow-y: auto;
 }
 
-/* === Image Section === */
+/* Image */
 .AT-image-container {
     flex: 0 0 280px;
-    background-color: rgba(109, 74, 153, 0.2);
+    background-color: rgba(109, 74, 153, 0);
     padding: 20px;
     border-radius: 20px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-}
-
-.AT-file-input {
-    background: none;
-    border: none;
-    color: #fff;
-    margin-bottom: 10px;
-    cursor: pointer;
 }
 
 .AT-equipment-image {
@@ -83,13 +73,38 @@
     border-radius: 12px;
 }
 
-/* === Info/Form Fields Section === */
+/* Label Preview */
+.AT-image-label {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #000;
+    text-align: center;
+}
+
+.AT-image-icon {
+    font-size: 48px;
+}
+
+.AT-image-text {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.AT-file-input {
+    display: none;
+}
+
+/* Info Fields */
 .AT-info-fields {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    justify-content: flex-start;
     padding-right: 5px;
     scrollbar-width: thin;
     scrollbar-color: #6d4a99 #c4acd6;
@@ -110,7 +125,6 @@
     border: 2px solid #c4acd6;
 }
 
-/* === Field Group === */
 .AT-field-group {
     display: flex;
     flex-direction: column;
@@ -128,7 +142,6 @@
     font-size: 0.9rem;
 }
 
-/* === Input Styles === */
 .AT-field-box {
     background-color: #d9c6e3;
     padding: 12px 16px;
@@ -143,7 +156,7 @@
     outline: 2px solid #6d4a99;
 }
 
-/* === Submit Button === */
+/* Submit Button */
 .AT-submit-button {
     background-color: #441752;
     color: white;
@@ -155,13 +168,26 @@
     margin-top: 10px;
     align-self: flex-end;
     cursor: pointer;
+
 }
 
 .AT-submit-button:hover {
     background-color: #361240;
 }
 
-/* === Animations === */
+/* Back Button */
+.AT-back-button {
+    position: absolute;
+    left: 20px;
+    top: 30px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
