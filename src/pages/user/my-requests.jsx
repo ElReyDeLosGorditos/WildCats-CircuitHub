@@ -40,11 +40,12 @@ const MyRequests = () => {
   }, []);
 
   const filteredRequests = requests.filter((req) => {
-    const matchesSearch = req.itemName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (req.itemName || "").toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus =
-        statusFilter === "all" || req.status.toLowerCase() === statusFilter;
+        statusFilter === "all" || (req.status || "").toLowerCase() === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
 
   const formatDate = (timestamp) => {
     if (!timestamp) return "-";

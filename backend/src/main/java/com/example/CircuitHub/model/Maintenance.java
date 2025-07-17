@@ -1,76 +1,84 @@
 package com.example.CircuitHub.model;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDate;
 
+@JsonIgnoreProperties(ignoreUnknown = true) // ✅ Allows extra fields like scheduleDate
 public class Maintenance {
 
-    private int maintenanceId;
+    private String maintenanceId; // Firestore auto-generated ID
     private String equipmentName;
     private String issue;
-    private LocalDate requestDate;
-    private LocalDate scheduleDate;
-    private LocalDate completionDate;
-    private int technicianId;
-    private String status;
-    private String progress;
 
-    // Constructors
+    @JsonFormat(pattern = "yyyy-MM-dd") // ✅ Properly handles string date input from React
+    private LocalDate requestDate;
+
+    private String status;
+
+    // ✅ Default constructor (required for JSON deserialization)
     public Maintenance() {}
 
-    public Maintenance(int maintenanceId, String equipmentName, String issue,
-                       LocalDate requestDate, LocalDate scheduleDate, LocalDate completionDate,
-                       int technicianId, String status, String progress) {
-        this.maintenanceId = maintenanceId;
+    // ✅ Custom constructor
+    public Maintenance(String equipmentName, String issue, LocalDate requestDate, String status) {
         this.equipmentName = equipmentName;
         this.issue = issue;
         this.requestDate = requestDate;
-        this.scheduleDate = scheduleDate;
-        this.completionDate = completionDate;
-        this.technicianId = technicianId;
         this.status = status;
-        this.progress = progress;
     }
 
-    // Getters and Setters
+    // ✅ Getters and Setters
 
-    public int getMaintenanceId() { return maintenanceId; }
-    public void setMaintenanceId(int maintenanceId) { this.maintenanceId = maintenanceId; }
+    public String getMaintenanceId() {
+        return maintenanceId;
+    }
 
-    public String getEquipmentName() { return equipmentName; }
-    public void setEquipmentName(String equipmentName) { this.equipmentName = equipmentName; }
+    public void setMaintenanceId(String maintenanceId) {
+        this.maintenanceId = maintenanceId;
+    }
 
-    public String getIssue() { return issue; }
-    public void setIssue(String issue) { this.issue = issue; }
+    public String getEquipmentName() {
+        return equipmentName;
+    }
 
-    public LocalDate getRequestDate() { return requestDate; }
-    public void setRequestDate(LocalDate requestDate) { this.requestDate = requestDate; }
+    public void setEquipmentName(String equipmentName) {
+        this.equipmentName = equipmentName;
+    }
 
-    public LocalDate getScheduleDate() { return scheduleDate; }
-    public void setScheduleDate(LocalDate scheduleDate) { this.scheduleDate = scheduleDate; }
+    public String getIssue() {
+        return issue;
+    }
 
-    public LocalDate getCompletionDate() { return completionDate; }
-    public void setCompletionDate(LocalDate completionDate) { this.completionDate = completionDate; }
+    public void setIssue(String issue) {
+        this.issue = issue;
+    }
 
-    public int getTechnicianId() { return technicianId; }
-    public void setTechnicianId(int technicianId) { this.technicianId = technicianId; }
+    public LocalDate getRequestDate() {
+        return requestDate;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setRequestDate(LocalDate requestDate) {
+        this.requestDate = requestDate;
+    }
 
-    public String getProgress() { return progress; }
-    public void setProgress(String progress) { this.progress = progress; }
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    // ✅ Useful for logging
     @Override
     public String toString() {
         return "Maintenance{" +
-                "maintenanceId=" + maintenanceId +
+                "maintenanceId='" + maintenanceId + '\'' +
                 ", equipmentName='" + equipmentName + '\'' +
                 ", issue='" + issue + '\'' +
                 ", requestDate=" + requestDate +
-                ", scheduleDate=" + scheduleDate +
-                ", completionDate=" + completionDate +
-                ", technicianId=" + technicianId +
                 ", status='" + status + '\'' +
-                ", progress='" + progress + '\'' +
                 '}';
     }
 }

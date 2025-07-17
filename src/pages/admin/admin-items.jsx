@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import logo from "../../assets/circuithubLogo2.png";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 import "../../components/css/admin/admin-items.css";
@@ -70,8 +71,15 @@ const AdminManageItems = () => {
       <div className={`a ${selectedItem || showAddModal ? "modal-blurred" : ""}`}>
         <AdminHeader />
 
+        {/* Centered Container */}
         <div className="equipment-inventory-wrapper">
           <div className="equipment-inventory-container">
+            {/* Left Filters */}
+            <div className="equipment-category-sidebar">
+              <button className="category-btn active">All</button>
+            </div>
+
+            {/* Right Content */}
             <div className="equipment-list-section">
               <div className="inventory-header">
                 <h1 className="inventory-title">Equipment Inventory</h1>
@@ -83,6 +91,7 @@ const AdminManageItems = () => {
                 </button>
               </div>
 
+              {/* Search Bar */}
               <div className="inventory-search-bar">
                 <input
                     type="text"
@@ -128,6 +137,8 @@ const AdminManageItems = () => {
                           <p className="equipment-category">
                             {item.description || "No description provided."}
                           </p>
+                          <p className="equipment-category">{item.description}</p>
+                          <p className="equipment-quantity">Quantity: {item.quantity ?? "N/A"}</p>
                         </div>
                         <div className="equipment-status-section">
                           <p className="status-label">Borrow Status</p>
@@ -139,6 +150,9 @@ const AdminManageItems = () => {
                             {item.status === "Borrowed"
                                 ? "Not Available"
                                 : item.status}
+                        <p className="status-label">Borrow Status</p>
+                          <p className={`equipment-status ${item.status?.toLowerCase()}`}>
+                            {item.status === "Borrowed" ? "Not Available" : item.status}
                           </p>
                         </div>
                         <div className="equipment-edit-icon">

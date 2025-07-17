@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import logo from "../../assets/circuithubLogo2.png";
 import "../../admin.css"; // Ensure this has the added navbar fix!
 
@@ -18,29 +19,31 @@ const EquipmentMaintenance = () => {
         date: "",
     });
 
-    const maintenanceData = [
-        {
-            equipment: "Multimeter",
-            issue: "Weak or Dead battery.",
-            status: "In Progress",
-            progress: 60,
-        },
-        {
-            equipment: "Function Generator",
-            issue: "Output Voltage Fluctuation",
-            status: "Completed",
-            progress: 100,
-        },
-    ];
+    const [maintenanceData, setMaintenanceData] = useState([]);
+    const [pendingData, setPendingData] = useState([]);
 
-    const pendingData = [
-        {
-            equipment: "Soldering Station",
-            issue: "Heating Element Failure",
-            status: "Pending Approval",
-            date: "2025-03-26",
-        },
-    ];
+    // Comment sa kay la pay gamit
+    // useEffect(() => {
+    //     // Fetch all maintenance data
+    //     axios
+    //         .get("http://localhost:8080/api/maintenance/all")
+    //         .then((response) => {
+    //             setMaintenanceData(response.data);
+    //         })
+    //         .catch((error) => {
+    //             console.error("Error fetching maintenance data:", error);
+    //         });
+    //
+    //     // Fetch pending maintenance requests
+    //     axios
+    //         .get("http://localhost:8080/api/maintenance/pending")
+    //         .then((response) => {
+    //             setPendingData(response.data);
+    //         })
+    //         .catch((error) => {
+    //             console.error("Error fetching pending data:", error);
+    //         });
+    // }, []);
 
     const handleOpenForm = (mode, data = null) => {
         setFormMode(mode);
@@ -59,12 +62,88 @@ const EquipmentMaintenance = () => {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const filteredMaintenance = maintenanceData.filter((item) =>
-        item.equipment.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    const filteredPending = pendingData.filter((item) =>
-        item.equipment.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Log the form data before sending
+        console.log("Form Data Before Submit:", formData);
+
+        // Create a clean object to only send 'equipmentName', 'issue', 'status', and 'date'
+        const requestData = {
+            equipmentName: formData.equipment,  // Map 'equipment' to 'equipmentName'
+            issue: formData.issue,
+            status: formData.status,
+            requestDate: formData.date,
+            scheduleDate: formData.date,
+        };
+
+        // Log the cleaned data that will be sent
+        console.log("Data Sent to Backend:", requestData);
+
+        if (formMode === "add") {
+            // Add new maintenance request
+            axios
+                .post("http://localhost:8080/api/maintenance/request", requestData)
+                .then((response) => {
+                    alert("Maintenance request submitted successfully!");
+                    setShowForm(false);
+                    setFormData({ equipment: "", issue: "", status: "", date: "" });
+                })
+                .catch((error) => {
+                    alert("Failed to submit the maintenance request.");
+                    console.error(error);
+                });
+        } else if (formMode === "edit") {
+            const maintenanceId = formData.id;
+            axios
+                .put(
+                    `http://localhost:8080/api/maintenance/${maintenanceId}/update-progress`,
+                    null,
+                    {
+                        params: { status: formData.status, progress: formData.progress },
+                    }
+                )
+                .then((response) => {
+                    alert("Maintenance request updated successfully!");
+                    setShowForm(false);
+                })
+                .catch((error) => {
+                    alert("Failed to update maintenance request.");
+                    console.error(error);
+                });
+        }
+    };
+
+    const handleDelete = (id) => {
+        // Validate that id is not null or undefined
+        if (id !== undefined && id !== null) {
+            axios
+                .delete(`http://localhost:8080/api/maintenance/${id}`)
+                .then((response) => {
+                    alert("Maintenance request deleted!");
+                    // Remove from state to update the table
+                    setMaintenanceData(maintenanceData.filter((item) => item.id !== id));
+                })
+                .catch((error) => {
+                    alert("Failed to delete maintenance request.");
+                    console.error(error);
+                });
+        } else {
+            console.error("Invalid ID:", id);
+        }
+    };
+
+    const filteredMaintenance = maintenanceData.filter((item) => {
+        const equipment = item.equipment ? item.equipment.toLowerCase() : '';
+        const searchTerm = searchQuery ? searchQuery.toLowerCase() : '';
+        return equipment.includes(searchTerm);
+    });
+
+    const filteredPending = pendingData.filter((item) => {
+        const equipment = item.equipment ? item.equipment.toLowerCase() : '';
+        const searchTerm = searchQuery ? searchQuery.toLowerCase() : '';
+        return equipment.includes(searchTerm);
+    });
 
     return (
         <div className="admin-dashboard">
@@ -127,7 +206,11 @@ const EquipmentMaintenance = () => {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <button className="add-item-btn" onClick={() => handleOpenForm("add")}>
+                        <button
+                            className="add-item-btn"
+                            style={{ marginTop: 15, marginBottom: 15 }}
+                            onClick={() => handleOpenForm("add")}
+                        >
                             Add Request
                         </button>
                     </div>
@@ -143,7 +226,6 @@ const EquipmentMaintenance = () => {
                                 <th>Issue</th>
                                 <th>Status</th>
                                 <th>Actions</th>
-
                             </tr>
                             </thead>
                             <tbody>
@@ -156,18 +238,17 @@ const EquipmentMaintenance = () => {
                                         <button
                                             className="edit-btn"
                                             onClick={() => handleOpenForm("edit", item)}
-                                            style={{marginRight: "10px"}}
+                                            style={{ marginRight: "10px" }}
                                         >
                                             ✏️
                                         </button>
                                         <button
                                             className="delete-btn"
-                                            onClick={() => console.log("Delete logic here")}
+                                            onClick={() => handleDelete(item.id)}
                                         >
                                             🗑️
                                         </button>
                                     </td>
-
                                 </tr>
                             ))}
                             </tbody>
@@ -209,8 +290,6 @@ const EquipmentMaintenance = () => {
                 {showForm && (
                     <div className="modal-overlay">
                         <div className="modal-content">
-
-                            {/* Exit button inside the white box */}
                             <button
                                 className="modal-exit-btn"
                                 onClick={() => setShowForm(false)}
@@ -261,24 +340,51 @@ const EquipmentMaintenance = () => {
                                         name="date"
                                         value={formData.date}
                                         onChange={handleChange}
+                                        min={new Date().toISOString().split("T")[0]} // today
+                                        max={new Date(new Date().setMonth(new Date().getMonth() + 5))
+                                            .toISOString()
+                                            .split("T")[0]}
                                     />
                                 </label>
 
                                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
                                     {formMode === "edit" && (
-                                        <button className="delete-btn" onClick={() => setShowForm(false)}>
+                                        <button
+                                            className="submit-btn"
+                                            style={{ backgroundColor: "red", padding: 15 }}
+                                            onClick={() => setShowForm(false)}
+                                        >
                                             Remove
                                         </button>
                                     )}
-                                    <button className="submit-btn" onClick={() => setShowForm(false)}>
-                                        {formMode === "add" ? "Add" : "Update"}
-                                    </button>
+                                    {formMode === "add" ? (
+                                        <button
+                                            className="submit-btn"
+                                            style={{
+                                                padding: '15px',
+                                                width: '180px',
+                                                display: 'block',
+                                                margin: '0 auto',
+                                                marginTop: '20px',
+                                            }}
+                                            onClick={handleSubmit}
+                                        >
+                                            Add
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="submit-btn"
+                                            style={{ padding: '15px' }}
+                                            onClick={handleSubmit}
+                                        >
+                                            Update
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
                 )}
-
             </div>
         </div>
     );

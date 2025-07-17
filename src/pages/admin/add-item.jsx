@@ -6,13 +6,16 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "../../components/css/admin/add-item.css";
 
 const AddItem = () => {
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
   const [itemCondition, setItemCondition] = useState("Good");
   const [itemImage, setItemImage] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState("");
+  const [itemQuantity, setItemQuantity] = useState(1);
 
   const handleImageChange = (e) => {
     setItemImage(e.target.files[0]);
@@ -41,6 +44,7 @@ const AddItem = () => {
         condition: itemCondition,
         imagePath: imageUrl,
         status: "Available",
+        quantity: itemQuantity,
         createdAt: new Date(),
       });
 
@@ -110,16 +114,34 @@ const AddItem = () => {
                       <option value="Poor">Poor</option>
                     </select>
                   </div>
+            <label>
+              Condition:
+              <select
+                  value={itemCondition}
+                  onChange={(e) => setItemCondition(e.target.value)}
+              >
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+              </select>
+            </label>
 
-                  <div className="AT-field-group large">
-                    <label>Description</label>
-                    <textarea
-                        className="AT-field-box"
-                        value={itemDescription}
-                        onChange={(e) => setItemDescription(e.target.value)}
-                        placeholder="Enter item description..."
-                    />
-                  </div>
+            <label>
+              Quantity:
+              <input
+                  type="number"
+                  value={itemQuantity}
+                  onChange={(e) => setItemQuantity(parseInt(e.target.value))}
+                  min={1}
+                  placeholder="Enter quantity..."
+                  required
+              />
+            </label>
+
+            <label>
+              Upload Image:
+              <input type="file" accept="image/*" onChange={handleImageChange}/>
+            </label>
 
                   <button type="submit" className="AT-submit-button">Add Item</button>
                   {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}

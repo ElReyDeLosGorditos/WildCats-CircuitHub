@@ -21,6 +21,7 @@ const AdminEditItem = () => {
   const [itemStatus, setItemStatus] = useState("Available");
   const [itemImage, setItemImage] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState("");
+  const [itemQuantity, setItemQuantity] = useState(1);
 
   // Fetch item details
   useEffect(() => {
@@ -35,6 +36,7 @@ const AdminEditItem = () => {
           setItemCondition(data.condition || "Good");
           setItemStatus(data.status || "Available");
           setExistingImageUrl(data.imagePath || "");
+          setItemQuantity(data.quantity || 1);
         } else {
           alert("Item not found.");
           navigate("/admin-items");
@@ -70,6 +72,7 @@ const AdminEditItem = () => {
         description: itemDescription,
         condition: itemCondition,
         status: itemStatus,
+        quantity: itemQuantity,
         imagePath: imageUrl,
         updatedAt: serverTimestamp(),
       });
@@ -121,27 +124,27 @@ const AdminEditItem = () => {
           <label>
             Item Name:
             <input
-              type="text"
-              value={itemName}
-              onChange={(e) => setItemName(e.target.value)}
-              required
+                type="text"
+                value={itemName}
+                onChange={(e) => setItemName(e.target.value)}
+                required
             />
           </label>
 
           <label>
             Description:
             <textarea
-              value={itemDescription}
-              onChange={(e) => setItemDescription(e.target.value)}
-              required
+                value={itemDescription}
+                onChange={(e) => setItemDescription(e.target.value)}
+                required
             />
           </label>
 
           <label>
             Condition:
             <select
-              value={itemCondition}
-              onChange={(e) => setItemCondition(e.target.value)}
+                value={itemCondition}
+                onChange={(e) => setItemCondition(e.target.value)}
             >
               <option value="Good">Good</option>
               <option value="Fair">Fair</option>
@@ -150,10 +153,21 @@ const AdminEditItem = () => {
           </label>
 
           <label>
+            Quantity:
+            <input
+                type="number"
+                value={itemQuantity}
+                onChange={(e) => setItemQuantity(parseInt(e.target.value))}
+                min={1}
+                required
+            />
+          </label>
+
+          <label>
             Status:
             <select
-              value={itemStatus}
-              onChange={(e) => setItemStatus(e.target.value)}
+                value={itemStatus}
+                onChange={(e) => setItemStatus(e.target.value)}
             >
               <option value="Available">Available</option>
               <option value="Borrowed">Borrowed</option>
@@ -163,17 +177,17 @@ const AdminEditItem = () => {
           <label>
             Upload New Image:
             <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
             />
           </label>
 
           {existingImageUrl && (
-            <div style={{ marginBottom: "10px" }}>
-              <strong>Current Image:</strong><br />
-              <img src={existingImageUrl} alt="Current" style={{ maxWidth: "150px", marginTop: "5px" }} />
-            </div>
+              <div style={{marginBottom: "10px"}}>
+                <strong>Current Image:</strong><br/>
+                <img src={existingImageUrl} alt="Current" style={{maxWidth: "150px", marginTop: "5px"}}/>
+              </div>
           )}
 
           <button type="submit" className="submit-btn">Update Item</button>
