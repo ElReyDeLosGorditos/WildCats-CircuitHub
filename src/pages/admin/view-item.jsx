@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
-import { db ,storage } from "../../firebaseconfig";
 import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebaseconfig";
 import "../../components/css/admin/view-item.css";
-import AdminHeader from "./AdminHeader"; // ✅ corrected path
+import AdminHeader from "./AdminHeader";
 
 const AdminViewItem = ({ id }) => {
   const [item, setItem] = useState(null);
@@ -35,38 +34,42 @@ const AdminViewItem = ({ id }) => {
   if (error || !item) return <p>{error || "Item not found"}</p>;
 
   return (
-      <div className="vt-item-card">
-        <div className="vt-card-header">
-          <h2 className="vt-page-title">Equipment Details</h2>
+      <div className="admin-items-item-card">
+        <div className="admin-items-card-header">
+          <h2 className="admin-items-page-title">Equipment Details</h2>
         </div>
 
-        <div className="vt-item-content">
-          <div className="vt-image-container">
+        <div className="admin-items-item-content">
+          <div className="admin-items-image-container">
             <img
                 src={item.imagePath?.startsWith("http") ? item.imagePath : `http://localhost:8080/${item.imagePath}`}
                 alt={item.name}
-                className="vt-equipment-image"
+                className="admin-items-equipment-image"
                 onError={(e) => { e.target.src = "https://via.placeholder.com/150"; }}
             />
           </div>
-          <div className="vt-info-fields">
-            <div className="vt-field-group">
+
+          <div className="admin-items-info-fields">
+            <div className="admin-items-field-group">
               <label>Equipment Name</label>
-              <div className="vt-field-box">{item.name}</div>
+              <div className="admin-items-field-box">{item.name}</div>
             </div>
-            <div className="vt-field-group">
+            <div className="admin-items-field-group">
               <label>Condition</label>
-              <div className="vt-field-box">{item.condition}</div>
+              <div className="admin-items-field-box">{item.condition}</div>
             </div>
-            <div className="vt-field-group large">
+            <div className="admin-items-field-group">
+              <label>Quantity</label>
+              <div className="admin-items-field-box">{item.quantity}</div>
+            </div>
+            <div className="admin-items-field-group large">
               <label>Description</label>
-              <div className="vt-field-box">{item.description}</div>
+              <div className="admin-items-field-box">{item.description}</div>
             </div>
           </div>
         </div>
       </div>
   );
-
 };
 
 export default AdminViewItem;

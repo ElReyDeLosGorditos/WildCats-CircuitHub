@@ -1,26 +1,26 @@
 /* --- Page Layout --- */
-.a {
+.admin-items-container {
     background-color: #8f79a9;
     min-height: 100vh;
     padding-bottom: 60px;
 }
 
 /* --- Inventory Container --- */
-.equipment-inventory-wrapper {
+.items-inventory-wrapper {
     padding: 30px 20px;
     display: flex;
     justify-content: center;
+    background-color: #8f79a9;
 }
 
-.equipment-inventory-container {
+.items-inventory-container {
     display: flex;
     gap: 30px;
-    width: 60%; /* centered with margins */
-
+    width: 60%;
 }
 
 /* --- Main Content --- */
-.equipment-list-section {
+.items-list-section {
     flex: 1;
 }
 
@@ -45,7 +45,6 @@
     border: none;
     border-radius: 6px;
     font-weight: 600;
-    text-decoration: none;
     transition: background-color 0.2s;
 }
 
@@ -69,22 +68,20 @@
     background-color: #fff;
 }
 
-/* --- Equipment List --- */
-.equipment-list {
+/* --- Items List --- */
+.items-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
     align-items: center;
-    flex-shrink: 0;
 }
 
-.equipment-card-link {
+.items-card-link {
     text-decoration: none;
     color: inherit;
-    flex-shrink: 0;
 }
 
-.qequipment-card {
+.items-card {
     display: flex;
     background-color: #fafafa;
     border-radius: 12px;
@@ -93,12 +90,11 @@
     height: 120px;
     gap: 16px;
     width: 100%;
-    max-width: 900px; /* Controls horizontal size */
-    flex-shrink: 0;
+    max-width: 900px;
 }
 
 /* Image Section */
-.equipment-image {
+.items-image {
     width: 80px;
     height: 80px;
     object-fit: contain;
@@ -106,25 +102,24 @@
     flex-shrink: 0;
 }
 
-/* Equipment Details - 60% */
-.equipment-details {
+/* Details */
+.items-details {
     width: 60%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 4px;
-
 }
 
-.equipment-details h3 {
+.items-details h3 {
     font-size: 18px;
     font-weight: bold;
     color: #000000;
     margin: 0;
 }
 
-.equipment-category {
-    color: #979797;
+.items-description {
+    color: #000000;
     font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
@@ -133,8 +128,13 @@
     margin: 0;
 }
 
-/* Status Section - 30% */
-.equipment-status-section {
+.items-quantity {
+    color: #000000;
+    font-size: 14px;
+}
+
+/* Status Section */
+.items-status-section {
     width: 30%;
     display: flex;
     flex-direction: column;
@@ -151,21 +151,21 @@
     font-weight: bold;
 }
 
-.equipment-status {
+.items-status {
     font-size: 14px;
     font-weight: 500;
 }
 
-.equipment-status.available {
+.items-status.available {
     color: #006c13;
 }
 
-.equipment-status.borrowed {
+.items-status.borrowed {
     color: #ffd6d6;
 }
 
-/* Edit Icon - 10% */
-.equipment-edit-icon {
+/* Edit Icon */
+.items-edit-icon {
     width: 10%;
     display: flex;
     align-items: center;
@@ -173,7 +173,7 @@
     border-left: 2px solid rgb(0, 0, 0);
 }
 
-.equipment-edit-icon button {
+.items-edit-icon button {
     background: none;
     border: none;
     cursor: pointer;
@@ -181,11 +181,11 @@
     color: #fff;
 }
 
-.equipment-edit-icon button:hover {
+.items-edit-icon button:hover {
     color: #ddd;
 }
 
-/* --- Modal --- */
+/* --- Modal Styling --- */
 .admin-item-modal-overlay {
     position: fixed;
     top: 0;
@@ -248,15 +248,11 @@
 .admin-item-no-btn:hover {
     background-color: #5a6268;
 }
-/* 🔆 When popup is active, blur the background */
-.blurred-background {
-    filter: blur(5px);
-    pointer-events: none; /* Prevents interaction with the background */
-    user-select: none;
-    transition: filter 0.3s ease-in-out;
-}
 
-/* 🔆 Modal overlay stays sharp and functional */
+/* 🔆 Blur effect when modal is active */
+
+
+/* 🔆 Modal popup overlay */
 .popup-modal-overlay {
     position: fixed;
     top: 0;
@@ -268,7 +264,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(3px); /* extra depth */
+    backdrop-filter: blur(3px);
     animation: fadeIn 0.5s ease;
 }
 

@@ -1,205 +1,153 @@
-/* Overlay */
-.popup-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(30, 0, 50, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    animation: fadeIn 0.5s ease forwards;
-    backdrop-filter: blur(2px);
-}
-
-.popup-modal-content {
-    animation: popUp 0.5s ease forwards;
-}
-
-/* Modal container */
 .AT-item-card {
+    background-color: #54415a;
     width: 60vw;
     height: 80vh;
-    background-color: #a283bc;
-    font-family: 'Segoe UI', sans-serif;
     border-radius: 16px;
-    padding: 30px;
     display: flex;
     flex-direction: column;
-    position: relative;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* Header */
 .AT-card-header {
+    padding: 18px 30px;
+    background-color: #a888b5;
+    color: #f0f0f0;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    justify-content: center;
 }
 
 .AT-page-title {
     font-size: 24px;
-    color: #f0f0f0;
     font-weight: bold;
+    margin: 0;
 }
 
-/* Layout */
 .AT-item-content {
     display: flex;
     flex: 1;
-    gap: 30px;
-    overflow-y: auto;
+    padding: 30px;
+    gap: 10px;
+    background-color: #a888b5;
+    border-radius: 0 0 16px 16px;
 }
 
-/* Image */
+/* Image Upload Section */
 .AT-image-container {
-    flex: 0 0 280px;
-    background-color: rgba(109, 74, 153, 0);
-    padding: 20px;
-    border-radius: 20px;
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.AT-equipment-image {
-    max-width: 100%;
-    max-height: 250px;
-    object-fit: contain;
     border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    margin: 5% 0 15% 5%;
+    background-color: rgba(146, 114, 161, 0.1);
 }
 
-/* Label Preview */
 .AT-image-label {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    cursor: pointer;
-    color: #000;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+    gap: 8px;
     text-align: center;
 }
 
-.AT-image-icon {
-    font-size: 48px;
+.AT-equipment-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
 }
 
-.AT-image-text {
-    font-size: 16px;
-    font-weight: bold;
+.AT-image-icon {
+    font-size: 28px;
 }
 
 .AT-file-input {
     display: none;
 }
 
-/* Info Fields */
+/* Form Fields */
 .AT-info-fields {
-    flex: 1;
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AT-item-form {
+    width: 80%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding-right: 5px;
-    scrollbar-width: thin;
-    scrollbar-color: #6d4a99 #c4acd6;
+    gap: 16px;
 }
 
-.AT-info-fields::-webkit-scrollbar {
-    width: 8px;
+/* Error message animation */
+.AT-error-slide {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    text-align: center;
+    animation: slideDownFade 0.4s ease-out;
 }
 
-.AT-info-fields::-webkit-scrollbar-track {
-    background: #c4acd6;
-    border-radius: 10px;
-}
-
-.AT-info-fields::-webkit-scrollbar-thumb {
-    background-color: #6d4a99;
-    border-radius: 10px;
-    border: 2px solid #c4acd6;
+@keyframes slideDownFade {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0px);
+        opacity: 1;
+    }
 }
 
 .AT-field-group {
     display: flex;
     flex-direction: column;
-    gap: 5px;
 }
 
-.AT-field-group.large .AT-field-box {
-    height: 150px;
-    resize: vertical;
-}
-
-.AT-field-group label {
-    font-weight: bold;
-    color: #1e1e1e;
-    font-size: 0.9rem;
+.AT-field-group.large textarea {
+    height: 100px;
 }
 
 .AT-field-box {
-    background-color: #d9c6e3;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 1rem;
-    color: #1e1e1e;
+    background-color: #e6d2ee;
     border: none;
-    font-family: 'Segoe UI', sans-serif;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #4a2b58;
 }
 
-.AT-field-box:focus {
-    outline: 2px solid #6d4a99;
+.AT-field-box::placeholder {
+    color: #a077b1;
 }
 
-/* Submit Button */
 .AT-submit-button {
-    background-color: #441752;
-    color: white;
+    background-color: #6d3d8e;
+    color: #fff;
     border: none;
-    padding: 12px 20px;
-    font-weight: 600;
-    border-radius: 10px;
-    font-size: 1rem;
-    margin-top: 10px;
-    align-self: flex-end;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
     cursor: pointer;
-
+    transition: background-color 0.3s ease;
+    align-self: flex-end;
+    width: 90px;
 }
 
 .AT-submit-button:hover {
-    background-color: #361240;
-}
-
-/* Back Button */
-.AT-back-button {
-    position: absolute;
-    left: 20px;
-    top: 30px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes popUp {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    background-color: #542f71;
 }

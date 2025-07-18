@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import logo from "../../assets/circuithubLogo2.png";
+import { useNavigate } from "react-router-dom";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 import "../../components/css/admin/admin-items.css";
 import AdminHeader from "./AdminHeader";
 import AdminViewItem from "./view-item.jsx";
-import AddItem from "./add-item.jsx"; // ✅ Add Item Modal Component
+import AddItem from "./add-item.jsx";
+import AdminEditItem from "./edit-item.jsx";
 
 const AdminManageItems = () => {
   const navigate = useNavigate();
@@ -16,32 +16,33 @@ const AdminManageItems = () => {
   const [items, setItems] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(null); // View Item Modal
-  const [showAddModal, setShowAddModal] = useState(false); // ✅ Add Item Modal
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
-  // ✅ Apply blur + lock scroll
+  // Toggle background blur when any modal is open
   useEffect(() => {
-    if (selectedItem || showAddModal) {
-      document.body.classList.add("modal-open");
-    } else {
-      document.body.classList.remove("modal-open");
+    document.body.classList.toggle(
+        "modal-open",
+        selectedItem || showAddModal || editItem
+    );
+  }, [selectedItem, showAddModal, editItem]);
+
+  // Fetch items from Firebase
+  const fetchItems = async () => {
+    try {
+      const snapshot = await getDocs(collection(db, "items"));
+      const itemList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setItems(itemList);
+    } catch (error) {
+      console.error("Error fetching items:", error);
     }
-  }, [selectedItem, showAddModal]);
+  };
 
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, "items"));
-        const itemList = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setItems(itemList);
-      } catch (error) {
-        console.error("Error fetching items:", error);
-      }
-    };
-
     fetchItems();
   }, []);
 
@@ -68,30 +69,19 @@ const AdminManageItems = () => {
   };
 
   return (
-      <div className={`a ${selectedItem || showAddModal ? "modal-blurred" : ""}`}>
+      <div className={`admin-items-container ${selectedItem || showAddModal || editItem ? "modal-blurred" : ""}`}>
         <AdminHeader />
 
-        {/* Centered Container */}
-        <div className="equipment-inventory-wrapper">
-          <div className="equipment-inventory-container">
-            {/* Left Filters */}
-            <div className="equipment-category-sidebar">
-              <button className="category-btn active">All</button>
-            </div>
-
-            {/* Right Content */}
-            <div className="equipment-list-section">
+        <div className="items-inventory-wrapper">
+          <div className="items-inventory-container">
+            <div className="items-list-section">
               <div className="inventory-header">
                 <h1 className="inventory-title">Equipment Inventory</h1>
-                <button
-                    className="add-item-btn"
-                    onClick={() => setShowAddModal(true)}
-                >
+                <button className="add-item-btn" onClick={() => setShowAddModal(true)}>
                   Add Equipment
                 </button>
               </div>
 
-              {/* Search Bar */}
               <div className="inventory-search-bar">
                 <input
                     type="text"
@@ -111,14 +101,10 @@ const AdminManageItems = () => {
                 </select>
               </div>
 
-              <div className="equipment-list">
+              <div className="items-list">
                 {filteredItems.map((item) => (
-                    <div
-                        key={item.id}
-                        className="equipment-card-link"
-                        onClick={() => setSelectedItem(item)} // View modal
-                    >
-                      <div className="qequipment-card">
+                    <div key={item.id} className="items-card-link" onClick={() => setSelectedItem(item)}>
+                      <div className="items-card">
                         <img
                             src={
                               item.imagePath?.startsWith("http")
@@ -126,41 +112,29 @@ const AdminManageItems = () => {
                                   : `https://ccs-gadgethubb.onrender.com${item.imagePath}`
                             }
                             alt={item.name}
-                            className="equipment-image"
+                            className="items-image"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = "https://via.placeholder.com/150";
                             }}
                         />
-                        <div className="equipment-details">
+                        <div className="items-details">
                           <h3>{item.name || "Unnamed Item"}</h3>
-                          <p className="equipment-category">
-                            {item.description || "No description provided."}
-                          </p>
-                          <p className="equipment-category">{item.description}</p>
-                          <p className="equipment-quantity">Quantity: {item.quantity ?? "N/A"}</p>
+                          <p className="items-description">{item.description || "No description provided."}</p>
+                          <p className="items-quantity">Quantity: {item.quantity}</p>
                         </div>
-                        <div className="equipment-status-section">
+                        <div className="items-status-section">
                           <p className="status-label">Borrow Status</p>
-                          <p
-                              className={`equipment-status ${
-                                  item.status?.toLowerCase() || ""
-                              }`}
-                          >
-                            {item.status === "Borrowed"
-                                ? "Not Available"
-                                : item.status}
-                        <p className="status-label">Borrow Status</p>
-                          <p className={`equipment-status ${item.status?.toLowerCase()}`}>
+                          <p className={`items-status ${item.status?.toLowerCase()}`}>
                             {item.status === "Borrowed" ? "Not Available" : item.status}
                           </p>
                         </div>
-                        <div className="equipment-edit-icon">
+                        <div className="items-edit-icon">
                           <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                navigate(`/edit-item/${item.id}`);
+                                setEditItem(item);
                               }}
                           >
                             ✏️
@@ -174,21 +148,16 @@ const AdminManageItems = () => {
           </div>
         </div>
 
-        {/* ❌ Delete Modal */}
+        {/* Delete Modal */}
         {showDeleteModal && (
             <div className="admin-item-modal-overlay">
               <div className="admin-item-modal">
-                <p className="admin-item-modal-message">
-                  Are you sure you want to delete this item?
-                </p>
+                <p className="admin-item-modal-message">Are you sure you want to delete this item?</p>
                 <div className="admin-item-modal-buttons">
                   <button className="admin-item-yes-btn" onClick={confirmDelete}>
                     Yes
                   </button>
-                  <button
-                      className="admin-item-no-btn"
-                      onClick={() => setShowDeleteModal(false)}
-                  >
+                  <button className="admin-item-no-btn" onClick={() => setShowDeleteModal(false)}>
                     No
                   </button>
                 </div>
@@ -196,32 +165,41 @@ const AdminManageItems = () => {
             </div>
         )}
 
-        {/* ✅ View Modal */}
+        {/* View Modal */}
         {selectedItem && (
-            <div
-                className="popup-modal-overlay"
-                onClick={() => setSelectedItem(null)}
-            >
-              <div
-                  className="popup-modal-content"
-                  onClick={(e) => e.stopPropagation()}
-              >
+            <div className="popup-modal-overlay" onClick={() => setSelectedItem(null)}>
+              <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
                 <AdminViewItem id={selectedItem.id} />
               </div>
             </div>
         )}
 
-        {/* ✅ Add Item Modal */}
+        {/* Add Modal */}
         {showAddModal && (
-            <div
-                className="popup-modal-overlay"
-                onClick={() => setShowAddModal(false)}
-            >
-              <div
-                  className="popup-modal-content"
-                  onClick={(e) => e.stopPropagation()}
-              >
-                <AddItem closeModal={() => setShowAddModal(false)} />
+            <div className="popup-modal-overlay" onClick={() => {
+              setShowAddModal(false);
+              fetchItems(); // refresh list after modal closes
+            }}>
+              <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
+                <AddItem closeModal={() => {
+                  setShowAddModal(false);
+                  fetchItems();
+                }} />
+              </div>
+            </div>
+        )}
+
+        {/* Edit Modal */}
+        {editItem && (
+            <div className="popup-modal-overlay" onClick={() => {
+              setEditItem(null);
+              fetchItems(); // refresh list after modal closes
+            }}>
+              <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
+                <AdminEditItem id={editItem.id} closeModal={() => {
+                  setEditItem(null);
+                  fetchItems();
+                }} />
               </div>
             </div>
         )}
