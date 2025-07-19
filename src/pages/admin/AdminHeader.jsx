@@ -3,10 +3,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/circuithubLogo2.png"; // update this path as needed
 import "../../components/css/admin/admin-header.css";
 
+// Now includes Maintenance link
 const navLinks = [
     { label: "Dashboard", to: "/admin-dashboard" },
     { label: "Manage Items", to: "/admin-items" },
     { label: "Requests", to: "/admin-requests" },
+    { label: "Maintenance", to: "/equipment-maintenance" },
     { label: "Manage Users", to: "/admin-users" },
 ];
 
@@ -24,7 +26,7 @@ const AdminHeader = () => {
                         to={link.to}
                         className={
                             location.pathname === link.to
-                                ? "head-link head-link"
+                                ? "head-link active-link"
                                 : "head-link"
                         }
                     >
@@ -37,7 +39,6 @@ const AdminHeader = () => {
             </div>
         </div>
     );
-
 };
 
 export default AdminHeader;
