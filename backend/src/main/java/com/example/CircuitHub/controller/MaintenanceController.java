@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -58,13 +59,15 @@ public class MaintenanceController {
     // Update status and progress
     @PutMapping("/{id}/update-progress")
     public ResponseEntity<String> updateProgress(
-            @PathVariable String id,  // ID is now a String (Firestore auto-generated ID)
+            @PathVariable String id,
+            @RequestParam String equipmentName,
+            @RequestParam String issue,
             @RequestParam String status,
-            @RequestParam String progress) {
+            @RequestParam String requestDate) {
 
-        boolean updated = maintenanceService.updateProgress(id, status, progress);
+        boolean updated = maintenanceService.updateProgress(id, equipmentName, issue, status, requestDate);
         if (updated) {
-            return ResponseEntity.ok("Progress updated successfully.");
+            return ResponseEntity.ok("Maintenance record updated successfully.");
         } else {
             return ResponseEntity.notFound().build();
         }

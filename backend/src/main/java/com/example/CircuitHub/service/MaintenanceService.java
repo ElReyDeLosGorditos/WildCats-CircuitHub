@@ -26,17 +26,20 @@ public class MaintenanceService {
             throw new IllegalArgumentException("Equipment name is required");
         }
 
-        maintenance.setStatus("Pending");
+        maintenance.setStatus(maintenance.getStatus() != null ? maintenance.getStatus() : "Pending");
+
+        // 🔧 Create document reference to get ID first
+        DocumentReference ref = firestore.collection("maintenance").document();
+        String generatedId = ref.getId();
+        maintenance.setMaintenanceId(generatedId);
 
         Map<String, Object> data = new HashMap<>();
+        data.put("maintenanceId", generatedId); // ✅ Save it in Firestore
         data.put("equipmentName", maintenance.getEquipmentName());
         data.put("issue", maintenance.getIssue());
         data.put("status", maintenance.getStatus());
-
-        // 🔧 Format LocalDate to String
         data.put("requestDate", maintenance.getRequestDate().toString());
 
-        DocumentReference ref = firestore.collection("maintenance").document();
         ApiFuture<WriteResult> future = ref.set(data);
         try {
             future.get();
@@ -44,7 +47,6 @@ public class MaintenanceService {
             throw new RuntimeException("Error saving maintenance request: " + e.getMessage(), e);
         }
 
-        maintenance.setMaintenanceId(ref.getId());
         return maintenance;
     }
 
@@ -61,7 +63,7 @@ public class MaintenanceService {
         return future.get().toObjects(Maintenance.class);
     }
 
-    public boolean updateProgress(String maintenanceId, String status, String progress) {
+    public boolean updateProgress(String maintenanceId, String equipmentName, String issue, String status, String requestDate) {
         DocumentReference ref = firestore.collection("maintenance").document(maintenanceId);
         ApiFuture<DocumentSnapshot> future = ref.get();
         try {
@@ -71,15 +73,17 @@ public class MaintenanceService {
             }
 
             Map<String, Object> updates = new HashMap<>();
+            updates.put("equipmentName", equipmentName);
+            updates.put("issue", issue);
             updates.put("status", status);
-            updates.put("progress", progress);
+            updates.put("requestDate", requestDate);
 
             ApiFuture<WriteResult> updateFuture = ref.update(updates);
             updateFuture.get();
 
             return true;
         } catch (Exception e) {
-            throw new RuntimeException("Error updating maintenance progress: " + e.getMessage(), e);
+            throw new RuntimeException("Error updating maintenance record: " + e.getMessage(), e);
         }
     }
 
