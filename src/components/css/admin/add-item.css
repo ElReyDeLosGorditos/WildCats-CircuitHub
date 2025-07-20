@@ -1,166 +1,153 @@
-/* --- Main Page Container --- */
-.add-item-page {
-    min-height: 100vh;
-    background-color: #F5F6FA;
-    padding-bottom: 50px;
-}
-
-/* --- Navbar Styles --- */
-.navbar {
-    display: flex;
-    align-items: center;
-    padding: 12px 20px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #ddd;
-    gap: 20px;
-}
-
-.navbar img {
-    height: 40px;
-}
-
-.navbar-link {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-}
-
-.navbar-link:hover {
-    background-color: #f0f0f0;
-}
-
-.active-link {
-    background-color: #213547;
-    color: white;
-}
-
-.logout-link {
-    text-decoration: none;
-    color: #dc3545;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-}
-
-.logout-link:hover {
-    background-color: #f8d7da;
-}
-
-/* --- Back Arrow --- */
-.back-arrow {
-    display: inline-block;
-    margin: 20px 0;
-    font-size: 20px;
-    color: #333;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.back-arrow:hover {
-    color: #007bff;
-}
-
-/* --- Form Container --- */
-.add-item-container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
-}
-
-.add-item-container h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    font-size: 26px;
-    color: #213547;
-}
-
-/* --- Form Styles --- */
-.add-item-form {
+.AT-item-card {
+    background-color: #54415a;
+    width: 60vw;
+    height: 80vh;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-.add-item-form label {
-    font-weight: 600;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    font-size: 15px;
-}
-
-.add-item-form input[type="text"],
-.add-item-form textarea,
-.add-item-form select,
-.add-item-form input[type="file"] {
-    margin-top: 8px;
-    padding: 10px 12px;
-    font-size: 14px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    resize: vertical;
-}
-
-.add-item-form textarea {
-    min-height: 100px;
-}
-
-/* --- Submit Button --- */
-.submit-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s;
-}
-
-.submit-btn:hover {
-    background-color: #0056b3;
-}
-
-/* --- Modal Styles --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.45);
+.AT-card-header {
+    padding: 18px 30px;
+    background-color: #a888b5;
+    color: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
 }
 
-.modal-content {
-    background-color: #fff;
-    padding: 25px 30px;
-    border-radius: 10px;
+.AT-page-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.AT-item-content {
+    display: flex;
+    flex: 1;
+    padding: 30px;
+    gap: 10px;
+    background-color: #a888b5;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Image Upload Section */
+.AT-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    margin: 5% 0 15% 5%;
+    background-color: rgba(146, 114, 161, 0.1);
+}
+
+.AT-image-label {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+    gap: 8px;
     text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-.modal-link {
-    display: inline-block;
-    margin-top: 12px;
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
+.AT-equipment-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
 }
 
-.modal-link:hover {
-    color: #0056b3;
+.AT-image-icon {
+    font-size: 28px;
+}
+
+.AT-file-input {
+    display: none;
+}
+
+/* Form Fields */
+.AT-info-fields {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AT-item-form {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Error message animation */
+.AT-error-slide {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    text-align: center;
+    animation: slideDownFade 0.4s ease-out;
+}
+
+@keyframes slideDownFade {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+.AT-field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.AT-field-group.large textarea {
+    height: 100px;
+}
+
+.AT-field-box {
+    background-color: #e6d2ee;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #4a2b58;
+}
+
+.AT-field-box::placeholder {
+    color: #a077b1;
+}
+
+.AT-submit-button {
+    background-color: #6d3d8e;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-end;
+    width: 90px;
+}
+
+.AT-submit-button:hover {
+    background-color: #542f71;
 }

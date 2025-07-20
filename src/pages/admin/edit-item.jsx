@@ -1,20 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import logo from "../../assets/circuithubLogo2.png";
-import { db , storage } from "../../firebaseconfig";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "../../firebaseconfig";
+import "../../components/css/admin/edit-item.css";
 
-const AdminEditItem = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { id } = useParams();
-
+const AdminEditItem = ({ id, closeModal }) => {
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
   const [itemCondition, setItemCondition] = useState("Good");
@@ -22,8 +12,8 @@ const AdminEditItem = () => {
   const [itemImage, setItemImage] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState("");
   const [itemQuantity, setItemQuantity] = useState(1);
+  const [error, setError] = useState("");
 
-  // Fetch item details
   useEffect(() => {
     const fetchItem = async () => {
       try {
@@ -38,17 +28,16 @@ const AdminEditItem = () => {
           setExistingImageUrl(data.imagePath || "");
           setItemQuantity(data.quantity || 1);
         } else {
-          alert("Item not found.");
-          navigate("/admin-items");
+          setError("Item not found.");
         }
       } catch (err) {
         console.error("Error fetching item:", err);
-        alert("Failed to load item.");
+        setError("Failed to load item.");
       }
     };
 
     fetchItem();
-  }, [id, navigate]);
+  }, [id]);
 
   const handleImageChange = (e) => {
     setItemImage(e.target.files[0]);
@@ -60,7 +49,6 @@ const AdminEditItem = () => {
       const docRef = doc(db, "items", id);
       let imageUrl = existingImageUrl;
 
-      // If a new image is selected, upload it
       if (itemImage) {
         const imageRef = ref(storage, `uploads/${Date.now()}_${itemImage.name}`);
         await uploadBytes(imageRef, itemImage);
@@ -77,123 +65,114 @@ const AdminEditItem = () => {
         updatedAt: serverTimestamp(),
       });
 
-      alert("Item updated successfully!");
-      navigate("/admin-items");
+      closeModal(); // Close on submit
     } catch (err) {
       console.error("Failed to update item:", err);
-      alert("Failed to update item.");
+      setError("Failed to update item.");
     }
   };
 
   return (
-    <div className="add-item-page">
-      {/* Navbar */}
-      <div className="navbar">
-        <img src={logo} alt="CircuitHub Logo" />
-        <nav>
-          {[
-            { label: "Dashboard", to: "/admin-dashboard" },
-            { label: "Manage Items", to: "/admin-items" },
-            { label: "Requests", to: "/admin-requests" },
-            {label: "Maintenance", to: "/equipment-maintenance"},
-            { label: "Manage Users", to: "/admin-users" },
-          ].map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={location.pathname === link.to ? "navbar-link active-link" : "navbar-link"}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div style={{ marginLeft: "auto" }}>
-          <Link to="/" className="logout-link">Log Out</Link>
+      <div className="EI-item-card">
+        <div className="EI-card-header">
+          <h2 className="EI-page-title">Edit Equipment</h2>
+        </div>
+        <div className="EI-item-content">
+          <div className="EI-image-container">
+            <label htmlFor="fileInput" className="EI-image-label">
+              {itemImage || existingImageUrl ? (
+                  <img
+                      src={
+                        itemImage
+                            ? URL.createObjectURL(itemImage)
+                            : existingImageUrl
+                      }
+                      alt="Item"
+                      className="EI-equipment-image"
+                  />
+              ) : (
+                  <>
+                    <span className="EI-image-icon">📷</span>
+                    <span>Click to upload</span>
+                  </>
+              )}
+              <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="EI-file-input"
+              />
+            </label>
+          </div>
+
+          <div className="EI-info-fields">
+            <form className="EI-item-form" onSubmit={handleSubmit}>
+              {error && <div className="EI-error-slide">{error}</div>}
+
+              <div className="EI-field-group">
+                <input
+                    className="EI-field-box"
+                    type="text"
+                    placeholder="Item Name"
+                    value={itemName}
+                    onChange={(e) => setItemName(e.target.value)}
+                    required
+                />
+              </div>
+
+              <div className="EI-field-group large">
+              <textarea
+                  className="EI-field-box"
+                  placeholder="Description"
+                  value={itemDescription}
+                  onChange={(e) => setItemDescription(e.target.value)}
+                  required
+              />
+              </div>
+
+              <div className="EI-field-group">
+                <select
+                    className="EI-field-box"
+                    value={itemCondition}
+                    onChange={(e) => setItemCondition(e.target.value)}
+                >
+                  <option value="Good">Good</option>
+                  <option value="Fair">Fair</option>
+                  <option value="Poor">Poor</option>
+                </select>
+              </div>
+
+              <div className="EI-field-group">
+                <input
+                    className="EI-field-box"
+                    type="number"
+                    value={itemQuantity}
+                    onChange={(e) => setItemQuantity(parseInt(e.target.value))}
+                    min={1}
+                    placeholder="Quantity"
+                    required
+                />
+              </div>
+
+              <div className="EI-field-group">
+                <select
+                    className="EI-field-box"
+                    value={itemStatus}
+                    onChange={(e) => setItemStatus(e.target.value)}
+                >
+                  <option value="Available">Available</option>
+                  <option value="Borrowed">Borrowed</option>
+                </select>
+              </div>
+
+              <button type="submit" className="EI-submit-button">
+                Save
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-
-      {/* Content */}
-      <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>
-        <Link to="/admin-items" className="back-arrow">←</Link>
-      </div>
-
-      <div className="add-item-container">
-        <h2>Edit Item</h2>
-
-        <form className="add-item-form" onSubmit={handleSubmit}>
-          <label>
-            Item Name:
-            <input
-                type="text"
-                value={itemName}
-                onChange={(e) => setItemName(e.target.value)}
-                required
-            />
-          </label>
-
-          <label>
-            Description:
-            <textarea
-                value={itemDescription}
-                onChange={(e) => setItemDescription(e.target.value)}
-                required
-            />
-          </label>
-
-          <label>
-            Condition:
-            <select
-                value={itemCondition}
-                onChange={(e) => setItemCondition(e.target.value)}
-            >
-              <option value="Good">Good</option>
-              <option value="Fair">Fair</option>
-              <option value="Poor">Poor</option>
-            </select>
-          </label>
-
-          <label>
-            Quantity:
-            <input
-                type="number"
-                value={itemQuantity}
-                onChange={(e) => setItemQuantity(parseInt(e.target.value))}
-                min={1}
-                required
-            />
-          </label>
-
-          <label>
-            Status:
-            <select
-                value={itemStatus}
-                onChange={(e) => setItemStatus(e.target.value)}
-            >
-              <option value="Available">Available</option>
-              <option value="Borrowed">Borrowed</option>
-            </select>
-          </label>
-
-          <label>
-            Upload New Image:
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-            />
-          </label>
-
-          {existingImageUrl && (
-              <div style={{marginBottom: "10px"}}>
-                <strong>Current Image:</strong><br/>
-                <img src={existingImageUrl} alt="Current" style={{maxWidth: "150px", marginTop: "5px"}}/>
-              </div>
-          )}
-
-          <button type="submit" className="submit-btn">Update Item</button>
-        </form>
-      </div>
-    </div>
   );
 };
 

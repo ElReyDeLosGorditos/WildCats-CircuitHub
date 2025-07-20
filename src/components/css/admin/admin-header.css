@@ -1,0 +1,62 @@
+.admin-dashboard {
+    min-height: 100vh;
+    background-color: #E6E6FA; /* Lavender */
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    background-color: #000; /* black header */
+    border-bottom: 1px solid #444;
+    color: #fff;
+}
+
+.head-logo {
+    height: 48px;
+}
+
+.head-links {
+    display: flex;
+    gap: 40px;
+    margin-left: 40px;
+    flex: 1;
+}
+
+.head-link {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.head-link:hover {
+    background-color: #222;
+}
+
+.active-link {
+    background-color: #fff;
+    color: #000;
+}
+
+.head-logout {
+    margin-left: auto;
+}
+
+.head-link {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.logout-link:hover {
+    background-color: #dc3545;
+}
+

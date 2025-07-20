@@ -1,25 +1,27 @@
 /* Admin Dashboard Page */
 .admin-dashboard {
     min-height: 100vh;
-    background-color: #E6E6FA;
+    background-color: #8174a0;
 }
 
 .admin-dashboard-container {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+
 }
 
 .admin-welcome {
     font-size: 30px;
     font-weight: 700;
     margin-bottom: 20px;
-    color: #213547;
+    color: #000000;
+
 }
 
 .admin-subtext {
     font-size: 16px;
-    color: #666;
+    color: #3c3c3c;
     margin-bottom: 30px;
 }
 
@@ -42,7 +44,7 @@
 
 .admin-card h3 {
     font-size: 28px;
-    color: #d96528;
+    color: #6d4a99;
 }
 
 .admin-card p {
@@ -112,7 +114,7 @@
 }
 
 .review-request-btn {
-    background-color: #E26901;
+    background-color: #6d4a99;
     color: white;
     padding: 8px 20px;
     font-size: 14px;
@@ -122,13 +124,13 @@
 }
 
 .review-request-btn:hover {
-    background-color: #b8501b;
+    background-color: #441752;
 }
 
 .section-header {
     margin-top: 25px;
     font-size: 20px;
-    color: #C94B28; /* Maroon for consistency */
+    color: #8f79a9; /* Maroon for consistency */
     margin-bottom: 10px;
 }
 

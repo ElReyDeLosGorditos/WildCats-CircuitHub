@@ -1,96 +1,26 @@
 /* --- Page Layout --- */
-.admin-dashboard {
-    background-color: #f9fafc;
+.admin-items-container {
+    background-color: #8f79a9;
     min-height: 100vh;
     padding-bottom: 60px;
 }
 
-/* --- Navbar --- */
-.navbar {
-    display: flex;
-    align-items: center;
-    padding: 14px 24px;
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    gap: 20px;
-}
-
-.navbar img {
-    height: 40px;
-}
-
-.navbar nav {
-    display: flex;
-    gap: 12px;
-}
-
-.navbar-link {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-}
-
-.navbar-link:hover {
-    background-color: #f0f0f0;
-}
-
-.active-link {
-    background-color: #213547;
-    color: #fff;
-}
-
-.logout-link {
-    text-decoration: none;
-    color: #dc3545;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-}
-
-.logout-link:hover {
-    background-color: #f8d7da;
-}
-
 /* --- Inventory Container --- */
-.equipment-inventory-wrapper {
+.items-inventory-wrapper {
     padding: 30px 20px;
     display: flex;
     justify-content: center;
+    background-color: #8f79a9;
 }
 
-.equipment-inventory-container {
+.items-inventory-container {
     display: flex;
     gap: 30px;
-    width: 100%;
-    max-width: 1300px;
-}
-
-/* --- Sidebar (Optional) --- */
-.equipment-category-sidebar {
-    width: 180px;
-}
-
-.category-btn {
-    background-color: #213547;
-    color: #fff;
-    border: none;
-    padding: 10px 14px;
-    width: 100%;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.category-btn:hover {
-    background-color: #1a2c3c;
+    width: 60%;
 }
 
 /* --- Main Content --- */
-.equipment-list-section {
+.items-list-section {
     flex: 1;
 }
 
@@ -104,18 +34,17 @@
 
 .inventory-title {
     font-size: 24px;
-    color: #213547;
+    color: #ffffff;
     font-weight: bold;
 }
 
 .add-item-btn {
-    background-color: #28a745;
+    background-color: #441752;
     color: white;
     padding: 10px 16px;
     border: none;
     border-radius: 6px;
     font-weight: 600;
-    text-decoration: none;
     transition: background-color 0.2s;
 }
 
@@ -139,93 +68,124 @@
     background-color: #fff;
 }
 
-/* --- Equipment List --- */
-.equipment-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+/* --- Items List --- */
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
 }
 
-.equipment-card-link {
+.items-card-link {
     text-decoration: none;
     color: inherit;
 }
 
-.equipment-card {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s;
-    position: relative;
-    height: 100%;
+.items-card {
+    display: flex;
+    background-color: #fafafa;
+    border-radius: 12px;
+    padding: 12px 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    height: 120px;
+    gap: 16px;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Image Section */
+.items-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+/* Details */
+.items-details {
+    width: 60%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    justify-content: center;
+    gap: 4px;
 }
 
-.equipment-card:hover {
-    transform: translateY(-4px);
-}
-
-.equipment-image {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 6px;
-}
-
-.equipment-details h3 {
-    font-size: 16px;
+.items-details h3 {
+    font-size: 18px;
     font-weight: bold;
-    color: #213547;
+    color: #000000;
+    margin: 0;
 }
 
-.equipment-category {
-    color: #666;
+.items-description {
+    color: #000000;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    margin: 0;
+}
+
+.items-quantity {
+    color: #000000;
     font-size: 14px;
 }
 
-/* --- Status Section --- */
-.equipment-status-section {
-    margin-top: auto;
+/* Status Section */
+.items-status-section {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 20px;
+    border-left: 2px solid rgb(0, 0, 0);
+    color: #000000;
+    gap: 4px;
 }
 
 .status-label {
-    font-size: 12px;
-    color: #888;
-}
-
-.equipment-status {
-    font-weight: bold;
     font-size: 14px;
-    margin-top: 4px;
+    font-weight: bold;
 }
 
-/* Status Colors */
-.equipment-status.available {
-    color: #28a745;
+.items-status {
+    font-size: 14px;
+    font-weight: 500;
 }
 
-.equipment-status.borrowed {
-    color: #dc3545;
+.items-status.available {
+    color: #006c13;
 }
 
-/* --- Edit Icon --- */
-.equipment-edit-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+.items-status.borrowed {
+    color: #ffd6d6;
 }
 
-.equipment-edit-icon button {
+/* Edit Icon */
+.items-edit-icon {
+    width: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 2px solid rgb(0, 0, 0);
+}
+
+.items-edit-icon button {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 22px;
+    color: #fff;
 }
 
-/* --- Modal --- */
+.items-edit-icon button:hover {
+    color: #ddd;
+}
+
+/* --- Modal Styling --- */
 .admin-item-modal-overlay {
     position: fixed;
     top: 0;
@@ -287,4 +247,50 @@
 
 .admin-item-no-btn:hover {
     background-color: #5a6268;
+}
+
+/* 🔆 Blur effect when modal is active */
+
+
+/* 🔆 Modal popup overlay */
+.popup-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(20, 0, 40, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.5s ease;
+}
+
+.popup-modal-content {
+    animation: slideUp 0.5s ease;
+    background: none;
+    border-radius: 12px;
+}
+
+/* 🔆 Animations */
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
