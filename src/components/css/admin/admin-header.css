@@ -1,30 +1,27 @@
-.admin-dashboard {
-    min-height: 100vh;
-    background-color: #E6E6FA; /* Lavender */
-}
-
 .head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 14px 24px;
-    background-color: #000; /* black header */
+    background-color: #000;
     border-bottom: 1px solid #444;
     color: #fff;
+    position: relative;
 }
 
 .head-logo {
     height: 48px;
+    z-index: 10;
 }
 
 .head-links {
     display: flex;
-    gap: 40px;
-    margin-left: 40px;
-    flex: 1;
+    gap: 30px;
+    align-items: center;
 }
 
-.head-link {
+.head-link,
+.logout-link {
     text-decoration: none;
     color: #fff;
     font-weight: 500;
@@ -34,29 +31,60 @@
     transition: background-color 0.2s;
 }
 
-.head-link:hover {
+.head-link:hover,
+.logout-link:hover {
     background-color: #222;
 }
 
 .active-link {
-    background-color: #fff;
-    color: #000;
-}
-
-.head-logout {
-    margin-left: auto;
-}
-
-.head-link {
-    text-decoration: none;
+    background-color: #4CAF50;
     color: #fff;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
 }
 
-.logout-link:hover {
-    background-color: #dc3545;
+/* Hamburger styles */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+    gap: 5px;
+    z-index: 10;
 }
 
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+/* Mobile */
+@media screen and (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .head-links {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #000;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 24px;
+        width: 40%;
+        display: none;
+        border-top: 1px solid #333;
+    }
+
+    .head-links.show {
+        display: flex;
+    }
+
+    .head-link,
+    .logout-link {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+}

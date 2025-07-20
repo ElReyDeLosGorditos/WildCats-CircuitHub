@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/circuithubLogo2.png";
+import AdminHeader from "./AdminHeader";
 import "../../admin.css"; // Ensure this has the added navbar fix!
 
 const EquipmentMaintenance = () => {
@@ -161,42 +162,14 @@ const EquipmentMaintenance = () => {
 
     return (
         <div className="admin-dashboard">
-            {/* Navbar */}
-            <div className="navbar">
-                <img src={logo} alt="CircuitHub Logo" />
-                <nav>
-                    {[
-                        { label: "Dashboard", to: "/admin-dashboard" },
-                        { label: "Manage Items", to: "/admin-items" },
-                        { label: "Requests", to: "/admin-requests" },
-                        { label: "Maintenance", to: "/equipment-maintenance" },
-                        { label: "Manage Users", to: "/admin-users" },
-                    ].map((link) => (
-                        <Link
-                            key={link.to}
-                            to={link.to}
-                            className={
-                                location.pathname === link.to
-                                    ? "navbar-link active-link"
-                                    : "navbar-link"
-                            }
-                        >
-                            {link.label}
-                        </Link>
-                    ))}
-                </nav>
-                <div style={{ marginLeft: "auto" }}>
-                    <Link to="/" className="logout-link">
-                        Log Out
-                    </Link>
-                </div>
-            </div>
+            <AdminHeader/>
 
             {/* Maintenance Header */}
             <div className="admin-dashboard-container">
                 <h1 className="admin-welcome">Equipment Maintenance Dashboard</h1>
 
                 <div className="maintenance-toolbar">
+                    {/* Comment lang usa, uncomment lang if gamiton */}
                     {/*<div className="maintenance-tabs">*/}
                     {/*    <button*/}
                     {/*        className={activeTab === "maintenance" ? "tab active" : "tab"}*/}

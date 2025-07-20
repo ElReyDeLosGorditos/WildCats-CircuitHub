@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import AdminHeader from "./AdminHeader";
 import logo from "../../assets/circuithubLogo2.png";
 import {
   collection,
@@ -75,32 +76,7 @@ const AdminRequests = () => {
 
   return (
     <div className="admin-dashboard">
-      {/* Navbar */}
-      <div className="navbar">
-        <img src={logo} alt="CircuitHub Logo" />
-        <nav>
-          {[
-            { label: "Dashboard", to: "/admin-dashboard" },
-            { label: "Manage Items", to: "/admin-items" },
-            { label: "Requests", to: "/admin-requests" },
-            {label: "Maintenance", to: "/equipment-maintenance"},
-            { label: "Manage Users", to: "/admin-users" },
-          ].map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={
-                location.pathname === link.to ? "navbar-link active-link" : "navbar-link"
-              }
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div style={{ marginLeft: "auto" }}>
-          <Link to="/" className="logout-link">Log Out</Link>
-        </div>
-      </div>
+      <AdminHeader />
 
       {/* Content */}
       <div className="admin-dashboard-container">
