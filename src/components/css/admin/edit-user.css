@@ -4,147 +4,167 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.35);
+    background: rgba(33, 20, 54, 0.4);
     backdrop-filter: blur(6px);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     z-index: 1000;
     animation: fadeIn 0.3s ease-in-out;
 }
 
 .UU-modal {
-    display: flex;
     width: 60vw;
     height: 80vh;
-    background-color: #946bb1;
-    color: #fff;
-    border-radius: 14px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    background-color: #e8ddf2; /* Pale violet */
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(66, 33, 107, 0.25);
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.4s ease;
     overflow: hidden;
-    animation: slideUp 0.4s ease;
-    position: relative;
 }
 
+/* Error Banner */
 .UU-error {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    background: #d32f2f;
-    color: white;
-    padding: 10px;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px auto 0;
+    width: 90%;
     text-align: center;
     animation: slideDown 0.4s ease;
-    z-index: 10;
 }
 
+/* Modal Layout */
 .UU-content {
     display: flex;
     height: 100%;
-    width: 100%;
 }
 
+/* Left */
 .UU-left {
-    width: 40%;
-    background-color: #825ba2;
+    flex: 1;
+    background-color: #c3b0dd; /* lighter violet */
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 2rem;
-    border-right: 1px solid #6b4b91;
+    justify-content: center;
+    color: white;
+    padding: 30px;
 }
 
 .UU-icon-preview {
-    font-size: 5rem;
-    margin-bottom: 1rem;
-    background-color: #ffd369;
+    font-size: 90px;
+    margin-bottom: 10px;
+    background-color: #e4cfff;
     color: #4b2e83;
     border-radius: 50%;
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .UU-label {
-    font-size: 1.2rem;
-    color: #ffe9a7;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: 600;
+    color: #4b2e83;
 }
 
+/* Right */
 .UU-right {
-    width: 60%;
-    padding: 2rem;
+    flex: 2;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 40px 20px;
 }
 
+/* Form */
 .UU-form {
     width: 80%;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
+}
+
+.UU-name-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.UU-name-row input {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #d5c5e6;
+    background-color: #f8f6fb;
+    color: #4b2e83;
+    outline-color: #bca2d8;
 }
 
 .UU-form input,
 .UU-form select {
-    padding: 10px;
-    font-size: 15px;
-    border: 1px solid #d8b9ff;
-    border-radius: 6px;
-    background-color: #fdfbff;
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #d5c5e6;
+    background-color: #f8f6fb;
     color: #4b2e83;
+    outline-color: #bca2d8;
 }
 
+/* Buttons */
 .UU-btn-row {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
 }
 
 .UU-cancel-btn,
 .UU-save-btn {
-    padding: 10px 18px;
+    padding: 10px 20px;
+    border-radius: 8px;
     font-weight: 600;
-    border-radius: 6px;
     cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
     border: none;
-    font-size: 15px;
 }
 
 .UU-cancel-btn {
-    background-color: #ffe9a7;
-    color: #4b2e83;
+    background-color: #ede3f6;
+    color: #5e548e;
 }
 
 .UU-cancel-btn:hover {
-    background-color: #ffdd70;
+    background-color: #dfd4f0;
 }
 
 .UU-save-btn {
-    background-color: #ffd369;
-    color: #4b2e83;
+    background-color: #c9a9e2;
+    color: white;
 }
 
 .UU-save-btn:hover {
-    background-color: #ffce3d;
+    background-color: #bb97d9;
 }
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes slideDown {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(0); }
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
 }

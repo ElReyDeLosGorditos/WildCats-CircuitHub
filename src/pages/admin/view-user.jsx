@@ -33,6 +33,7 @@ const ViewUser = ({ user, onClose, onEdit }) => {
                   <p><strong>Course:</strong> {user.course || "N/A"}</p>
                 </>
             )}
+            <p><strong>Name:</strong> {user.name || "N/A"}</p> {/* NEW FIELD */}
             <div className="VU-actions">
               <button className="VU-update-btn" onClick={() => onEdit(user)}>Update</button>
             </div>
@@ -40,6 +41,7 @@ const ViewUser = ({ user, onClose, onEdit }) => {
         </div>
       </div>
   );
+
 };
 
 export default ViewUser;
