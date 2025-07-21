@@ -1,131 +1,87 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
-import logo from "../../assets/circuithubLogo2.png";
+import { useNavigate } from "react-router-dom";
 import { db } from "../../firebaseconfig";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import "../../components/css/admin/review-request.css";
 
-const AdminRequestReview = () => {
-  const { id } = useParams();
-  const location = useLocation();
+const AdminRequestReview = ({ request, onClose }) => {
   const navigate = useNavigate();
-
-  const [request, setRequest] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchRequestAndUser = async () => {
+    const fetchUser = async () => {
       try {
-        const docRef = doc(db, "borrowRequests", id);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const requestData = { id: docSnap.id, ...docSnap.data() };
-          setRequest(requestData);
-
-          // fetch the user details using userId
-          if (requestData.userId) {
-            const userRef = doc(db, "users", requestData.userId);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-              setUser(userSnap.data());
-            }
+        if (request?.userId) {
+          const userSnap = await getDoc(doc(db, "users", request.userId));
+          if (userSnap.exists()) {
+            setUser(userSnap.data());
           }
-        } else {
-          setError("Request not found.");
         }
       } catch (err) {
-        console.error("Error fetching request:", err);
-        setError("Failed to load request.");
+        console.error("User fetch failed:", err);
+        setError("Failed to load user info.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) fetchRequestAndUser();
-    else setError("Invalid request ID.");
-  }, [id]);
+    if (request) {
+      fetchUser();
+    } else {
+      setError("No request data.");
+      setLoading(false);
+    }
+  }, [request]);
 
-  const handleApprove = () => {
-    alert("Request Approved!");
-    navigate("/admin-requests");
-  };
-
-  const handleDeny = () => {
-    alert("Request Denied!");
-    navigate("/admin-requests");
+  const updateStatus = async (status) => {
+    try {
+      await updateDoc(doc(db, "borrowRequests", request.id), { status });
+      onClose(); // Close modal
+    } catch (err) {
+      console.error("Status update failed:", err);
+    }
   };
 
   return (
-    <div className="admin-dashboard">
-      {/* Navbar */}
-      <div className="navbar">
-        <img src={logo} alt="CircuitHub Logo" />
-        <nav>
-          {[
-            { label: "Dashboard", to: "/admin-dashboard" },
-            { label: "Manage Items", to: "/admin-items" },
-            { label: "Requests", to: "/admin-requests" },
-            {label: "Maintenance", to: "/equipment-maintenance"},
-            { label: "Manage Users", to: "/admin-users" },
-          ].map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={
-                location.pathname === link.to
-                  ? "navbar-link active-link"
-                  : "navbar-link"
-              }
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div style={{ marginLeft: "auto" }}>
-          <Link to="/" className="logout-link">Log Out</Link>
+      <div className="RR-overlay" onClick={onClose}>
+        <div className="RR-modal" onClick={(e) => e.stopPropagation()}>
+          {loading ? (
+              <p>Loading request...</p>
+          ) : error ? (
+              <p>{error}</p>
+          ) : (
+              <>
+                <h2 className="RR-title">Review Request</h2>
+
+                <div className="RR-section">
+                  <h3 className="RR-subtitle">Request Timeline</h3>
+                  <p><strong>Created:</strong> {request.createdAt?.seconds ? new Date(request.createdAt.seconds * 1000).toLocaleString() : "N/A"}</p>
+                </div>
+
+                <div className="RR-section">
+                  <h3 className="RR-subtitle">Borrowing Schedule</h3>
+                  <p><strong>Date:</strong> {request.borrowDate}</p>
+                  <p><strong>Time Slot:</strong> {request.timeRange || `${request.startTime} - ${request.returnTime}`}</p>
+                </div>
+
+                <div className="RR-section">
+                  <h3 className="RR-subtitle">Request Info</h3>
+                  <p><strong>Borrower:</strong> {user ? `${user.firstName} ${user.lastName}` : "Unknown"}</p>
+                  <p><strong>Item:</strong> {request.itemName}</p>
+                  <p><strong>Reason:</strong> {request.reason}</p>
+                  <p><strong>Status:</strong> {request.status}</p>
+                </div>
+
+                <div className="RR-buttons">
+                  <button className="RR-approve" onClick={() => updateStatus("Approved")}>Approve</button>
+                  <button className="RR-deny" onClick={() => updateStatus("Denied")}>Deny</button>
+                </div>
+              </>
+          )}
         </div>
       </div>
-
-      {/* Content */}
-      <div className="admin-dashboard-container">
-        <Link to="/admin-requests" className="back-arrow">←</Link>
-
-        {loading ? (
-          <p>Loading request...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          <div className="request-details-box">
-            <h2>Review Request Details</h2>
-
-            <h3 className="section-header">Request Timeline</h3>
-            <p>
-              <strong>Date Request Was Created:</strong>{" "}
-              {request.createdAt?.seconds
-                ? new Date(request.createdAt.seconds * 1000).toLocaleString()
-                : "N/A"}
-            </p>
-
-            <h3 className="section-header">Borrowing Schedule</h3>
-            <p><strong>Scheduled Borrow Date:</strong> {request.borrowDate}</p>
-            <p><strong>Scheduled Time Slot:</strong> {request.timeRange || `${request.startTime} - ${request.returnTime}`}</p>
-
-            <h3 className="section-header">Request Information</h3>
-            <p><strong>Borrower Name:</strong> {user ? `${user.firstName} ${user.lastName}` : request.userName || "N/A"}</p>
-            <p><strong>Item Requested:</strong> {request.itemName}</p>
-            <p><strong>Reason for Borrowing:</strong> {request.reason}</p>
-            <p><strong>Current Status:</strong> {request.status}</p>
-
-            <div className="request-action-btns">
-              <button className="approve-btn" onClick={handleApprove}>Approve</button>
-              <button className="deny-btn" onClick={handleDeny}>Deny</button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
   );
 };
 

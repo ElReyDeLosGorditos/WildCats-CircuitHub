@@ -1,143 +1,92 @@
-/* --- Admin Request Review Page --- */
+/* Review Request Modal (RR) */
 
-.admin-dashboard {
-    background-color: #f4f7fc;
-    min-height: 100vh;
+.RR-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.RR-modal {
+    background: #d8bee1;
+    width: 500px;
+    max-width: 90%;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-out;
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* --- Navbar --- */
-.navbar {
-    display: flex;
-    align-items: center;
-    background-color: #213547;
-    padding: 12px 24px;
-    color: white;
-}
-
-.navbar img {
-    height: 45px;
-    margin-right: 20px;
-}
-
-.navbar nav {
-    display: flex;
-    gap: 24px;
-}
-
-.navbar-link {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background 0.2s;
-}
-
-.navbar-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.active-link {
-    background-color: white;
-    color: #213547;
-}
-
-.logout-link {
-    background-color: #ff5c5c;
-    padding: 6px 12px;
-    border-radius: 6px;
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
-    transition: background-color 0.2s;
-}
-
-.logout-link:hover {
-    background-color: #e64848;
-}
-
-/* --- Main Container --- */
-.admin-dashboard-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-/* --- Back Link --- */
-.back-arrow {
-    font-size: 22px;
-    text-decoration: none;
-    color: #213547;
-    display: inline-block;
-    margin-bottom: 10px;
-}
-
-.back-arrow:hover {
-    color: #1a4e9d;
-}
-
-/* --- Request Box --- */
-.request-details-box {
-    background-color: white;
-    padding: 32px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-}
-
-.request-details-box h2 {
+.RR-title {
+    margin-bottom: 20px;
     text-align: center;
-    margin-bottom: 24px;
     color: #213547;
 }
 
-.section-header {
-    margin-top: 20px;
-    font-size: 18px;
+.RR-subtitle {
+    font-size: 16px;
     color: #1a3c7c;
+    margin-bottom: 8px;
 }
 
-.request-details-box p {
-    margin-bottom: 10px;
-    font-size: 15px;
+.RR-section {
+    margin-bottom: 20px;
 }
 
-.request-details-box strong {
-    color: #333;
+.RR-section p {
+    margin: 6px 0;
+    font-size: 14px;
 }
 
-/* --- Action Buttons --- */
-.request-action-btns {
+.RR-buttons {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 30px;
+    gap: 15px;
 }
 
-.approve-btn,
-.deny-btn {
+.RR-approve,
+.RR-deny {
     padding: 10px 20px;
     font-size: 15px;
+    font-weight: 600;
     border: none;
     border-radius: 6px;
-    color: white;
     cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
+    transition: 0.2s ease;
 }
 
-.approve-btn {
+.RR-approve {
     background-color: #28a745;
+    color: white;
 }
 
-.approve-btn:hover {
+.RR-approve:hover {
     background-color: #218838;
 }
 
-.deny-btn {
+.RR-deny {
     background-color: #dc3545;
+    color: white;
 }
 
-.deny-btn:hover {
+.RR-deny:hover {
     background-color: #c82333;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
