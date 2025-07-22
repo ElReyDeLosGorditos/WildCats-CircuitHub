@@ -1,9 +1,8 @@
-import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import logo from "../../assets/circuithubLogo2.png"; // update this path as needed
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/admin/admin-header.css";
 
-// Now includes Maintenance link
 const navLinks = [
     { label: "Dashboard", to: "/admin-dashboard" },
     { label: "Manage Items", to: "/admin-items" },
@@ -14,16 +13,28 @@ const navLinks = [
 
 const AdminHeader = () => {
     const location = useLocation();
-    const navigate = useNavigate();
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setMenuOpen((prev) => !prev);
+    };
 
     return (
-        <div className="head">
+        <header className="head">
             <img src={logo} alt="CCS Gadget Hub Logo" className="head-logo" />
-            <nav className="head-links">
+
+            <div className={`hamburger ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <nav className={`head-links ${menuOpen ? "show" : ""}`}>
                 {navLinks.map((link) => (
                     <Link
                         key={link.to}
                         to={link.to}
+                        onClick={() => setMenuOpen(false)} // close menu on link click
                         className={
                             location.pathname === link.to
                                 ? "head-link active-link"
@@ -33,11 +44,11 @@ const AdminHeader = () => {
                         {link.label}
                     </Link>
                 ))}
+                <Link to="/" className="logout-link" onClick={() => setMenuOpen(false)}>
+                    Log Out
+                </Link>
             </nav>
-            <div className="navbar-logout">
-                <Link to="/" className="logout-link">Log Out</Link>
-            </div>
-        </div>
+        </header>
     );
 };
 

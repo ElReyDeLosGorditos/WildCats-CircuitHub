@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/circuithubLogo2.png";
+import AdminHeader from "./AdminHeader";
 import "../../admin.css"; // Ensure this has the added navbar fix!
 
 const EquipmentMaintenance = () => {
@@ -13,7 +14,7 @@ const EquipmentMaintenance = () => {
     const [showForm, setShowForm] = useState(false);
     const [formMode, setFormMode] = useState("add");
     const [formData, setFormData] = useState({
-        equipment: "",
+        equipmentName: "",
         issue: "",
         status: "",
         date: "",
@@ -22,35 +23,29 @@ const EquipmentMaintenance = () => {
     const [maintenanceData, setMaintenanceData] = useState([]);
     const [pendingData, setPendingData] = useState([]);
 
-    // Comment sa kay la pay gamit
-    // useEffect(() => {
-    //     // Fetch all maintenance data
-    //     axios
-    //         .get("http://localhost:8080/api/maintenance/all")
-    //         .then((response) => {
-    //             setMaintenanceData(response.data);
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error fetching maintenance data:", error);
-    //         });
-    //
-    //     // Fetch pending maintenance requests
-    //     axios
-    //         .get("http://localhost:8080/api/maintenance/pending")
-    //         .then((response) => {
-    //             setPendingData(response.data);
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error fetching pending data:", error);
-    //         });
-    // }, []);
+    const fetchMaintenanceData = () => {
+        axios
+            .get("http://localhost:8080/api/maintenance/all")
+            .then((response) => setMaintenanceData(response.data))
+            .catch((error) => console.error("Error fetching maintenance data:", error));
+
+        axios
+            .get("http://localhost:8080/api/maintenance/pending")
+            .then((response) => setPendingData(response.data))
+            .catch((error) => console.error("Error fetching pending data:", error));
+    };
+
+    useEffect(() => {
+        fetchMaintenanceData();
+    }, []);
 
     const handleOpenForm = (mode, data = null) => {
         setFormMode(mode);
         setShowForm(true);
         setFormData(
             data || {
-                equipment: "",
+                maintenanceId: "", // include this key
+                equipmentName: "",
                 issue: "",
                 status: "",
                 date: "",
@@ -68,13 +63,21 @@ const EquipmentMaintenance = () => {
         // Log the form data before sending
         console.log("Form Data Before Submit:", formData);
 
+        const { equipmentName, issue, status, date } = formData;
+
+        // 🔒 Validate required fields
+        if (!equipmentName?.trim() || !issue?.trim() || !status?.trim() || !date?.trim()) {
+            alert("Please fill in all fields (equipment name, issue, status, and date).");
+            return;
+        }
+
         // Create a clean object to only send 'equipmentName', 'issue', 'status', and 'date'
         const requestData = {
-            equipmentName: formData.equipment,  // Map 'equipment' to 'equipmentName'
-            issue: formData.issue,
-            status: formData.status,
-            requestDate: formData.date,
-            scheduleDate: formData.date,
+            maintenanceId: formData.maintenanceId,
+            equipmentName,  // Map 'equipment' to 'equipmentName'
+            issue,
+            status,
+            requestDate: date,
         };
 
         // Log the cleaned data that will be sent
@@ -86,25 +89,36 @@ const EquipmentMaintenance = () => {
                 .post("http://localhost:8080/api/maintenance/request", requestData)
                 .then((response) => {
                     alert("Maintenance request submitted successfully!");
+                    fetchMaintenanceData();
+
+                    // Push new data to maintenanceData
+                    setMaintenanceData(prev => [...prev, response.data]); // <-- add to state
+
                     setShowForm(false);
-                    setFormData({ equipment: "", issue: "", status: "", date: "" });
+                    setFormData({ equipmentName: "", issue: "", status: "", date: "" });
                 })
                 .catch((error) => {
                     alert("Failed to submit the maintenance request.");
                     console.error(error);
                 });
         } else if (formMode === "edit") {
-            const maintenanceId = formData.id;
+            const maintenanceId = formData.maintenanceId;
             axios
                 .put(
-                    `http://localhost:8080/api/maintenance/${maintenanceId}/update-progress`,
+                    `http://localhost:8080/api/maintenance/${formData.maintenanceId}/update-progress`,
                     null,
                     {
-                        params: { status: formData.status, progress: formData.progress },
+                        params: {
+                            equipmentName,
+                            issue,
+                            status,
+                            requestDate: date
+                        }
                     }
                 )
                 .then((response) => {
                     alert("Maintenance request updated successfully!");
+                    fetchMaintenanceData();
                     setShowForm(false);
                 })
                 .catch((error) => {
@@ -121,8 +135,9 @@ const EquipmentMaintenance = () => {
                 .delete(`http://localhost:8080/api/maintenance/${id}`)
                 .then((response) => {
                     alert("Maintenance request deleted!");
+                    fetchMaintenanceData();
                     // Remove from state to update the table
-                    setMaintenanceData(maintenanceData.filter((item) => item.id !== id));
+                    setMaintenanceData(maintenanceData.filter((item) => item.maintenanceId !== id));
                 })
                 .catch((error) => {
                     alert("Failed to delete maintenance request.");
@@ -134,69 +149,41 @@ const EquipmentMaintenance = () => {
     };
 
     const filteredMaintenance = maintenanceData.filter((item) => {
-        const equipment = item.equipment ? item.equipment.toLowerCase() : '';
+        const equipment = (item.equipmentName || "").toLowerCase();
         const searchTerm = searchQuery ? searchQuery.toLowerCase() : '';
         return equipment.includes(searchTerm);
     });
 
     const filteredPending = pendingData.filter((item) => {
-        const equipment = item.equipment ? item.equipment.toLowerCase() : '';
+        const equipment = (item.equipmentName || "").toLowerCase();
         const searchTerm = searchQuery ? searchQuery.toLowerCase() : '';
         return equipment.includes(searchTerm);
     });
 
     return (
         <div className="admin-dashboard">
-            {/* Navbar */}
-            <div className="navbar">
-                <img src={logo} alt="CircuitHub Logo" />
-                <nav>
-                    {[
-                        { label: "Dashboard", to: "/admin-dashboard" },
-                        { label: "Manage Items", to: "/admin-items" },
-                        { label: "Requests", to: "/admin-requests" },
-                        { label: "Maintenance", to: "/equipment-maintenance" },
-                        { label: "Manage Users", to: "/admin-users" },
-                    ].map((link) => (
-                        <Link
-                            key={link.to}
-                            to={link.to}
-                            className={
-                                location.pathname === link.to
-                                    ? "navbar-link active-link"
-                                    : "navbar-link"
-                            }
-                        >
-                            {link.label}
-                        </Link>
-                    ))}
-                </nav>
-                <div style={{ marginLeft: "auto" }}>
-                    <Link to="/" className="logout-link">
-                        Log Out
-                    </Link>
-                </div>
-            </div>
+            <AdminHeader/>
 
             {/* Maintenance Header */}
             <div className="admin-dashboard-container">
                 <h1 className="admin-welcome">Equipment Maintenance Dashboard</h1>
 
                 <div className="maintenance-toolbar">
-                    <div className="maintenance-tabs">
-                        <button
-                            className={activeTab === "maintenance" ? "tab active" : "tab"}
-                            onClick={() => setActiveTab("maintenance")}
-                        >
-                            🛠 Under Maintenance ({maintenanceData.length})
-                        </button>
-                        <button
-                            className={activeTab === "pending" ? "tab active" : "tab"}
-                            onClick={() => setActiveTab("pending")}
-                        >
-                            📋 Pending Requests ({pendingData.length})
-                        </button>
-                    </div>
+                    {/* Comment lang usa, uncomment lang if gamiton */}
+                    {/*<div className="maintenance-tabs">*/}
+                    {/*    <button*/}
+                    {/*        className={activeTab === "maintenance" ? "tab active" : "tab"}*/}
+                    {/*        onClick={() => setActiveTab("maintenance")}*/}
+                    {/*    >*/}
+                    {/*        🛠 Under Maintenance ({maintenanceData.length})*/}
+                    {/*    </button>*/}
+                    {/*    <button*/}
+                    {/*        className={activeTab === "pending" ? "tab active" : "tab"}*/}
+                    {/*        onClick={() => setActiveTab("pending")}*/}
+                    {/*    >*/}
+                    {/*        📋 Pending Requests ({pendingData.length})*/}
+                    {/*    </button>*/}
+                    {/*</div>*/}
 
                     <div className="maintenance-controls">
                         <input
@@ -231,7 +218,7 @@ const EquipmentMaintenance = () => {
                             <tbody>
                             {filteredMaintenance.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.equipment}</td>
+                                    <td>{item.equipmentName}</td>
                                     <td>{item.issue}</td>
                                     <td>{item.status}</td>
                                     <td>
@@ -244,7 +231,7 @@ const EquipmentMaintenance = () => {
                                         </button>
                                         <button
                                             className="delete-btn"
-                                            onClick={() => handleDelete(item.id)}
+                                            onClick={() => handleDelete(item.maintenanceId)}
                                         >
                                             🗑️
                                         </button>
@@ -267,7 +254,7 @@ const EquipmentMaintenance = () => {
                             <tbody>
                             {filteredPending.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.equipment}</td>
+                                    <td>{item.equipmentName}</td>
                                     <td>{item.issue}</td>
                                     <td>{item.status}</td>
                                     <td>{item.date}</td>
@@ -306,9 +293,11 @@ const EquipmentMaintenance = () => {
                                     Equipment Name
                                     <input
                                         type="text"
-                                        name="equipment"
-                                        value={formData.equipment}
-                                        onChange={handleChange}
+                                        name="equipmentName"
+                                        value={formData.equipmentName}
+                                        onChange={(e) =>
+                                            setFormData({...formData, equipmentName: e.target.value})
+                                        }
                                     />
                                 </label>
                                 <label>

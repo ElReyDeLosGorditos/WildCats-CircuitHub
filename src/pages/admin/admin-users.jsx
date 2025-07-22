@@ -80,12 +80,6 @@ const AdminManageUsers = () => {
         <div className="AU-dashboard">
           <div className="AU-header-row">
             <h1 className="AU-title">Manage Users</h1>
-            <button
-                className="AU-add-button violet-button"
-                onClick={() => setShowAddModal(true)}
-            >
-              + Add User
-            </button>
           </div>
 
           <div className="AU-filters">

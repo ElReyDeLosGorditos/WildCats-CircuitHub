@@ -1,7 +1,7 @@
 /* Admin Dashboard Page */
 .admin-dashboard {
     min-height: 100vh;
-    background-color: #E6E6FA;
+    background-color: #a888b5;
   }
 
   .admin-dashboard-container {
@@ -19,7 +19,7 @@
 
   .admin-subtext {
     font-size: 16px;
-    color: #666;
+    color: #ffffff;
     margin-bottom: 30px;
   }
 

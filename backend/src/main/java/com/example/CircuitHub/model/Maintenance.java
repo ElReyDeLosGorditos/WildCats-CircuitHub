@@ -12,8 +12,7 @@ public class Maintenance {
     private String equipmentName;
     private String issue;
 
-    @JsonFormat(pattern = "yyyy-MM-dd") // ✅ Properly handles string date input from React
-    private LocalDate requestDate;
+    private String requestDate;
 
     private String status;
 
@@ -21,7 +20,7 @@ public class Maintenance {
     public Maintenance() {}
 
     // ✅ Custom constructor
-    public Maintenance(String equipmentName, String issue, LocalDate requestDate, String status) {
+    public Maintenance(String equipmentName, String issue, String requestDate, String status) {
         this.equipmentName = equipmentName;
         this.issue = issue;
         this.requestDate = requestDate;
@@ -54,11 +53,11 @@ public class Maintenance {
         this.issue = issue;
     }
 
-    public LocalDate getRequestDate() {
+    public String getRequestDate() {
         return requestDate;
     }
 
-    public void setRequestDate(LocalDate requestDate) {
+    public void setRequestDate(String requestDate) {
         this.requestDate = requestDate;
     }
 
