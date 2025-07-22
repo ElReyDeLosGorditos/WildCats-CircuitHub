@@ -1,7 +1,7 @@
 /* --- Page Wrapper --- */
 .AU-container {
     min-height: 100vh;
-    background-color: #a888b5;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -23,7 +23,7 @@
 /* --- Title --- */
 .AU-title {
     font-size: 28px;
-    color: #ffffff;
+    color: black;
     margin: 0;
 }
 

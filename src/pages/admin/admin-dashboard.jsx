@@ -92,10 +92,11 @@ const AdminDashboard = () => {
     navigate(path);
   };
 
-  const handleReview = (e, id) => {
+  const handleReview = (e, request) => {
     e.stopPropagation();
-    navigate(`/review-request/${id}`);
+    navigate(`/review-request/${request.id}`, { state: { request } });
   };
+
 
   return (
     <div className="admin-dashboard">
@@ -161,7 +162,7 @@ const AdminDashboard = () => {
                   <p><strong>{req.itemName}</strong> - {req.borrowerName}</p>
                   <span>{req.requestDate}</span>
                   <div className="review-btn-row">
-                    <button className="review-request-btn" onClick={(e) => handleReview(e, req.id)}>
+                    <button className="review-request-btn" onClick={(e) => handleReview(e, req)}>
                       Review Request
                     </button>
                   </div>

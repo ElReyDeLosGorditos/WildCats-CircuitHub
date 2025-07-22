@@ -1,4 +1,4 @@
-/* Review Request Modal (RR) */
+/* Review Request Modal (RR) - Improved */
 
 .RR-overlay {
     position: fixed;
@@ -6,7 +6,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.4); /* Slightly lighter overlay */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,76 +14,93 @@
 }
 
 .RR-modal {
-    background: #d8bee1;
+    background: #fdfbff; /* A very light, almost white background for contrast */
     width: 500px;
     max-width: 90%;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.3s ease-out;
+    border-radius: 16px; /* Slightly more rounded corners */
+    padding: 35px; /* More padding for breathing room */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); /* Softer, spread-out shadow */
+    animation: fadeIn 0.4s ease-out; /* Slightly longer fade-in */
     font-family: 'Segoe UI', sans-serif;
+    border: 1px solid rgba(216, 190, 225, 0.5); /* Subtle border matching the pastel purple */
 }
 
 .RR-title {
-    margin-bottom: 20px;
+    margin-bottom: 25px; /* More space below the title */
     text-align: center;
-    color: #213547;
+    color: #5d3f6a; /* Deeper shade of purple/plum for title */
+    font-size: 26px; /* Slightly larger title */
+    font-weight: 700;
 }
 
 .RR-subtitle {
-    font-size: 16px;
-    color: #1a3c7c;
-    margin-bottom: 8px;
+    font-size: 17px; /* Slightly larger subtitle */
+    color: #7b688d; /* Muted purple/grey for subtitles */
+    margin-bottom: 10px; /* More space below subtitle */
+    font-weight: 600;
+    padding-bottom: 5px; /* Adds a little visual separation */
+    border-bottom: 1px dashed rgba(216, 190, 225, 0.7); /* Dashed line for subtle separation */
 }
 
 .RR-section {
-    margin-bottom: 20px;
+    margin-bottom: 25px; /* More space between sections */
 }
 
 .RR-section p {
-    margin: 6px 0;
-    font-size: 14px;
+    margin: 8px 0; /* More vertical space for text */
+    font-size: 15px; /* Slightly larger text */
+    color: #4a4a4a; /* Softer dark grey for body text */
+}
+
+.RR-section p strong {
+    color: #5d3f6a; /* Bolder purple for strong text within sections */
 }
 
 .RR-buttons {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 20px; /* Increased gap between buttons */
+    margin-top: 30px; /* Space above buttons */
 }
 
 .RR-approve,
 .RR-deny {
-    padding: 10px 20px;
-    font-size: 15px;
+    padding: 12px 25px; /* Larger buttons */
+    font-size: 16px; /* Larger font in buttons */
     font-weight: 600;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px; /* More rounded buttons */
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: all 0.3s ease; /* Smoother transition for all properties */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for buttons */
 }
 
 .RR-approve {
-    background-color: #28a745;
-    color: white;
+    background-color: #9cdb9c; /* Softer, pastel green */
+    color: #3a5c3a; /* Darker green text for contrast */
 }
 
 .RR-approve:hover {
-    background-color: #218838;
+    background-color: #8acb8a; /* Slightly darker green on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
 }
 
 .RR-deny {
-    background-color: #dc3545;
-    color: white;
+    background-color: #ffb6c1; /* Soft, pastel pink/rose */
+    color: #8c3e4b; /* Darker red text for contrast */
 }
 
 .RR-deny:hover {
-    background-color: #c82333;
+    background-color: #fcaeb9; /* Slightly darker pink on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(-15px);
+        transform: translateY(-20px); /* Starts a bit higher */
     }
     to {
         opacity: 1;

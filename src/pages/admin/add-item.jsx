@@ -11,7 +11,7 @@ const AddItem = ({ closeModal }) => {
   const [itemImage, setItemImage] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(1);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // <-- Loading state
+  const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
     setItemImage(e.target.files[0]);
@@ -19,7 +19,7 @@ const AddItem = ({ closeModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (loading) return; // prevent multiple clicks
+    if (loading) return;
     setError("");
 
     if (!itemName || !itemDescription || !itemCondition || !itemQuantity) {
@@ -47,7 +47,6 @@ const AddItem = ({ closeModal }) => {
         createdAt: new Date(),
       });
 
-      // ✅ Close modal on success
       closeModal();
     } catch (err) {
       console.error("Error adding item:", err);
@@ -60,95 +59,91 @@ const AddItem = ({ closeModal }) => {
   return (
       <div className="popup-modal-overlay" onClick={closeModal}>
         <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
-          <div className="AT-item-card">
-            <div className="AT-card-header">
-              <h2 className="AT-page-title">Add Equipment</h2>
+          <div className="add-item-card">
+            <h2 className="add-item-title">Add Equipment</h2>
+
+            {/* Image Upload Area */}
+            <div className="image-upload-wrapper">
+              <label htmlFor="image-upload" className="image-upload-box">
+                {itemImage ? (
+                    <img
+                        src={URL.createObjectURL(itemImage)}
+                        alt="Preview"
+                        className="image-preview"
+                    />
+                ) : (
+                    <>
+                      <div className="upload-icon">📷</div>
+                      <div className="upload-text">Click or Drag to Upload</div>
+                    </>
+                )}
+              </label>
+              <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  className="file-input"
+                  onChange={handleImageChange}
+              />
             </div>
 
-            <div className="AT-item-content">
-              {/* Image Section */}
-              <div className="AT-image-container">
-                <label htmlFor="image-upload" className="AT-image-label">
-                  {itemImage ? (
-                      <img
-                          src={URL.createObjectURL(itemImage)}
-                          alt="Preview"
-                          className="AT-equipment-image"
-                      />
-                  ) : (
-                      <>
-                        <span className="AT-image-icon">🖼️➕</span>
-                        <span className="AT-image-text">Add Image</span>
-                      </>
-                  )}
-                </label>
-                <input
-                    id="image-upload"
-                    type="file"
-                    accept="image/*"
-                    className="AT-file-input"
-                    onChange={handleImageChange}
-                />
-              </div>
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="add-item-form">
+              {error && <p className="form-error">{error}</p>}
 
-              {/* Form Section */}
-              <div className="AT-info-fields">
-                <form onSubmit={handleSubmit} className="AT-item-form">
-                  {error && <p className="AT-error-slide">{error}</p>}
+              {/* Item Name */}
+              <label className="form-label">Item Name</label>
+              <input
+                  type="text"
+                  placeholder="Enter item name"
+                  className="form-input"
+                  value={itemName}
+                  onChange={(e) => setItemName(e.target.value)}
+              />
 
-                  <div className="AT-field-group">
-                    <input
-                        type="text"
-                        className="AT-field-box"
-                        value={itemName}
-                        onChange={(e) => setItemName(e.target.value)}
-                        placeholder="Item name..."
-                    />
-                  </div>
+              {/* Description */}
+              <label className="form-label">Description</label>
+              <textarea
+                  placeholder="Enter description"
+                  className="form-textarea"
+                  value={itemDescription}
+                  onChange={(e) => setItemDescription(e.target.value)}
+              />
 
-                  <div className="AT-field-group large">
-                  <textarea
-                      className="AT-field-box AT-description-scroll"
-                      value={itemDescription}
-                      onChange={(e) => setItemDescription(e.target.value)}
-                      placeholder="Description..."
-                  />
-                  </div>
+              {/* Condition */}
+              <label className="form-label">Condition</label>
+              <select
+                  className="form-input"
+                  value={itemCondition}
+                  onChange={(e) => setItemCondition(e.target.value)}
+              >
+                <option value="">Select Condition</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+              </select>
 
-                  <div className="AT-field-group">
-                    <select
-                        className="AT-field-box"
-                        value={itemCondition}
-                        onChange={(e) => setItemCondition(e.target.value)}
-                    >
-                      <option value="">Condition...</option>
-                      <option value="Good">Good</option>
-                      <option value="Fair">Fair</option>
-                      <option value="Poor">Poor</option>
-                    </select>
-                  </div>
+              {/* Quantity */}
+              <label className="form-label">Quantity</label>
+              <input
+                  type="number"
+                  min={1}
+                  className="form-input"
+                  placeholder="Enter quantity"
+                  value={itemQuantity}
+                  onChange={(e) => setItemQuantity(parseInt(e.target.value))}
+              />
 
-                  <div className="AT-field-group">
-                    <input
-                        type="number"
-                        className="AT-field-box"
-                        value={itemQuantity}
-                        onChange={(e) => setItemQuantity(parseInt(e.target.value))}
-                        min={1}
-                        placeholder="Quantity..."
-                    />
-                  </div>
+              {/* Submit */}
+              <button type="submit" className="form-button" disabled={loading}>
+                {loading ? "Adding..." : "Add Item"}
+              </button>
+            </form>
 
-                  <button type="submit" className="AT-submit-button" disabled={loading}>
-                    {loading ? "Adding..." : "Add Item"}
-                  </button>
-                </form>
-              </div>
-            </div>
           </div>
         </div>
       </div>
   );
-};
+}
 
 export default AddItem;

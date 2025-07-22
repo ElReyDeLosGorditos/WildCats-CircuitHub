@@ -1,6 +1,6 @@
 /* --- Page Layout --- */
 .AR-container {
-    background-color: #8f79a9;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
     min-height: 100vh;
     padding-bottom: 60px;
 }
@@ -10,7 +10,7 @@
     padding: 30px 20px;
     display: flex;
     justify-content: center;
-    background-color: #8f79a9;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
 }
 
 .AR-content {
@@ -20,7 +20,7 @@
 
 .AR-title {
     font-size: 28px;
-    color: white;
+    color: black;
     font-weight: 700;
     margin-bottom: 20px;
 }

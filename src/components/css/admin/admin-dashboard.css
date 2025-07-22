@@ -1,7 +1,7 @@
 /* Admin Dashboard Page */
 .admin-dashboard {
     min-height: 100vh;
-    background-color: #8174a0;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
 }
 
 .admin-dashboard-container {

@@ -1,7 +1,7 @@
 /* --- Page Wrapper --- */
 .EM-dashboard {
     min-height: 100vh;
-    background-color: #a888b5;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -15,7 +15,7 @@
 /* --- Title/Header Row --- */
 .EM-title {
     font-size: 28px;
-    color: #ffffff;
+    color: black;
     margin-bottom: 30px;
 }
 
