@@ -30,32 +30,32 @@ const ContactUsPage = () => {
     const members = [
         {
             name: "Xyrill Dereck N. Canete",
-            role: "Lead Developer",
-            email: "john.santos@wildcats.edu",
+            role: "Project Manager, Backend Developer",
+            email: "xyrilldereck.canete@cit.edu",
             phone: "+63 912 111 2233",
         },
         {
             name: "Karl T. Baricuatro",
-            role: "UI/UX Designer",
-            email: "marie.cruz@wildcats.edu",
+            role: "UI/UX Designer, Frontend Developer",
+            email: "karl.baricuatro@cit.edu",
             phone: "+63 912 444 5566",
         },
         {
             name: "Jestopher Dela Torre",
             role: "Backend Developer",
-            email: "alex.delapena@wildcats.edu",
+            email: "jestopher.delatorre@cit.edu",
             phone: "+63 912 777 8899",
         },
         {
             name: "John Lawrence Regis",
-            role: "Project Manager",
-            email: "grace.lim@wildcats.edu",
+            role: "Backend Developer",
+            email: "johnlawrence.regis@cit.edu",
             phone: "+63 912 000 1122",
         },
         {
             name: "Geanna Ricci Pacana",
-            role: "Quality Assurance",
-            email: "mark.tan@wildcats.edu",
+            role: "Frontend Developer",
+            email: "geannaricci.pacana@cit.edu",
             phone: "+63 912 333 4455",
         },
     ];
@@ -122,13 +122,7 @@ const ContactUsPage = () => {
                         <p className="feature-description" style={{ maxWidth: 700 }}>
                             If you have questions or need assistance, please reach out:
                         </p>
-                        <ul className="contact-list">
-                            <li>Email: support@wildcatscircuithub.edu</li>
-                            <li>Phone: +63 900 123 4567</li>
-                            <li>Office: Engineering Building, Room&nbsp;101</li>
-                        </ul>
                     </div>
-
                     {/* Members */}
                     <div className="hero-section-block">
                         <h2 className="sub-heading">Members</h2>
@@ -140,7 +134,7 @@ const ContactUsPage = () => {
                                     <h4>{m.name}</h4>
                                     <p className="contact-role">{m.role}</p>
                                     <p>Email:&nbsp;{m.email}</p>
-                                    <p>Phone:&nbsp;{m.phone}</p>
+                                    {/*<p>Phone:&nbsp;{m.phone}</p>*/}
                                 </div>
                             ))}
                         </div>

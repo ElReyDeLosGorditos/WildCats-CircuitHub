@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
-import "../../components/css/admin/admin-items.css";
+import "../../components/css/admin/admin-items.css"; // Your CSS file
 import AdminHeader from "./AdminHeader";
 import AdminViewItem from "./view-item.jsx";
 import AddItem from "./add-item.jsx";
@@ -20,7 +20,7 @@ const AdminManageItems = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editItem, setEditItem] = useState(null);
 
-  // Toggle background blur when any modal is open
+  // Toggle body scroll lock
   useEffect(() => {
     document.body.classList.toggle(
         "modal-open",
@@ -28,7 +28,6 @@ const AdminManageItems = () => {
     );
   }, [selectedItem, showAddModal, editItem]);
 
-  // Fetch items from Firebase
   const fetchItems = async () => {
     try {
       const snapshot = await getDocs(collection(db, "items"));
@@ -69,80 +68,83 @@ const AdminManageItems = () => {
   };
 
   return (
-      <div className={`admin-items-container ${selectedItem || showAddModal || editItem ? "modal-blurred" : ""}`}>
+      <div className="admin-items-container">
         <AdminHeader />
 
-        <div className="items-inventory-wrapper">
-          <div className="items-inventory-container">
-            <div className="items-list-section">
-              <div className="inventory-header">
-                <h1 className="inventory-title">Equipment Inventory</h1>
-                <button className="add-item-btn" onClick={() => setShowAddModal(true)}>
-                  Add Equipment
-                </button>
-              </div>
+        {/* ✅ BLUR applies only to this wrapper */}
+        <div className={`main-content-wrapper ${selectedItem || showAddModal || editItem ? "modal-blurred" : ""}`}>
+          <div className="items-inventory-wrapper">
+            <div className="items-inventory-container">
+              <div className="items-list-section">
+                <div className="inventory-header">
+                  <h1 className="inventory-title">Equipment Inventory</h1>
+                  <button className="add-item-btn" onClick={() => setShowAddModal(true)}>
+                    Add Equipment
+                  </button>
+                </div>
 
-              <div className="inventory-search-bar">
-                <input
-                    type="text"
-                    placeholder="Search by item name..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="admin-search-bar"
-                />
-                <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="admin-filter-dropdown"
-                >
-                  <option value="all">All</option>
-                  <option value="Available">Available</option>
-                  <option value="Borrowed">Not Available</option>
-                </select>
-              </div>
+                <div className="inventory-search-bar">
+                  <input
+                      type="text"
+                      placeholder="Search by item name..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="admin-search-bar"
+                  />
+                  <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="admin-filter-dropdown"
+                  >
+                    <option value="all">All</option>
+                    <option value="Available">Available</option>
+                    <option value="Borrowed">Not Available</option>
+                  </select>
+                </div>
 
-              <div className="items-list">
-                {filteredItems.map((item) => (
-                    <div key={item.id} className="items-card-link" onClick={() => setSelectedItem(item)}>
-                      <div className="items-card">
-                        <img
-                            src={
-                              item.imagePath?.startsWith("http")
-                                  ? item.imagePath
-                                  : `https://ccs-gadgethubb.onrender.com${item.imagePath}`
-                            }
-                            alt={item.name}
-                            className="items-image"
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = "https://via.placeholder.com/150";
-                            }}
-                        />
-                        <div className="items-details">
-                          <h3>{item.name || "Unnamed Item"}</h3>
-                          <p className="items-description">{item.description || "No description provided."}</p>
-                          <p className="items-quantity">Quantity: {item.quantity}</p>
-                        </div>
-                        <div className="items-status-section">
-                          <p className="status-label">Borrow Status</p>
-                          <p className={`items-status ${item.status?.toLowerCase()}`}>
-                            {item.status === "Borrowed" ? "Not Available" : item.status}
-                          </p>
-                        </div>
-                        <div className="items-edit-icon">
-                          <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditItem(item);
+                <div className="items-list">
+                  {filteredItems.map((item) => (
+                      <div key={item.id} className="items-card-link" onClick={() => setSelectedItem(item)}>
+                        <div className="items-card">
+                          <img
+                              src={
+                                item.imagePath?.startsWith("http")
+                                    ? item.imagePath
+                                    : `https://ccs-gadgethubb.onrender.com${item.imagePath}`
+                              }
+                              alt={item.name}
+                              className="items-image"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "https://via.placeholder.com/150";
                               }}
-                          >
-                            ✏️
-                          </button>
+                          />
+                          <div className="items-details">
+                            <h3>{item.name || "Unnamed Item"}</h3>
+                            <p className="items-description">{item.description || "No description provided."}</p>
+                            <p className="items-quantity">Quantity: {item.quantity}</p>
+                          </div>
+                          <div className="items-status-section">
+                            <p className="status-label">Borrow Status</p>
+                            <p className={`items-status ${item.status?.toLowerCase()}`}>
+                              {item.status === "Borrowed" ? "Not Available" : item.status}
+                            </p>
+                          </div>
+                          <div className="items-edit-icon">
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditItem(item);
+                                }}
+                            >
+                              ✏️
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -154,12 +156,8 @@ const AdminManageItems = () => {
               <div className="admin-item-modal">
                 <p className="admin-item-modal-message">Are you sure you want to delete this item?</p>
                 <div className="admin-item-modal-buttons">
-                  <button className="admin-item-yes-btn" onClick={confirmDelete}>
-                    Yes
-                  </button>
-                  <button className="admin-item-no-btn" onClick={() => setShowDeleteModal(false)}>
-                    No
-                  </button>
+                  <button className="admin-item-yes-btn" onClick={confirmDelete}>Yes</button>
+                  <button className="admin-item-no-btn" onClick={() => setShowDeleteModal(false)}>No</button>
                 </div>
               </div>
             </div>
@@ -178,7 +176,7 @@ const AdminManageItems = () => {
         {showAddModal && (
             <div className="popup-modal-overlay" onClick={() => {
               setShowAddModal(false);
-              fetchItems(); // refresh list after modal closes
+              fetchItems();
             }}>
               <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
                 <AddItem closeModal={() => {
@@ -193,7 +191,7 @@ const AdminManageItems = () => {
         {editItem && (
             <div className="popup-modal-overlay" onClick={() => {
               setEditItem(null);
-              fetchItems(); // refresh list after modal closes
+              fetchItems();
             }}>
               <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
                 <AdminEditItem id={editItem.id} closeModal={() => {

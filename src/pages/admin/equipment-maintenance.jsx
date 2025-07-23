@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/circuithubLogo2.png";
 import AdminHeader from "./AdminHeader";
-import "../../admin.css"; // Ensure this has the added navbar fix!
+import "../../components/css/admin/equipment-maintenance.css";
 
 const EquipmentMaintenance = () => {
     const location = useLocation();
@@ -161,214 +161,122 @@ const EquipmentMaintenance = () => {
     });
 
     return (
-        <div className="admin-dashboard">
-            <AdminHeader/>
+        // Changes made:
+// - Changed all classNames to start with EM-
+// - Updated modal, buttons, input fields, table
 
-            {/* Maintenance Header */}
-            <div className="admin-dashboard-container">
-                <h1 className="admin-welcome">Equipment Maintenance Dashboard</h1>
+        <div className="EM-dashboard">
+            <AdminHeader />
 
-                <div className="maintenance-toolbar">
-                    {/* Comment lang usa, uncomment lang if gamiton */}
-                    {/*<div className="maintenance-tabs">*/}
-                    {/*    <button*/}
-                    {/*        className={activeTab === "maintenance" ? "tab active" : "tab"}*/}
-                    {/*        onClick={() => setActiveTab("maintenance")}*/}
-                    {/*    >*/}
-                    {/*        🛠 Under Maintenance ({maintenanceData.length})*/}
-                    {/*    </button>*/}
-                    {/*    <button*/}
-                    {/*        className={activeTab === "pending" ? "tab active" : "tab"}*/}
-                    {/*        onClick={() => setActiveTab("pending")}*/}
-                    {/*    >*/}
-                    {/*        📋 Pending Requests ({pendingData.length})*/}
-                    {/*    </button>*/}
-                    {/*</div>*/}
+            <div className="EM-container">
+                <h1 className="EM-title">Equipment Maintenance Dashboard</h1>
 
-                    <div className="maintenance-controls">
+                <div className="EM-toolbar">
+                    <div className="EM-controls">
                         <input
-                            className="admin-search-bar"
+                            className="EM-search"
                             type="text"
                             placeholder="Search Equipment"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <button
-                            className="add-item-btn"
-                            style={{ marginTop: 15, marginBottom: 15 }}
-                            onClick={() => handleOpenForm("add")}
-                        >
+                        <button className="EM-add-btn" onClick={() => handleOpenForm("add")}>
                             Add Request
                         </button>
                     </div>
                 </div>
 
-                {/* Data Section */}
-                <div className="maintenance-table">
-                    {activeTab === "maintenance" ? (
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Equipment</th>
-                                <th>Issue</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                <div className="EM-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Equipment</th>
+                            <th>Issue</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {filteredMaintenance.map((item, index) => (
+                            <tr key={index}>
+                                <td>{item.equipmentName}</td>
+                                <td>{item.issue}</td>
+                                <td>{item.status}</td>
+                                <td>
+                                    <button
+                                        className="EM-edit-btn"
+                                        onClick={() => handleOpenForm("edit", item)}
+                                    >
+                                        ✏️
+                                    </button>
+                                    <button
+                                        className="EM-delete-btn"
+                                        onClick={() => handleDelete(item.maintenanceId)}
+                                    >
+                                        🗑️
+                                    </button>
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {filteredMaintenance.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.equipmentName}</td>
-                                    <td>{item.issue}</td>
-                                    <td>{item.status}</td>
-                                    <td>
-                                        <button
-                                            className="edit-btn"
-                                            onClick={() => handleOpenForm("edit", item)}
-                                            style={{ marginRight: "10px" }}
-                                        >
-                                            ✏️
-                                        </button>
-                                        <button
-                                            className="delete-btn"
-                                            onClick={() => handleDelete(item.maintenanceId)}
-                                        >
-                                            🗑️
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Equipment</th>
-                                <th>Issue</th>
-                                <th>Status</th>
-                                <th>Date Requested</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {filteredPending.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.equipmentName}</td>
-                                    <td>{item.issue}</td>
-                                    <td>{item.status}</td>
-                                    <td>{item.date}</td>
-                                    <td>
-                                        <button
-                                            className="edit-btn"
-                                            onClick={() => handleOpenForm("edit", item)}
-                                        >
-                                            ✏️
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    )}
+                        ))}
+                        </tbody>
+                    </table>
                 </div>
 
-                {/* Form Modal */}
                 {showForm && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <button
-                                className="modal-exit-btn"
-                                onClick={() => setShowForm(false)}
-                            >
+                    <div className="EM-modal-overlay">
+                        <div className="EM-modal-content">
+                            <button className="EM-close-btn" onClick={() => setShowForm(false)}>
                                 &times;
                             </button>
-
-                            <h2 style={{ fontSize: "22px", marginBottom: "20px" }}>
+                            <h2 className="EM-modal-title">
                                 {formMode === "add" ? "Add Maintenance Request" : "Update Maintenance Request"}
                             </h2>
 
-                            <div className="add-item-form">
-                                <label>
-                                    Equipment Name
-                                    <input
-                                        type="text"
-                                        name="equipmentName"
-                                        value={formData.equipmentName}
-                                        onChange={(e) =>
-                                            setFormData({...formData, equipmentName: e.target.value})
-                                        }
-                                    />
-                                </label>
-                                <label>
-                                    Issue
-                                    <input
-                                        type="text"
-                                        name="issue"
-                                        value={formData.issue}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                                <label>
-                                    Status
-                                    <select
-                                        name="status"
-                                        value={formData.status}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">Select status</option>
-                                        <option>Pending Approval</option>
-                                        <option>In Progress</option>
-                                        <option>Completed</option>
-                                    </select>
-                                </label>
-                                <label>
-                                    Date Requested
-                                    <input
-                                        type="date"
-                                        name="date"
-                                        value={formData.date}
-                                        onChange={handleChange}
-                                        min={new Date().toISOString().split("T")[0]} // today
-                                        max={new Date(new Date().setMonth(new Date().getMonth() + 5))
-                                            .toISOString()
-                                            .split("T")[0]}
-                                    />
-                                </label>
+                            <div className="EM-form">
+                                <input
+                                    type="text"
+                                    name="equipmentName"
+                                    placeholder="Equipment Name"
+                                    value={formData.equipmentName}
+                                    onChange={handleChange}
+                                />
+                                <input
+                                    type="text"
+                                    name="issue"
+                                    placeholder="Issue"
+                                    value={formData.issue}
+                                    onChange={handleChange}
+                                />
+                                <select
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Select status</option>
+                                    <option>Pending Approval</option>
+                                    <option>In Progress</option>
+                                    <option>Completed</option>
+                                </select>
+                                <input
+                                    type="date"
+                                    name="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                    min={new Date().toISOString().split("T")[0]}
+                                    max={new Date(new Date().setMonth(new Date().getMonth() + 5))
+                                        .toISOString()
+                                        .split("T")[0]}
+                                />
 
-                                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
+                                <div className="EM-form-buttons">
                                     {formMode === "edit" && (
-                                        <button
-                                            className="submit-btn"
-                                            style={{ backgroundColor: "red", padding: 15 }}
-                                            onClick={() => setShowForm(false)}
-                                        >
+                                        <button className="EM-remove-btn" onClick={() => setShowForm(false)}>
                                             Remove
                                         </button>
                                     )}
-                                    {formMode === "add" ? (
-                                        <button
-                                            className="submit-btn"
-                                            style={{
-                                                padding: '15px',
-                                                width: '180px',
-                                                display: 'block',
-                                                margin: '0 auto',
-                                                marginTop: '20px',
-                                            }}
-                                            onClick={handleSubmit}
-                                        >
-                                            Add
-                                        </button>
-                                    ) : (
-                                        <button
-                                            className="submit-btn"
-                                            style={{ padding: '15px' }}
-                                            onClick={handleSubmit}
-                                        >
-                                            Update
-                                        </button>
-                                    )}
+                                    <button className="EM-submit-btn" onClick={handleSubmit}>
+                                        {formMode === "add" ? "Add" : "Update"}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -376,6 +284,7 @@ const EquipmentMaintenance = () => {
                 )}
             </div>
         </div>
+
     );
 };
 

@@ -107,28 +107,21 @@ const FeaturesPage = () => {
                         <div className="feature-block">
                             <h3 className="feature-title">Real-time Availability</h3>
                             <p className="feature-description">
-                                Instantly check which lab equipment is available for borrowing, updated live.
+                                Check which laboratory equipment is available for borrowing.
                             </p>
                         </div>
 
                         <div className="feature-block">
-                            <h3 className="feature-title">One-click Reservation</h3>
+                            <h3 className="feature-title">Borrow with ease</h3>
                             <p className="feature-description">
-                                Easily reserve equipment online without needing manual approval.
-                            </p>
-                        </div>
-
-                        <div className="feature-block">
-                            <h3 className="feature-title">Automated Return Reminders</h3>
-                            <p className="feature-description">
-                                Get notified automatically before the due date of your borrowed items.
+                                Easily borrow equipment without needing manual approval.
                             </p>
                         </div>
 
                         <div className="feature-block">
                             <h3 className="feature-title">User-friendly Dashboard</h3>
                             <p className="feature-description">
-                                Track your reservations, return history, and account status in one clean interface.
+                                Track your borrowed equipments, return history, and account details in one clean interface.
                             </p>
                         </div>
                     </div>

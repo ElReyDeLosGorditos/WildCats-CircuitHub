@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import AdminHeader from "./AdminHeader";
-import logo from "../../assets/circuithubLogo2.png";
 import {
   collection,
   getDocs,
@@ -10,15 +7,16 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
+import "../../components/css/admin/admin-request.css";
+import AdminHeader from "./AdminHeader";
+import AdminRequestReview from "./review-request.jsx";
 
 const AdminRequests = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const [requests, setRequests] = useState([]);
   const [statusFilter, setStatusFilter] = useState("Pending");
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
+  const [selectedRequest, setSelectedRequest] = useState(null);
 
   useEffect(() => {
     fetchRequests();
@@ -27,161 +25,168 @@ const AdminRequests = () => {
   const fetchRequests = async () => {
     try {
       const snapshot = await getDocs(collection(db, "borrowRequests"));
-      const fetchedRequests = await Promise.all(
-        snapshot.docs.map(async (docSnap) => {
-          const data = { id: docSnap.id, ...docSnap.data() };
+      const fetched = await Promise.all(
+          snapshot.docs.map(async (docSnap) => {
+            const data = { id: docSnap.id, ...docSnap.data() };
 
-          // Fetch user name using userId
-          if (data.userId) {
-            try {
-              const userRef = doc(db, "users", data.userId);
-              const userSnap = await getDoc(userRef);
-              if (userSnap.exists()) {
-                const userData = userSnap.data();
-                data.borrowerName = `${userData.firstName} ${userData.lastName}`;
+            if (data.userId) {
+              try {
+                const userRef = doc(db, "users", data.userId);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                  const userData = userSnap.data();
+                  data.borrowerName = `${userData.firstName} ${userData.lastName}`;
+                }
+              } catch (err) {
+                console.error("User fetch error:", err);
               }
-            } catch (err) {
-              console.error("Error fetching user data:", err);
             }
-          }
 
-          return data;
-        })
+            return data;
+          })
       );
-
-      setRequests(fetchedRequests);
+      setRequests(fetched);
     } catch (err) {
-      console.error("Error fetching requests:", err);
+      console.error("Request fetch error:", err);
       setError("Failed to fetch requests.");
     }
   };
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      const reqRef = doc(db, "borrowRequests", id);
-      await updateDoc(reqRef, { status: newStatus });
-      fetchRequests(); // Refresh data after update
+      await updateDoc(doc(db, "borrowRequests", id), { status: newStatus });
+      fetchRequests();
     } catch (err) {
-      console.error("Error updating status:", err);
+      console.error("Status update error:", err);
     }
+  };
+
+  const groupRequestsByDate = (requests) => {
+    const groups = {};
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const formatKey = (dateObj) => {
+      const day = dateObj.getDate().toString().padStart(2, "0");
+      const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+      const dayStr = dateObj.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
+      return `${day}/${month}, ${dayStr}`;
+    };
+
+    for (let req of requests) {
+      if (!req.createdAt || !req.createdAt.seconds) continue;
+
+      const created = new Date(req.createdAt.seconds * 1000);
+      const createdDate = created.toDateString();
+      const todayStr = today.toDateString();
+      const yesterdayStr = yesterday.toDateString();
+
+      let key = "";
+      if (createdDate === todayStr) key = "Today";
+      else if (createdDate === yesterdayStr) key = "Yesterday";
+      else key = formatKey(created);
+
+      if (!groups[key]) groups[key] = [];
+      groups[key].push({ ...req, createdDate: created });
+    }
+
+    return groups;
   };
 
   const filteredRequests = requests.filter((req) => {
     const matchesStatus = statusFilter === "All" || req.status === statusFilter;
     const matchesSearch =
-      req.borrowerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.itemName?.toLowerCase().includes(searchTerm.toLowerCase());
+        req.borrowerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        req.itemName?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
+  const groupedRequests = groupRequestsByDate(filteredRequests);
+
+  const sortedGroups = Object.entries(groupedRequests).sort(([aKey, aReqs], [bKey, bReqs]) => {
+    const getDateValue = (key, reqs) => {
+      if (key === "Today") return new Date();
+      if (key === "Yesterday") {
+        const y = new Date();
+        y.setDate(y.getDate() - 1);
+        return y;
+      }
+      return reqs[0]?.createdDate || new Date(0);
+    };
+    return getDateValue(bKey, bReqs) - getDateValue(aKey, aReqs);
+  });
+
   return (
-    <div className="admin-dashboard">
-      <AdminHeader />
+      <div className={`AR-container ${selectedRequest ? "modal-blurred" : ""}`}>
+        <AdminHeader />
 
-      {/* Content */}
-      <div className="admin-dashboard-container">
-        <h1 className="admin-welcome">Manage Requests</h1>
-        {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+        <div className="AR-wrapper">
+          <div className="AR-content">
+            <div className="AR-header">
+              <h1 className="AR-title">Manage Borrow Requests</h1>
+            </div>
 
-        {/* Filters */}
-        <div className="admin-filters-row">
-          <input
-            type="text"
-            placeholder="Search by borrower or item..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="admin-search-bar"
-          />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="admin-filter-dropdown"
-          >
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Denied">Denied</option>
-            <option value="Returned">Returned</option>
-          </select>
-        </div>
+            {error && <p className="AR-error">{error}</p>}
 
-        {/* Requests List */}
-        <div className="admin-requests-grid">
-          {filteredRequests.length > 0 ? (
-            filteredRequests.map((req) => (
-              <div
-                key={req.id}
-                className="admin-request-card fixed-card-width"
-                onClick={() => {
-                  if (req.status === "Pending") return;
-                  navigate(`/admin-view-request/${req.id}`);
-                }}
-                style={{
-                  cursor: req.status !== "Pending" ? "pointer" : "default",
-                }}
+            <div className="AR-filters">
+              <input
+                  type="text"
+                  className="AR-search"
+                  placeholder="Search by borrower or item..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <select
+                  className="AR-dropdown"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
               >
-                <h3>{req.borrowerName || "Unknown"}</h3>
-                <p><strong>Item:</strong> {req.itemName || "Unknown"}</p>
-                <p><strong>Time Slot:</strong> {req.timeRange || `${req.startTime || ""} - ${req.returnTime || ""}`}</p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className={`status-badge ${req.status?.toLowerCase()}`}>
-                    {req.status}
-                  </span>
-                </p>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Denied">Denied</option>
+                <option value="Returned">Returned</option>
+                <option value="All">All</option>
+              </select>
+            </div>
 
-                {req.status === "Pending" && (
-                  <div className="request-action-btns">
-                    <button
-                      className="approve-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStatusUpdate(req.id, "Approved");
-                      }}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="deny-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStatusUpdate(req.id, "Denied");
-                      }}
-                    >
-                      Deny
-                    </button>
-                    <button
-                      className="review-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/review-request/${req.id}`);
-                      }}
-                    >
-                      Review Request
-                    </button>
+            {sortedGroups.map(([label, reqs]) => (
+                <div key={label} className="AR-group">
+                  <h2 className="AR-group-label">{label}</h2>
+                  <div className="AR-grid">
+                    {reqs.map((req) => (
+                        <div
+                            key={req.id}
+                            className="AR-card"
+                            onClick={() => setSelectedRequest(req)}
+                            style={{ cursor: "pointer" }}
+                        >
+                          <div className="AR-card-content">
+                            <h3 className="AR-borrower">{req.borrowerName || "Unknown"}</h3>
+                            <p><strong>Item:</strong> {req.itemName || "Unknown"}</p>
+                            <p><strong>Time Slot:</strong> {req.timeRange || `${req.startTime || ""} - ${req.returnTime || ""}`}</p>
+                            <p>
+                              <strong>Status:</strong>{" "}
+                              <span className={`AR-status ${req.status?.toLowerCase()}`}>
+                          {req.status}
+                        </span>
+                            </p>
+                          </div>
+                        </div>
+                    ))}
                   </div>
-                )}
-
-                {req.status === "Approved" && (
-                  <div className="request-action-btns">
-                    <button
-                      className="mark-returned-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStatusUpdate(req.id, "Returned");
-                      }}
-                    >
-                      Mark as Returned
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <p>No requests found for current filters.</p>
-          )}
+                </div>
+            ))}
+          </div>
         </div>
+
+        {selectedRequest && (
+            <AdminRequestReview
+                request={selectedRequest}
+                onClose={() => setSelectedRequest(null)}
+            />
+        )}
       </div>
-    </div>
   );
 };
 

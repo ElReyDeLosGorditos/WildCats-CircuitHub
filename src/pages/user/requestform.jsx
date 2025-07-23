@@ -15,6 +15,8 @@ import {
 import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/requestform.css"; // Ensure this path is correct
 
+
+
 // Navigation links for the user dashboard
 const navLinks = [
   { label: "Dashboard", to: "/dashboard" },
@@ -32,6 +34,9 @@ const RequestForm = () => {
   const [allItems, setAllItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [startTime, setStartTime] = useState("");
+
+
 
   const [reason, setReason] = useState("");
   const [borrowDate, setBorrowDate] = useState("");
@@ -217,19 +222,49 @@ const RequestForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate all required fields including selected items and valid return time
-    if (
-        !borrowDate ||
-        !startBlock ||
-        !durationBlocks ||
-        !agree ||
-        selectedItems.length === 0 ||
-        returnTime.includes("Invalid") // Prevent submission if return time is invalid
-    ) {
-      return alert("Please complete all required fields, select at least one item, and ensure the time slot is valid.");
+
+    if (selectedItems.length === 0) {
+      alert("Please select at least one item.");
+      return;
     }
-    setShowConfirmModal(true); // Show confirmation modal
+
+    const user = auth.currentUser; // ✅ Fix added here
+    if (!user) {
+      alert("User not logged in.");
+      return;
+    }
+
+    try {
+      const timeRange = `${startTime} - ${returnTime}`;
+
+      await addDoc(collection(db, "borrowRequests"), {
+        userId: user.uid,
+        userName: user.displayName || user.email || "Unknown User",
+        borrowDate,
+        startTime,
+        returnTime,
+        timeRange,
+        reason,
+        status: "Pending",
+        createdAt: serverTimestamp(),
+        items: selectedItems.map((item) => ({
+          id: item.id,
+          name: item.name,
+        })),
+      });
+
+      alert("Request submitted!");
+      setSelectedItems([]);
+      setBorrowDate("");
+      setStartTime("");
+      setReturnTime("");
+      setReason("");
+    } catch (error) {
+      console.error("Error submitting request:", error);
+      alert("Failed to submit request.");
+    }
   };
+
 
   // Handle confirming the request from the modal
   const handleConfirmRequest = async () => {

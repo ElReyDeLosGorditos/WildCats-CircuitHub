@@ -1,5 +1,9 @@
+// C:\Users\Xyrill\IdeaProjects\WildCats-CircuitHub\src\pages\admin\AdminViewRequest.jsx
+
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
+import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore"; // Import updateDoc and Timestamp
+import { db } from "../../firebaseconfig"; // Make sure this points to your actual Firebase config
 import logo from "../../assets/circuithubLogo2.png";
 
 const AdminViewRequest = () => {
@@ -8,75 +12,107 @@ const AdminViewRequest = () => {
     const navigate = useNavigate();
 
     const [requestData, setRequestData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
 
     useEffect(() => {
-        const dummyRequests = [
-            {
-                id: 1,
-                borrower: "Jane Doe",
-                item: "Dell Laptop",
-                requestCreatedDate: "Apr 18, 2025",
-                borrowDate: "Apr 22, 2025",
-                borrowTime: "9:00 AM - 3:00 PM",
-                reason: "Project Presentation",
-                status: "Pending",
-                decisionDate: null
-            },
-            {
-                id: 2,
-                borrower: "John Smith",
-                item: "Macbook Air",
-                requestCreatedDate: "Apr 19, 2025",
-                borrowDate: "Apr 21, 2025",
-                borrowTime: "10:00 AM - 2:00 PM",
-                reason: "Thesis Defense",
-                status: "Approved",
-                decisionDate: "Apr 20, 2025"
-            },
-            {
-                id: 3,
-                borrower: "Emily Brown",
-                item: "Huawei Matebook D15",
-                requestCreatedDate: "Apr 18, 2025",
-                borrowDate: "Apr 20, 2025",
-                borrowTime: "11:00 AM - 4:00 PM",
-                reason: "School Event",
-                status: "Denied",
-                decisionDate: "Apr 19, 2025"
-            },
-            {
-                id: 4,
-                borrower: "Michael Tan",
-                item: "iPad Pro",
-                requestCreatedDate: "2025-04-19",
-                requestTime: "8:00 AM - 10:00 AM",
-                borrowDate: "Apr 20, 2025",
-                borrowTime: "11:00 AM - 4:00 PM",
-                reason: "School Event",
-                status: "Returned",
-                decisionDate: "2025-04-20",
-              }
-        ];
+        const fetchRequest = async () => {
+            try {
+                // Ensure you're fetching from 'borrowRequests', not 'requests'
+                const docRef = doc(db, "borrowRequests", id);
+                const docSnap = await getDoc(docRef);
 
-        const foundRequest = dummyRequests.find(req => req.id === parseInt(id));
-        setRequestData(foundRequest);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    // Convert Firestore Timestamps to Date objects for consistent handling
+                    if (data.createdAt?.seconds) data.createdAt = new Date(data.createdAt.seconds * 1000);
+                    if (data.decisionDate?.seconds) data.decisionDate = new Date(data.decisionDate.seconds * 1000);
+                    if (data.returnDate?.seconds) data.returnDate = new Date(data.returnDate.seconds * 1000);
+
+                    // Fetch user name if available
+                    if (data.userId) {
+                        const userRef = doc(db, "users", data.userId);
+                        const userSnap = await getDoc(userRef);
+                        if (userSnap.exists()) {
+                            const userData = userSnap.data();
+                            data.borrower = `${userData.firstName} ${userData.lastName}`;
+                        }
+                    }
+
+                    setRequestData(data);
+                } else {
+                    console.log("No such request found!");
+                    setError("Request not found.");
+                }
+            } catch (error) {
+                console.error("Error fetching request:", error);
+                setError("Failed to load request details.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) {
+            fetchRequest();
+        } else {
+            setLoading(false);
+            setError("No request ID provided.");
+        }
     }, [id]);
 
-    const handleMarkReturned = () => {
-        setRequestData(prev => ({
-            ...prev,
-            status: "Returned",
-            decisionDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-        }));
+    const handleMarkReturned = async () => {
+        if (!requestData || requestData.status !== "Approved") return; // Only allow if approved
+
+        try {
+            const requestRef = doc(db, "borrowRequests", id);
+            await updateDoc(requestRef, {
+                status: "Returned",
+                returnDate: Timestamp.now() // CRITICAL: Set the returnDate as a Timestamp
+            });
+
+            // Update local state after successful Firestore update
+            setRequestData(prev => ({
+                ...prev,
+                status: "Returned",
+                returnDate: new Date(), // Update local state with new Date object
+                // decisionDate is not the return date, so don't overwrite it here
+            }));
+
+            alert("Request marked as Returned!");
+            // Optionally navigate back or refresh parent list if needed
+            // navigate("/admin-requests");
+
+        } catch (error) {
+            console.error("Error marking as returned:", error);
+            alert("Failed to mark as returned. Please try again.");
+        }
     };
 
-    if (!requestData) {
+    // Helper for formatting dates to display
+    const formatDateForDisplay = (date) => {
+        if (!date) return "N/A";
+        // If it's a Firestore Timestamp, convert it first
+        const jsDate = date.toDate ? date.toDate() : date;
+        return jsDate.toLocaleString(); // Or use toLocaleDateString as per your preference
+    };
+
+
+    if (loading) {
         return <p>Loading request details...</p>;
+    }
+
+    if (error) {
+        return <p className="error-message">{error}</p>;
+    }
+
+    if (!requestData) {
+        return <p>No request data found.</p>; // Should be caught by error above, but good fallback
     }
 
     return (
         <div className="admin-dashboard">
-            {/* Navbar */}
+            {/* Navbar remains the same */}
             <div className="navbar">
                 <img src={logo} alt="CircuitHub Logo" />
                 <nav>
@@ -84,7 +120,7 @@ const AdminViewRequest = () => {
                         { label: "Dashboard", to: "/admin-dashboard" },
                         { label: "Manage Items", to: "/admin-items" },
                         { label: "Requests", to: "/admin-requests" },
-                        {label: "Maintenance", to: "/equipment-maintenance"},
+                        { label: "Maintenance", to: "/equipment-maintenance" },
                         { label: "Manage Users", to: "/admin-users" },
                     ].map((link) => (
                         <Link
@@ -110,12 +146,12 @@ const AdminViewRequest = () => {
 
                     {/* Request Timeline */}
                     <h3 className="section-header">Request Timeline</h3>
-                    <p><strong>Date Request Was Created:</strong> {requestData.requestCreatedDate}</p>
+                    <p><strong>Date Request Was Created:</strong> {formatDateForDisplay(requestData.createdAt)}</p>
                     {(requestData.status === "Approved" || requestData.status === "Denied" || requestData.status === "Returned") && (
                         <p><strong>
                             {requestData.status === "Approved" ? "Date of Approval:" :
-                             requestData.status === "Denied" ? "Date of Denial:" : "Date of Return:"}
-                        </strong> {requestData.decisionDate}</p>
+                                requestData.status === "Denied" ? "Date of Denial:" : "Date of Return:"}
+                        </strong> {formatDateForDisplay(requestData.status === "Returned" ? requestData.returnDate : requestData.decisionDate)}</p>
                     )}
 
                     {/* Borrowing Schedule */}
@@ -125,17 +161,29 @@ const AdminViewRequest = () => {
 
                     {/* Request Information */}
                     <h3 className="section-header">Request Information</h3>
-                    <p><strong>Borrower Name:</strong> {requestData.borrower}</p>
-                    <p><strong>Item Requested:</strong> {requestData.item}</p>
+                    <p><strong>Borrower Name:</strong> {requestData.borrower || "N/A"}</p>
                     <p><strong>Reason for Borrowing:</strong> {requestData.reason}</p>
+
+                    {/* Borrowed Items */}
+                    <h3 className="section-header">Borrowed Items</h3>
+                    {Array.isArray(requestData.items) && requestData.items.length > 0 ? (
+                        <ul style={{ paddingLeft: "20px" }}>
+                            {requestData.items.map((item, index) => (
+                                <li key={index}><strong>{item.name}</strong></li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No items listed in this request.</p>
+                    )}
 
                     {/* Status */}
                     <p>
                         <strong>Current Status:</strong>{" "}
                         <span
+                            // Consider using CSS classes for statuses instead of inline styles for maintainability
                             style={{
                                 color: (requestData.status === "Approved" || requestData.status === "Denied") ? "#E26901" :
-                                       (requestData.status === "Returned" ? "#E26901" : "inherit")
+                                    (requestData.status === "Returned" ? "#E26901" : "inherit") // You might want distinct colors
                             }}
                         >
                             {requestData.status}
@@ -145,7 +193,7 @@ const AdminViewRequest = () => {
                     {/* Show "Mark as Returned" only if Approved */}
                     {requestData.status === "Approved" && (
                         <div style={{ marginTop: "20px" }}>
-                            <button 
+                            <button
                                 className="mark-returned-btn"
                                 onClick={handleMarkReturned}
                             >
