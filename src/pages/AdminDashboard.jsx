@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebaseconfig.js";
+import AdminRequestReview from "../pages/admin/review-request.jsx";
 import {
   collection,
   getDocs,
@@ -17,6 +18,8 @@ import "../components/css/admin/admin-dashboard.css";
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
   const [totalItems, setTotalItems] = useState(0);
   const [approvedCount, setApprovedCount] = useState(0);
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -81,13 +84,18 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   const handleCardClick = (path) => {
     navigate(path);
   };
 
-  const handleReview = (e, id) => {
+  const handleReview = (e, request) => {
     e.stopPropagation();
-    navigate(`/review-request/${id}`);
+    setSelectedRequest(request);
+    setShowModal(true);
   };
 
   return (
@@ -151,7 +159,7 @@ const AdminDashboard = () => {
                         <div className="review-btn-row">
                           <button
                               className="review-request-btn"
-                              onClick={(e) => handleReview(e, req.id)}
+                              onClick={(e) => handleReview(e, req)}
                           >
                             Review Request
                           </button>
@@ -164,6 +172,12 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
+        {showModal && selectedRequest && (
+            <AdminRequestReview
+                request={selectedRequest}
+                onClose={closeModal}
+            />
+        )}
       </div>
   );
 };
