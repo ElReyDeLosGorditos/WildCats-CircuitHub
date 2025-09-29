@@ -72,18 +72,63 @@ public class MaintenanceService {
                 return false;
             }
 
+            // 🔍 Lookup item by equipmentName
+            CollectionReference itemsRef = firestore.collection("items");
+            QuerySnapshot itemQuery = itemsRef.whereEqualTo("name", equipmentName).get().get();
+            if (itemQuery.isEmpty()) {
+                throw new RuntimeException("No item found with equipment name: " + equipmentName);
+            }
+
+            DocumentSnapshot itemDoc = itemQuery.getDocuments().get(0);
+            String itemId = itemDoc.getId();
+            Long quantity = itemDoc.getLong("quantity");
+            if (quantity == null) quantity = 0L;
+
+            // ✅ SAFETY CHECK
+            if ("In Progress".equals(status) && quantity <= 0) {
+                throw new RuntimeException("Item is out of stock and cannot be sent to maintenance.");
+            }
+
+            // ✅ Update item status and quantity
+            if ("In Progress".equals(status)) {
+                updateItemStatus(itemId, "Maintenance", -1);
+            } else if ("Completed".equals(status)) {
+                updateItemStatus(itemId, "Available", 1);
+            }
+
             Map<String, Object> updates = new HashMap<>();
             updates.put("equipmentName", equipmentName);
             updates.put("issue", issue);
             updates.put("status", status);
             updates.put("requestDate", requestDate);
 
-            ApiFuture<WriteResult> updateFuture = ref.update(updates);
-            updateFuture.get();
-
+            ref.update(updates).get();
             return true;
+
         } catch (Exception e) {
             throw new RuntimeException("Error updating maintenance record: " + e.getMessage(), e);
+        }
+    }
+
+    private void updateItemStatus(String itemId, String status, int quantityChange) throws ExecutionException, InterruptedException {
+        DocumentReference itemRef = firestore.collection("items").document(itemId);
+        DocumentSnapshot document = itemRef.get().get();
+
+        if (document.exists()) {
+            Map<String, Object> updates = new HashMap<>();
+            Long currentQty = document.getLong("quantity");
+            if (currentQty == null) currentQty = 0L;
+
+            updates.put("status", status);
+            updates.put("quantity", currentQty + quantityChange);
+
+            if ("Maintenance".equals(status)) {
+                updates.put("maintenanceAt", java.time.LocalDateTime.now().toString());
+            } else if ("Available".equals(status)) {
+                updates.put("returnedFromMaintenanceAt", java.time.LocalDateTime.now().toString());
+            }
+
+            itemRef.update(updates).get();
         }
     }
 

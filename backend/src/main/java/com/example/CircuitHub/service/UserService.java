@@ -52,6 +52,8 @@ public class UserService {
                 if (existing.getCourse() == null) updates.put("course", "");
                 if (existing.getYear() == null) updates.put("year", "");
                 if (existing.getProfileImageUrl() == null) updates.put("profileImageUrl", "");
+                if (existing.getLateReturnCount() == null) updates.put("lateReturnCount", 0);
+                if (existing.getLastLateReturnDate() == null) updates.put("lastLateReturnDate", null);
                 if (!updates.isEmpty()) {
                     ref.update(updates).get();
                 }
@@ -59,6 +61,7 @@ public class UserService {
                 if (existing.getCourse() == null) existing.setCourse("");
                 if (existing.getYear() == null) existing.setYear("");
                 if (existing.getProfileImageUrl() == null) existing.setProfileImageUrl("");
+                if (existing.getLateReturnCount() == null) existing.setLateReturnCount(0);
                 return existing;
 
             } else {
@@ -84,6 +87,10 @@ public class UserService {
                 data.put("course", "");
                 data.put("year", "");
                 data.put("profileImageUrl", "");
+                data.put("lateReturnCount", 0);
+                data.put("lastLateReturnDate", null);
+                data.put("department", null);
+                data.put("employeeId", null);
 
                 System.out.println("🔄 Creating new user with data: " + data);
 
@@ -129,6 +136,7 @@ public class UserService {
             if (user.getCourse() == null) user.setCourse("");
             if (user.getYear() == null) user.setYear("");
             if (user.getProfileImageUrl() == null) user.setProfileImageUrl("");
+            if (user.getLateReturnCount() == null) user.setLateReturnCount(0);
 
             return Optional.of(user);
         } catch (InterruptedException e) {
@@ -183,6 +191,7 @@ public class UserService {
         if (user.getCourse() == null) user.setCourse("");
         if (user.getYear() == null) user.setYear("");
         if (user.getProfileImageUrl() == null) user.setProfileImageUrl("");
+        if (user.getLateReturnCount() == null) user.setLateReturnCount(0);
 
         return user;
     }
