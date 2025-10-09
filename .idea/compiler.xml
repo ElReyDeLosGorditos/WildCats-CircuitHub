@@ -2,11 +2,11 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="CircuitHub" />
       </profile>
       <profile name="Annotation profile for GadgetHub" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -15,13 +15,18 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
+        <module name="Circuithub" />
         <module name="Circuithub (1)" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="CircuitHub" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="CircuitHub" options="-parameters" />
+      <module name="Circuithub" options="-parameters" />
       <module name="Circuithub (1)" options="-parameters" />
     </option>
   </component>

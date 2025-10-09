@@ -1,28 +1,28 @@
 /* Admin Dashboard Page */
 .admin-dashboard {
     min-height: 100vh;
-    background-color: #FAF3E0;
+    background-color: #a888b5;
   }
-  
+
   .admin-dashboard-container {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
   }
-  
+
   .admin-welcome {
     font-size: 30px;
     font-weight: 700;
     margin-bottom: 20px;
     color: #213547;
   }
-  
+
   .admin-subtext {
     font-size: 16px;
-    color: #666;
+    color: #ffffff;
     margin-bottom: 30px;
   }
-  
+
   /* Summary Cards */
   .admin-cards {
     display: flex;
@@ -30,7 +30,7 @@
     margin-bottom: 30px;
     flex-wrap: wrap;
   }
-  
+
   .admin-card {
     flex: 1;
     background-color: #fff;
@@ -39,24 +39,24 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   }
-  
+
   .admin-card h3 {
     font-size: 28px;
     color: #d96528;
   }
-  
+
   .admin-card p {
     font-size: 15px;
     color: #444;
   }
-  
+
   /* Side-by-side Columns */
   .admin-columns {
     display: flex;
     gap: 30px;
     flex-wrap: wrap;
   }
-  
+
   .admin-activity-box,
   .admin-pending-box {
     flex: 1;
@@ -65,52 +65,52 @@
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   }
-  
+
   .admin-activity-box h3,
   .admin-pending-box h3 {
     margin-bottom: 16px;
     font-size: 18px;
     color: #333;
   }
-  
+
   .admin-activity-box ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  
+
   .admin-activity-box li {
     margin-bottom: 10px;
     font-size: 15px;
     color: #444;
   }
-  
+
   .admin-activity-box li span {
     color: #999;
     font-size: 13px;
   }
-  
+
   /* Pending Requests */
   .pending-request {
     margin-bottom: 16px;
     border-bottom: 1px solid #eee;
     padding-bottom: 12px;
   }
-  
+
   .pending-request p {
     margin: 0;
     font-size: 15px;
   }
-  
+
   .pending-request span {
     font-size: 13px;
     color: #999;
   }
-  
+
   .review-btn-row {
     margin-top: 10px;
   }
-  
+
   .review-request-btn {
     background-color: #E26901;
     color: white;
@@ -120,11 +120,11 @@
     border-radius: 6px;
     cursor: pointer;
   }
-  
+
   .review-request-btn:hover {
     background-color: #b8501b;
   }
-  
+
   .section-header {
     margin-top: 25px;
     font-size: 20px;
@@ -135,23 +135,23 @@
   .clickable {
     cursor: pointer;
   }
-  
+
   .admin-card.clickable:hover {
     background-color: #f5f5f5;
     transition: background-color 0.2s ease;
   }
-  
+
   .admin-activity-box.clickable:hover {
     background-color: #f5f5f5;
     transition: background-color 0.2s ease;
   }
-  
-  
-  
+
+
+
   /* Manage Items Page (Admin) */
 .admin-manage-items-page {
   min-height: 100vh;
-  background-color: #faf3e0;
+  background-color: #E6E6FA;
 }
 
 .admin-manage-header {
@@ -266,7 +266,7 @@
   border-radius: 5px;
   font-size: 14px;
   cursor: pointer;
-  font-weight: bol;
+  font-weight: bold;
 }
 
 .item-rating {
@@ -604,6 +604,11 @@
 
 
 
+
+
+
+
+
 /* Admin Requests Page */
 .admin-requests-grid {
   display: grid;
@@ -793,7 +798,7 @@
 }
 
 .admin-users-table th {
-  background-color: #faf3e0;
+  background-color: #BDB5D5;
   font-size: 16px;
   font-weight: bold;
 }
@@ -997,7 +1002,7 @@
 }
 
 .cancel-link {
-  color: #d96528;
+  color: #5e2b84;
   font-weight: bold;
   font-size: 16px;
   text-decoration: none;
@@ -1012,7 +1017,7 @@
 
 
 .edit-save-btn {
-  background-color: #d96528;
+  background-color: #5e2b84;
   color: white;
   border: none;
   padding: 10px 24px;
@@ -1023,7 +1028,7 @@
 }
 
 .edit-save-btn:hover {
-  background-color: #b8501b;
+  background-color: #5e2b84;
 }
 
 /* Add User Page */
@@ -1039,7 +1044,7 @@
 
 .add-user-title {
   font-size: 28px;
-  color: #b8501b;
+  color: #5e2b84;
   margin-bottom: 20px;
 }
 
@@ -1085,7 +1090,7 @@
 }
 
 .edit-save-btn {
-  background-color: #d96528;
+  background-color: #5e2b84;
   color: white;
   border: none;
   padding: 10px 24px;
@@ -1096,5 +1101,464 @@
 }
 
 .edit-save-btn:hover {
-  background-color: #b8501b;
+  background-color: #5e2b84;
+}
+
+
+
+
+
+
+.equipment-card {
+  display: flex;
+  background-color: #946bb1;
+  padding: 2rem;
+  border-radius: 10px;
+  color: #1e1e1e;
+  font-family: 'Arial', sans-serif;
+  align-items: center;
+  gap: 2rem;
+}
+
+.equipment-image-container {
+  background-color: #6d4a99;
+  padding: 1.5rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Highlight effect */
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.equipment-image-container:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.5);
+}
+
+.equipment-image {
+  width: 350px;
+  max-width: 100%;
+  border-radius: 15px;
+  object-fit: contain;
+}
+
+.equipment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1;
+  max-width: 350px; /* Match the image width */
+}
+
+.detail-group label {
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+
+.detail-box {
+  background-color: #d4b9e9;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-family: 'Courier New', monospace;
+  width: 100%;
+}
+
+.equipment-wrapper {
+  padding: 0 15%;
+}
+
+@media (max-width: 768px) {
+  .equipment-wrapper {
+    padding: 0 5%;
+  }
+
+  .equipment-card {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .equipment-image-container {
+    margin-bottom: 1rem;
+  }
+
+  .equipment-details {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .detail-box {
+    font-size: 1rem;
+  }
+}
+
+
+
+
+
+
+
+.equipment-inventory-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.equipment-category-sidebar {
+  width: 220px;
+  background: #e0d1ea;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.category-btn {
+  display: block;
+  width: 100%;
+  background: #2e0639;
+  color: white;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.equipment-list-section {
+  flex-grow: 1;
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inventory-title {
+  font-size: 24px;
+  color: white;
+}
+
+.add-item-btn {
+  background: #2e0639;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.inventory-search-bar {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.equipment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.equipment-card {
+  display: flex;
+  align-items: center;
+  background: #a47ac3;
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+}
+
+.equipment-image {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  background: white;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.equipment-details {
+  flex: 2;
+}
+
+.equipment-status-section {
+  flex: 1;
+  text-align: right;
+}
+
+.status-label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.equipment-status {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.equipment-status.available {
+  color: #b5ffb5;
+}
+
+.equipment-status.borrowed {
+  color: #ffbbbb;
+}
+
+.equipment-edit-icon {
+  margin-left: 20px;
+}
+
+.equipment-inventory-wrapper {
+  padding: 0 15%;
+}
+
+@media (max-width: 768px) {
+  .equipment-inventory-wrapper {
+    padding: 0 5%;
+  }
+
+  .equipment-inventory-container {
+    flex-direction: column;
+  }
+
+  .equipment-category-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+/* Equipment Maintenance Dashboard */
+.maintenance-dashboard {
+  padding: 30px;
+  background-color: #E6E6FA;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+.maintenance-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #213547;
+  margin-bottom: 25px;
+}
+
+.maintenance-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.maintenance-tab {
+  padding: 10px 20px;
+  background-color: #4B2354;
+  color: white;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.maintenance-tab.inactive {
+  background-color: #BDB5D5;
+  color: #4B2354;
+}
+
+.maintenance-tab:hover {
+  opacity: 0.9;
+}
+
+.maintenance-search-bar {
+  margin-bottom: 15px;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.add-request-btn {
+  background-color: #4B2354;
+  color: white;
+  padding: 10px 18px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.add-request-btn:hover {
+  background-color: #3a1b43;
+}
+
+.maintenance-table {
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
+
+.maintenance-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.maintenance-table th, .maintenance-table td {
+  padding: 12px;
+  text-align: left;
+  font-size: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.maintenance-table th {
+  background-color: #BDB5D5;
+  font-weight: bold;
+  color: #2e0639;
+}
+
+.maintenance-table td {
+  color: #333;
+}
+
+/* Progress bar style */
+.progress-container {
+  background-color: #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 12px;
+  width: 120px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4285f4;
+  transition: width 0.3s ease;
+}
+
+/* Modal Forms */
+.maintenance-modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.maintenance-modal h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #4B2354;
+}
+
+.maintenance-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.maintenance-form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.maintenance-form-group input,
+.maintenance-form-group select {
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.maintenance-form-btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+.modal-content {
+  position: relative;
+  width: 700px; /* fixed square size */
+  height: 500px;
+  background: white;
+  border-radius: 12px;
+  padding: 30px 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* center vertically */
+  align-items: center;
+}
+
+.maintenance-submit-btn {
+  background-color: #4B2354;
+  color: white;
+  padding: 10px 18px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.maintenance-cancel-btn {
+  background-color: #999;
+  color: white;
+  padding: 10px 18px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.maintenance-submit-btn:hover {
+  background-color: #3a1b43;
+}
+
+.maintenance-cancel-btn:hover {
+  background-color: #777;
+}
+
+/* Edit/Delete icons */
+.edit-icon, .delete-icon {
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.edit-icon:hover {
+  color: #28a745;
+}
+
+.delete-icon:hover {
+  color: #dc3545;
+}
+.modal-content {
+  position: relative; /* to position exit button inside */
+}
+
+.modal-exit-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  color: #555;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.modal-exit-btn:hover {
+  color: #000;
 }

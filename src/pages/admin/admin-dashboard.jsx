@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
 import "../../admin.css";
-import { db } from "../../firebaseconfig";
+import { db , storage} from "../../firebaseconfig";
 import {
   collection,
   getDocs,
@@ -84,6 +84,7 @@ const AdminDashboard = () => {
     { label: "Dashboard", to: "/admin-dashboard" },
     { label: "Manage Items", to: "/admin-items" },
     { label: "Requests", to: "/admin-requests" },
+    {label: "Maintenance", to: "/equipment-maintenance"},
     { label: "Manage Users", to: "/admin-users" },
   ];
 
@@ -91,15 +92,16 @@ const AdminDashboard = () => {
     navigate(path);
   };
 
-  const handleReview = (e, id) => {
+  const handleReview = (e, request) => {
     e.stopPropagation();
-    navigate(`/review-request/${id}`);
+    navigate(`/review-request/${request.id}`, { state: { request } });
   };
+
 
   return (
     <div className="admin-dashboard">
       <div className="navbar">
-        <img src={logo} alt="CCS Gadget Hub Logo" />
+        <img src={logo} alt="CircuitHub Logo" />
         <nav>
           {navLinks.map((link) => (
             <Link
@@ -160,7 +162,7 @@ const AdminDashboard = () => {
                   <p><strong>{req.itemName}</strong> - {req.borrowerName}</p>
                   <span>{req.requestDate}</span>
                   <div className="review-btn-row">
-                    <button className="review-request-btn" onClick={(e) => handleReview(e, req.id)}>
+                    <button className="review-request-btn" onClick={(e) => handleReview(e, req)}>
                       Review Request
                     </button>
                   </div>

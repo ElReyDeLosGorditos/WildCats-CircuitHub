@@ -1,0 +1,162 @@
+/* --- Overlay and Modal --- */
+.UU-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(33, 20, 54, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.UU-modal {
+    width: 60vw;
+    height: 80vh;
+    background-color: #a888b5;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(66, 33, 107, 0.3);
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* --- Error Banner --- */
+.UU-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px auto 0;
+    width: 90%;
+    text-align: center;
+    animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Content Layout --- */
+.UU-content {
+    display: flex;
+    height: 100%;
+}
+
+/* --- Left Side --- */
+.UU-left {
+    flex: 1;
+    background-color: #7f48d3;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 30px;
+}
+
+.UU-icon-preview {
+    font-size: 90px;
+    margin-bottom: 10px;
+}
+
+.UU-label {
+    font-size: 20px;
+    font-weight: 600;
+    color: #f3eaff;
+}
+
+/* --- Right Side --- */
+.UU-right {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* --- Form --- */
+.UU-form {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.UU-name-row input {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #f8f6fb;
+    outline-color: #a070dc;
+}
+
+.UU-name-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.UU-name-row input {
+    flex: 1;
+}
+
+
+.UU-form input,
+.UU-form select {
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #f8f6fb;
+    outline-color: #a070dc;
+}
+
+/* --- Button Row --- */
+.UU-btn-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.UU-cancel-btn,
+.UU-save-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+.UU-cancel-btn {
+    background-color: #e8e3f3;
+    color: #5e548e;
+}
+
+.UU-cancel-btn:hover {
+    background-color: #d6cbe9;
+}
+
+.UU-save-btn {
+    background-color: #7f48d3;
+    color: white;
+}
+
+.UU-save-btn:hover {
+    background-color: #6f3ac0;
+}

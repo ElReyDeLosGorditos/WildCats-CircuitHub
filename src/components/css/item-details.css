@@ -1,0 +1,833 @@
+/* --- Global Styles & Resets --- */
+:root {
+    /* Define color variables for easier theming and consistency */
+    --primary-purple: #3b2c45;
+    --dark-purple-hover: #2a2030;
+    --accent-orange: #d96528;
+    --accent-orange-hover: #b8501b;
+    --background-light: #f4f7f6;
+    --text-dark: #333;
+    --text-medium: #555;
+    --text-light: #666;
+    --border-light: #eee;
+    --shadow-light: rgba(0, 0, 0, 0.06);
+    --shadow-medium: rgba(0, 0, 0, 0.08);
+    --shadow-strong: rgba(0, 0, 0, 0.1);
+    --yellow-accent: #ffd700;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box; /* Global box-sizing for consistent layouts */
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    /* Using Inter as a modern, highly readable font. Fallback to Segoe UI. */
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* Prevent horizontal scroll on small screens */
+}
+
+/* --- Main Content Wrapper --- */
+.main-content-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 25px;
+    flex-grow: 1;
+    width: 100%; /* Ensure it respects max-width and padding correctly */
+}
+
+/* --- Common Header Styling --- */
+.header {
+    background-color: var(--primary-purple);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 8px var(--shadow-strong); /* More noticeable shadow */
+    flex-shrink: 0;
+    position: sticky; /* Sticky header for better UX */
+    top: 0;
+    z-index: 999; /* Ensure header stays on top */
+}
+
+.header .logo {
+    display: flex; /* Align image and text */
+    align-items: center;
+}
+
+.header .logo img {
+    height: 35px; /* Slightly adjusted size */
+    vertical-align: middle;
+    margin-right: 12px;
+}
+
+.header .logo span {
+    font-size: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.5px; /* Subtle letter spacing */
+}
+
+.header-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 30px; /* Increased gap for better spacing */
+}
+
+.header-nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 0; /* Increased vertical padding for larger click/hover area */
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* More space between icon and text */
+    position: relative; /* For underline effect */
+}
+
+.header-nav a::after { /* Underline effect for nav links */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--yellow-accent);
+    transition: width 0.2s ease-out;
+}
+
+.header-nav a:hover::after,
+.header-nav a.active-link::after {
+    width: 100%;
+}
+
+.header-nav a:hover,
+.header-nav a.active-link {
+    color: var(--yellow-accent);
+    transform: translateY(-2px); /* Subtle lift on hover */
+}
+
+.header-nav a i {
+    font-size: 19px; /* Slightly adjusted icon size */
+}
+
+.header .logout-btn {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 10px 18px; /* More padding for a better button feel */
+    border: 1px solid rgba(255, 255, 255, 0.4); /* Softer border */
+    border-radius: 8px; /* More rounded */
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    margin-left: 25px;
+    background-color: transparent; /* Ensure transparent background by default */
+}
+
+.header .logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15); /* Slightly more prominent hover */
+    border-color: white;
+    transform: translateY(-1px);
+}
+
+/* --- Item Details Section Styling --- */
+
+.back-arrow {
+    font-size: 30px; /* Slightly larger for prominence */
+    color: var(--accent-orange);
+    margin-bottom: 30px; /* More space */
+    display: inline-flex; /* Use flex for potential icon/text alignment */
+    align-items: center;
+    gap: 8px; /* If text is added to back arrow */
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    font-weight: 600; /* Make it bolder */
+}
+
+.back-arrow:hover {
+    color: var(--accent-orange-hover);
+    transform: translateX(-8px); /* More pronounced slide */
+}
+
+.carousel-wrapper {
+    background-color: white;
+    border-radius: 16px; /* More rounded */
+    padding: 40px; /* More internal padding */
+    margin-bottom: 50px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); /* Deeper, softer shadow */
+    max-width: 850px; /* Slightly wider carousel */
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden; /* Ensure rounded corners are respected */
+}
+
+.carousel .slide img {
+    max-width: 100%;
+    height: 320px; /* Slightly increased height */
+    object-fit: contain;
+    border-radius: 10px; /* Rounded image corners */
+}
+
+.carousel .control-dots {
+    position: absolute;
+    bottom: 20px; /* More space from bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px; /* More space between dots */
+    margin: 0;
+    padding: 0;
+}
+
+.carousel .dot {
+    width: 12px; /* Slightly larger dots */
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.25); /* Darker, more distinct inactive dot */
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for dots */
+    opacity: 1; /* Ensure full opacity */
+}
+
+.carousel .dot.selected {
+    background-color: var(--accent-orange);
+    transform: scale(1.3); /* More pronounced scale */
+    box-shadow: 0 2px 5px rgba(217, 101, 40, 0.4); /* Accent shadow for active dot */
+}
+
+/* Item Details Layout */
+.details-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 60px; /* Increased gap between sections */
+    margin-top: 30px;
+    background-color: white;
+    padding: 40px; /* More padding */
+    border-radius: 16px; /* More rounded */
+    box-shadow: 0 8px 20px var(--shadow-medium); /* Softer, deeper shadow */
+}
+
+/* Left Info Section */
+.details-left {
+    flex: 2;
+    min-width: 350px; /* Increased min-width */
+    padding-right: 20px; /* Keep padding */
+}
+
+.details-left h2 {
+    font-size: 36px; /* Larger title */
+    margin-bottom: 18px; /* More space */
+    color: #1a1a1a;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.details-left .item-description {
+    font-size: 18px; /* Slightly smaller for body text */
+    margin-bottom: 40px; /* More space */
+    color: var(--text-medium);
+    line-height: 1.8; /* Improved readability */
+}
+
+.details-left h3 {
+    font-size: 26px; /* Larger subtitle */
+    margin-bottom: 15px;
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.details-left p {
+    font-size: 17px; /* Slightly smaller for detail text */
+    color: var(--text-light);
+}
+
+/* Right Info & Button Section */
+.details-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align content to the left within its own flex container */
+    min-width: 300px; /* Increased min-width */
+    padding-left: 30px; /* More padding */
+    border-left: 1px solid #f0f0f0; /* Lighter separator line */
+}
+
+.details-right h3 {
+    align-self: flex-start; /* Ensure title aligns left */
+    margin-bottom: 20px; /* More space */
+    font-size: 26px; /* Consistent with left h3 */
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.status-text {
+    font-size: 20px;
+    font-weight: 700;
+    background-color: #fff;
+    padding: 10px 25px; /* More padding */
+    border-radius: 8px; /* Slightly more rounded */
+    margin-bottom: 30px; /* More space */
+    border: 1px solid #e0e0e0;
+    display: inline-block;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* More noticeable shadow */
+    min-width: 140px; /* Wider min-width */
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.status-text.available {
+    color: var(--accent-orange);
+    border-color: #ffe6d7; /* Lighter orange border */
+    background-color: #fffaf7;
+    box-shadow: 0 3px 8px rgba(217, 101, 40, 0.15); /* Subtle accent shadow */
+}
+
+.status-text.not-available {
+    color: #888;
+    border-color: #e5e5e5;
+    background-color: #f7f7f7;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.borrow-btn {
+    background-color: var(--accent-orange);
+    color: white;
+    padding: 15px 35px; /* Larger padding for a more prominent button */
+    border-radius: 10px; /* More rounded */
+    font-size: 19px; /* Larger font size */
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(217, 101, 40, 0.3); /* Deeper shadow */
+    border: none;
+    cursor: pointer;
+}
+
+.borrow-btn:hover {
+    background-color: var(--accent-orange-hover);
+    transform: translateY(-3px); /* More pronounced lift */
+    box-shadow: 0 8px 20px rgba(217, 101, 40, 0.4); /* Stronger shadow on hover */
+}
+
+.not-available-btn {
+    background-color: #cccccc;
+    color: #f0f0f0;
+    padding: 15px 35px; /* Consistent padding */
+    border-radius: 10px; /* Consistent border-radius */
+    font-size: 19px; /* Consistent font-size */
+    font-weight: 600;
+    cursor: not-allowed;
+    opacity: 0.7; /* Slightly more opaque for better visual */
+    text-align: center;
+    width: 100%;
+    box-shadow: none;
+    border: none;
+    transition: opacity 0.2s ease; /* Smooth transition for opacity */
+}
+
+
+/* --- Profile Update Section Styling --- */
+
+.profile-update-wrapper {
+    display: flex;
+    background-color: white;
+    border-radius: 16px; /* More rounded */
+    box-shadow: 0 8px 20px var(--shadow-medium);
+    padding: 40px; /* More padding */
+    gap: 50px; /* Increased gap */
+    align-items: flex-start;
+}
+
+.profile-sidebar {
+    flex-shrink: 0;
+    width: 280px; /* Slightly wider sidebar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-right: 30px; /* More padding */
+    border-right: 1px solid #f0f0f0; /* Lighter separator */
+}
+
+.profile-icon {
+    font-size: 110px; /* Larger icon */
+    color: #555;
+    margin-bottom: 25px; /* More space */
+    border: 3px solid #ddd; /* Thicker border */
+    border-radius: 50%;
+    padding: 12px;
+    background-color: #f9f9f9; /* Subtle background for icon */
+}
+
+.update-profile-btn {
+    background-color: var(--primary-purple);
+    color: white;
+    padding: 15px 25px; /* More padding */
+    border-radius: 10px; /* More rounded */
+    font-size: 17px; /* Larger font */
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(59, 44, 69, 0.2); /* Subtle shadow */
+}
+
+.update-profile-btn:hover {
+    background-color: var(--dark-purple-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(59, 44, 69, 0.3);
+}
+
+.profile-form-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Increased space between form fields */
+    padding-left: 30px; /* More padding */
+}
+
+.profile-form-content .form-field {
+    width: 100%;
+}
+
+.profile-form-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.profile-form-content input[type="text"],
+.profile-form-content input[type="email"] {
+    width: 100%;
+    padding: 14px 18px; /* More padding */
+    border: 1px solid #e0e0e0; /* Softer border */
+    border-radius: 10px; /* More rounded */
+    font-size: 17px; /* Larger font */
+    color: var(--text-dark);
+    background-color: #ffffff; /* White background for inputs */
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-form-content input[type="text"]::placeholder,
+.profile-form-content input[type="email"]::placeholder {
+    color: #999; /* Lighter placeholder */
+}
+
+.profile-form-content input[type="text"]:focus,
+.profile-form-content input[type="email"]:focus {
+    outline: none;
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 0 4px rgba(217, 101, 40, 0.15); /* More prominent glow */
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px; /* More space between buttons */
+    margin-top: 30px; /* More space above buttons */
+    width: 100%;
+}
+
+.form-actions .cancel-btn,
+.form-actions .update-btn {
+    padding: 14px 30px; /* Consistent padding */
+    border-radius: 10px; /* Consistent rounding */
+    font-size: 17px; /* Consistent font size */
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for actions */
+}
+
+.form-actions .cancel-btn {
+    background-color: #a0a0a0; /* Softer grey for cancel */
+    color: white;
+}
+
+.form-actions .cancel-btn:hover {
+    background-color: #888;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.form-actions .update-btn {
+    background-color: var(--primary-purple);
+    color: white;
+}
+
+.form-actions .update-btn:hover {
+    background-color: var(--dark-purple-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(59, 44, 69, 0.3);
+}
+
+/* --- Responsive Adjustments --- */
+
+/* Tablet & Smaller Desktop Adjustments */
+@media (max-width: 1024px) {
+    .main-content-wrapper {
+        padding: 0 20px;
+        margin: 30px auto;
+    }
+
+    .header {
+        padding: 12px 20px;
+    }
+    .header .logo img {
+        height: 32px;
+    }
+    .header .logo span {
+        font-size: 18px;
+    }
+    .header-nav ul {
+        gap: 20px;
+    }
+    .header-nav a {
+        font-size: 15px;
+        padding: 6px 0;
+    }
+    .header-nav a i {
+        font-size: 17px;
+    }
+    .header .logout-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+        margin-left: 15px;
+    }
+
+    .back-arrow {
+        font-size: 26px;
+        margin-bottom: 25px;
+    }
+
+    .carousel-wrapper {
+        padding: 30px;
+        margin-bottom: 40px;
+        border-radius: 14px;
+    }
+    .carousel .slide img {
+        height: 280px;
+    }
+    .carousel .control-dots {
+        bottom: 15px;
+        gap: 8px;
+    }
+    .carousel .dot {
+        width: 10px;
+        height: 10px;
+    }
+
+    .details-wrapper {
+        gap: 40px;
+        padding: 30px;
+        border-radius: 14px;
+    }
+    .details-left {
+        min-width: 300px;
+        padding-right: 15px;
+    }
+    .details-left h2 {
+        font-size: 30px;
+    }
+    .details-left .item-description {
+        font-size: 17px;
+        margin-bottom: 30px;
+    }
+    .details-left h3 {
+        font-size: 22px;
+    }
+    .details-left p {
+        font-size: 16px;
+    }
+    .details-right {
+        min-width: 250px;
+        padding-left: 20px;
+    }
+    .details-right h3 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    .status-text {
+        font-size: 18px;
+        padding: 8px 20px;
+        min-width: 120px;
+        margin-bottom: 20px;
+    }
+    .borrow-btn, .not-available-btn {
+        padding: 12px 25px;
+        font-size: 17px;
+    }
+
+    .profile-update-wrapper {
+        padding: 30px;
+        gap: 30px;
+        border-radius: 14px;
+    }
+    .profile-sidebar {
+        width: 220px;
+        padding-right: 20px;
+    }
+    .profile-icon {
+        font-size: 90px;
+        margin-bottom: 20px;
+    }
+    .update-profile-btn {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+    .profile-form-content {
+        gap: 20px;
+        padding-left: 20px;
+    }
+    .profile-form-content label {
+        font-size: 14px;
+    }
+    .profile-form-content input[type="text"],
+    .profile-form-content input[type="email"] {
+        padding: 12px 15px;
+        font-size: 16px;
+    }
+    .form-actions {
+        gap: 15px;
+        margin-top: 25px;
+    }
+    .form-actions .cancel-btn,
+    .form-actions .update-btn {
+        padding: 12px 25px;
+        font-size: 15px;
+    }
+}
+
+/* Mobile & Tablet Portrait Adjustments */
+@media (max-width: 768px) {
+    .main-content-wrapper {
+        padding: 0 15px;
+        margin: 20px auto;
+    }
+
+    /* Header changes for Mobile */
+    .header {
+        padding: 10px 15px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .header .logo {
+        margin-bottom: 10px;
+    }
+    .header .logo img {
+        height: 30px;
+        margin-right: 8px;
+    }
+    .header .logo span {
+        font-size: 17px;
+    }
+    .header-nav {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .header-nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px 15px; /* Adjust gap for wrapped items */
+    }
+    .header-nav a {
+        padding: 5px 8px;
+        font-size: 14px;
+    }
+    .header-nav a i {
+        font-size: 16px;
+    }
+    .header-nav a::after { /* Hide underline on mobile for cleaner look */
+        display: none;
+    }
+    .header .logout-btn {
+        margin-left: 0;
+        width: 90%; /* Take more width */
+        max-width: 200px; /* Limit width */
+        text-align: center;
+        margin-top: 10px;
+        padding: 8px 15px;
+    }
+
+    /* Back Arrow */
+    .back-arrow {
+        font-size: 22px;
+        margin-bottom: 15px;
+        transform: none; /* Remove horizontal slide on smaller screens */
+    }
+    .back-arrow:hover {
+        transform: none;
+    }
+
+    /* Carousel */
+    .carousel-wrapper {
+        padding: 20px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+    }
+    .carousel .slide img {
+        height: 180px; /* Smaller image height */
+    }
+    .carousel .control-dots {
+        bottom: 8px;
+        gap: 6px;
+    }
+    .carousel .dot {
+        width: 9px;
+        height: 9px;
+    }
+
+    /* Item Details Layout */
+    .details-wrapper {
+        flex-direction: column; /* Stack sections vertically */
+        gap: 30px;
+        padding: 25px;
+        border-radius: 12px;
+    }
+    .details-left,
+    .details-right {
+        min-width: unset; /* Remove min-width constraint */
+        width: 100%; /* Take full width */
+        padding: 0; /* Remove internal padding that causes issues with stacking */
+        border: none; /* Remove separator line when stacked */
+    }
+    .details-left h2 {
+        font-size: 28px;
+        text-align: center; /* Center align title */
+    }
+    .details-left .item-description {
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+    .details-left h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    .details-left p {
+        font-size: 15px;
+    }
+    .details-right h3 {
+        font-size: 20px;
+        align-self: flex-start; /* Ensure title aligns left */
+        margin-top: 10px; /* Add space from previous section */
+        margin-bottom: 15px;
+    }
+    .status-text {
+        font-size: 17px;
+        padding: 8px 15px;
+        min-width: unset;
+        width: auto; /* Allow it to naturally size */
+        margin-bottom: 20px;
+        align-self: flex-start; /* Align to the left */
+    }
+    .borrow-btn, .not-available-btn {
+        width: 100%; /* Full width button */
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+
+    /* Profile Update Section */
+    .profile-update-wrapper {
+        flex-direction: column; /* Stack sections vertically */
+        padding: 25px;
+        gap: 25px;
+        border-radius: 12px;
+    }
+    .profile-sidebar {
+        width: 100%; /* Full width */
+        padding: 0;
+        border: none;
+        order: -1; /* Place sidebar at the top */
+        margin-bottom: 15px;
+    }
+    .profile-icon {
+        font-size: 90px;
+        margin-bottom: 15px;
+    }
+    .update-profile-btn {
+        width: 80%; /* Smaller width for sidebar button */
+        max-width: 250px;
+        margin: 0 auto; /* Center button */
+    }
+    .profile-form-content {
+        padding: 0;
+        gap: 15px;
+    }
+    .profile-form-content label {
+        font-size: 13px;
+    }
+    .profile-form-content input[type="text"],
+    .profile-form-content input[type="email"] {
+        padding: 10px 12px;
+        font-size: 15px;
+    }
+    .form-actions {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .form-actions .cancel-btn,
+    .form-actions .update-btn {
+        width: 100%;
+        text-align: center;
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+}
+
+/* Landscape mode for very small screens (e.g., iPhone SE) */
+@media (max-height: 450px) and (max-width: 768px) {
+    .main-content-wrapper {
+        margin: 10px auto;
+    }
+    .carousel .slide img {
+        height: 150px; /* Even smaller height for landscape mobile */
+    }
+    .details-left h2 {
+        font-size: 24px;
+    }
+    .details-left .item-description {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+    .details-left h3 {
+        font-size: 18px;
+    }
+    .details-left p {
+        font-size: 14px;
+    }
+    .borrow-btn, .not-available-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+}

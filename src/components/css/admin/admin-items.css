@@ -1,0 +1,802 @@
+/* --- Global Variables (Best practice for theme colors) --- */
+:root {
+    /* Primary Color Palette */
+    --primary-purple: #7a57a1; /* A rich, calming purple */
+    --dark-purple: #5c3b80; /* Deeper tone for accents and active states */
+    --light-purple: #f0ebf5; /* Very light, almost white, background */
+    --accent-green: #34c759; /* A vibrant green for positive actions/status */
+    --accent-red: #ff3b30; /* A clear red for destructive actions/denied status */
+    --accent-yellow: #ffcc00; /* A warm yellow for cautionary status */
+
+    /* Grayscale & Text */
+    --text-dark: #2c2c2e; /* Darkest text for headings */
+    --text-medium: #8e8e93; /* Medium gray for descriptions and labels */
+    --text-light: #ffffff; /* White text for buttons/dark backgrounds */
+    --surface-white: #ffffff; /* Pure white for cards and modals */
+    --surface-off-white: #fefefe; /* Very slight off-white for backgrounds within sections */
+
+    /* Borders & Shadows */
+    --border-light: #e6e6e6; /* Subtle light gray border */
+    --shadow-sm: rgba(0, 0, 0, 0.05); /* Small, subtle shadow */
+    --shadow-md: rgba(0, 0, 0, 0.1); /* Medium shadow for cards */
+    --shadow-lg: rgba(0, 0, 0, 0.2); /* Larger shadow for modals */
+
+    /* Transitions */
+    --transition-ease: all 0.3s ease;
+
+    /* Add RGB components for light-purple to use with rgba() */
+    --light-purple-rgb: 240, 235, 245;
+}
+
+/* --- Base Styling & Page Layout --- */
+body {
+    font-family: 'Inter', sans-serif; /* Using a modern, clean sans-serif font */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Admin Container for entire page content, including header and main section */
+.admin-items-container {
+    display: flex; /* Use flex to arrange header and main content vertically */
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
+    position: relative; /* Needed for z-index context, though modals are fixed */
+}
+
+/* This wrapper will contain all content *below* the header and will be blurred */
+.main-content-wrapper {
+    flex-grow: 1; /* Allows it to take up remaining vertical space */
+    padding-bottom: 60px; /* Consistent bottom padding */
+    transition: filter 0.3s ease; /* Smooth transition for blur effect */
+    display: flex; /* Make it a flex container for its immediate children */
+    justify-content: center; /* Center the inventory wrapper */
+    width: 100%; /* Ensure it spans full width */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+/* --- Inventory Wrapper & Container (Improved Alignment) --- */
+.admin-items-container .items-inventory-wrapper {
+    padding: 40px 20px; /* More vertical padding */
+    display: flex;
+    justify-content: center; /* Center the inventory container horizontally */
+    width: 100%; /* Ensures it spans full width of its parent */
+    box-sizing: border-box; /* Include padding in width */
+    background-color: transparent; /* Remove the background set here as it's already on admin-items-container */
+}
+
+.admin-items-container .items-inventory-container {
+    display: flex;
+    gap: 30px;
+    width: 100%; /* Take full width of wrapper */
+    max-width: 1100px; /* Max width for content, adjust as needed */
+    flex-direction: column; /* Stacks vertically by default */
+}
+
+@media (min-width: 992px) { /* Larger screens for side-by-side layout */
+    .admin-items-container .items-inventory-container {
+        flex-direction: row; /* Main content and sidebar (if any) side-by-side */
+        align-items: flex-start; /* Align content to the top */
+    }
+}
+
+/* --- Main Content Section (The White Card) --- */
+.admin-items-container .items-list-section {
+    flex: 1; /* Allows it to take available space */
+    background-color: var(--surface-white); /* Clean white background */
+    border-radius: 16px; /* More rounded corners for a modern feel */
+    padding: 30px; /* Generous internal padding */
+    box-shadow: 0 10px 30px var(--shadow-md); /* Softer, more spread-out shadow */
+    width: 100%; /* Ensure it fills its parent */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+/* --- Header --- */
+.admin-items-container .inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px; /* More space below header */
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-light); /* Subtle separator line */
+}
+
+.admin-items-container .inventory-title {
+    font-size: 32px; /* Larger, more prominent title */
+    color: var(--text-dark); /* Darker text for better contrast */
+    font-weight: 700; /* Bolder */
+}
+
+.admin-items-container .add-item-btn {
+    background-color: var(--primary-purple); /* Cohesive primary purple */
+    color: var(--text-light); /* White text */
+    padding: 12px 24px; /* More comfortable padding */
+    border: none;
+    border-radius: 8px; /* Nicely rounded button */
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition-ease); /* Smooth transitions */
+    box-shadow: 0 4px 15px var(--shadow-sm); /* Subtle button shadow */
+}
+
+.admin-items-container .add-item-btn:hover {
+    background-color: var(--dark-purple); /* Darker on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 20px var(--shadow-md); /* More pronounced shadow on hover */
+}
+
+.admin-items-container .add-item-btn:active {
+    transform: translateY(0); /* Press down effect */
+}
+
+/* --- Search and Filter --- */
+.admin-items-container .inventory-search-bar {
+    display: flex;
+    gap: 15px; /* Slightly increased gap */
+    margin-bottom: 25px; /* More space below search/filter */
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+
+.admin-items-container .admin-search-bar,
+.admin-items-container .admin-filter-dropdown {
+    flex: 1; /* Distributes space more evenly */
+    padding: 12px 15px; /* More padding for better feel */
+    font-size: 15px;
+    border-radius: 8px; /* Consistent rounded corners */
+    border: 1px solid var(--border-light);
+    background-color: var(--surface-white);
+    color: var(--text-dark);
+    box-shadow: inset 0 1px 3px var(--shadow-sm); /* Subtle inner shadow for input fields */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-items-container .admin-search-bar:focus,
+.admin-items-container .admin-filter-dropdown:focus {
+    border-color: var(--primary-purple); /* Highlight focus with primary color */
+    box-shadow: 0 0 0 3px rgba(122, 87, 161, 0.2); /* Soft focus ring */
+    outline: none;
+}
+
+.admin-items-container .admin-filter-dropdown {
+    /* Custom arrow for dropdown */
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238e8e93' width='20px' height='20px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    cursor: pointer;
+    min-width: 150px; /* Ensure filter dropdown has enough width */
+}
+
+
+/* --- Items List --- */
+.admin-items-container .items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* More space between cards */
+    align-items: center;
+}
+
+.admin-items-container .items-card-link {
+    text-decoration: none;
+    color: inherit;
+    width: 100%; /* Ensure link takes full width of card */
+}
+
+.admin-items-container .items-card {
+    display: flex;
+    background-color: var(--surface-white); /* White background for cards */
+    border-radius: 12px;
+    padding: 18px 25px; /* Generous padding */
+    box-shadow: 0 8px 25px var(--shadow-sm); /* Soft shadow for cards */
+    height: auto; /* Allow height to adjust to content */
+    min-height: 110px; /* Minimum height for consistency */
+    gap: 20px;
+    width: 100%;
+    max-width: 1030px; /* Max width for individual cards */
+    transition: var(--transition-ease); /* Smooth hover effects */
+    align-items: center; /* Vertically align items */
+    border: 1px solid var(--border-light); /* Subtle border */
+}
+
+.admin-items-container .items-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 12px 35px var(--shadow-md); /* Stronger shadow on hover */
+    border-color: var(--primary-purple); /* Highlight border on hover */
+}
+
+/* Image Section */
+.admin-items-container .items-image {
+    width: 90px;
+    height: 90px;
+    object-fit: cover; /* Use cover to fill area, contain if you need whole image */
+    border-radius: 8px; /* Consistent rounded corners */
+    flex-shrink: 0;
+    border: 1px solid var(--border-light); /* Subtle border around image */
+    background-color: var(--surface-off-white); /* Background for images */
+    padding: 5px; /* Small padding inside border */
+}
+
+/* Details */
+.admin-items-container .items-details {
+    flex: 3; /* Give more space to details */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px; /* Increased gap between text lines */
+    overflow: hidden; /* Ensures text ellipsis works */
+}
+
+.admin-items-container .items-details h3 {
+    font-size: 19px; /* Slightly larger item name */
+    font-weight: 600; /* Medium bold */
+    color: var(--text-dark);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-items-container .items-description {
+    color: var(--text-medium); /* Softer color for description */
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    margin: 0;
+}
+
+.admin-items-container .items-quantity {
+    color: var(--text-medium);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Status Section */
+.admin-items-container .items-status-section {
+    flex: 1; /* Adjust flex to give more space to details if needed */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Align status to the right */
+    justify-content: center;
+    padding-left: 20px;
+    border-left: 1px dashed var(--border-light); /* Lighter, dashed separator */
+    color: var(--text-dark);
+    gap: 4px;
+    text-align: right;
+    min-width: 120px; /* Ensure enough space for status */
+}
+
+.admin-items-container .status-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-items-container .items-status {
+    font-size: 15px;
+    font-weight: 600;
+    padding: 6px 12px; /* Add padding for badge-like appearance */
+    border-radius: 20px; /* Pill-shaped badge */
+    display: inline-block; /* Ensure padding applies correctly */
+}
+
+/* Specific status colors */
+.admin-items-container .items-status.available {
+    background-color: rgba(52, 199, 89, 0.15); /* Light green background from accent-green */
+    color: var(--accent-green);
+}
+
+.admin-items-container .items-status.borrowed {
+    background-color: rgba(255, 204, 0, 0.15); /* Light yellow background from accent-yellow */
+    color: #cc9900; /* Darker yellow text for contrast */
+}
+
+/* Edit Icon */
+.admin-items-container .items-edit-icon {
+    width: 60px; /* Fixed width for the edit icon area */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px dashed var(--border-light); /* Consistent separator */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.admin-items-container .items-edit-icon button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px; /* Slightly larger icon */
+    color: var(--primary-purple); /* Purple icon */
+    transition: var(--transition-ease);
+}
+
+.admin-items-container .items-edit-icon button:hover {
+    color: var(--dark-purple); /* Darker purple on hover */
+    transform: scale(1.1); /* Slight zoom effect */
+}
+
+/* --- No Items Message --- */
+.admin-items-container .no-items-message {
+    text-align: center;
+    color: var(--text-medium);
+    font-size: 18px;
+    padding: 40px;
+    background-color: var(--surface-white);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-sm);
+}
+
+/* --- Modal Styling (General Improvements) --- */
+/* The main modal overlay for delete confirmation */
+.admin-item-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay for emphasis */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to be on top of everything */
+    backdrop-filter: blur(8px); /* Stronger blur for more focus */
+    animation: fadeIn 0.3s ease-out;
+}
+
+.admin-item-modal {
+    background-color: var(--surface-white);
+    padding: 35px;
+    border-radius: 12px;
+    /* --- CHANGE START: Adjust max-width and width for confirmation modal --- */
+    width: 90%;
+    max-width: 400px; /* Slightly narrower for confirmation */
+    /* --- CHANGE END --- */
+    text-align: center;
+    box-shadow: 0 15px 40px var(--shadow-lg); /* More pronounced, soft shadow */
+    animation: slideUp 0.3s ease-out;
+    box-sizing: border-box;
+}
+
+.admin-item-modal-message {
+    font-size: 20px;
+    margin-bottom: 30px; /* More space */
+    color: var(--text-dark);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.admin-item-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.admin-item-yes-btn,
+.admin-item-no-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: var(--transition-ease);
+    box-shadow: 0 2px 5px var(--shadow-sm);
+}
+
+.admin-item-yes-btn {
+    background-color: var(--accent-red); /* Use accent red */
+    color: var(--text-light);
+}
+
+.admin-item-no-btn {
+    background-color: var(--text-medium); /* Neutral gray for "No" */
+    color: var(--text-light);
+}
+
+.admin-item-yes-btn:hover {
+    background-color: #e0322c; /* Slightly darker red */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--shadow-md);
+}
+
+.admin-item-no-btn:hover {
+    background-color: #7a7a7a; /* Slightly darker gray */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--shadow-md);
+}
+
+.admin-item-yes-btn:active,
+.admin-item-no-btn:active {
+    transform: translateY(0);
+}
+
+/* 🔆 Blur effect applied to the content *under* the modal */
+body.modal-open {
+    overflow: hidden; /* Prevent scrolling when modal is open */
+}
+
+/* This class applies the blur and pointer-events: none to the main content */
+.main-content-wrapper.modal-blurred {
+    filter: blur(4px); /* Slightly stronger blur */
+    pointer-events: none; /* Prevent interaction with blurred content */
+}
+
+/* 🔆 Re-usable popup modal overlay (for view, add, edit modals) */
+.popup-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(var(--light-purple-rgb), 0.7); /* Using light-purple with transparency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to be on top of everything */
+    backdrop-filter: blur(5px); /* Stronger blur for these content modals */
+    animation: fadeIn 0.4s ease; /* Slightly slower fade for a softer entry */
+    padding: 20px;
+}
+
+/* Styles for the actual modal content (view, add, edit forms) */
+.popup-modal-content {
+    animation: slideUp 0.4s ease; /* Consistent animation with overlay */
+    background-color: var(--surface-white);
+    border-radius: 16px; /* Larger border-radius for modern look */
+    padding: 35px 40px; /* More generous padding inside the modal content */
+    box-shadow: 0 15px 40px var(--shadow-lg); /* Prominent, soft shadow */
+    /* --- CHANGE START: Adjust max-width and width for content modals --- */
+    width: 90%; /* Start at 90% width */
+    max-width: 700px; /* Increased max-width for more content space */
+    min-width: 300px; /* Ensure it's not too narrow on very small screens */
+    /* --- CHANGE END --- */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* --- Add/Edit Item Modal Specific Styling (Unified) --- */
+
+/* Title for Add/Edit Modals */
+.add-item-title {
+    font-size: 28px;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+}
+
+/* This applies to the form inside both add and edit modals */
+.add-item-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Form Groups (label + input) */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* Text, Number, Textarea, Select Inputs */
+.form-input,
+.form-textarea,
+select.form-input {
+    padding: 12px 15px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    background-color: var(--surface-off-white);
+    color: var(--text-dark);
+    transition: var(--transition-ease);
+    box-shadow: inset 0 1px 3px var(--shadow-sm);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+select.form-input:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(122, 87, 161, 0.2);
+    outline: none;
+    background-color: var(--surface-white);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Image Upload Section */
+.image-upload-wrapper {
+    margin-bottom: 0;
+}
+
+.image-upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border: 1px dashed var(--primary-purple);
+    border-radius: 10px;
+    background-color: var(--light-purple);
+    cursor: pointer;
+    transition: var(--transition-ease);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.image-upload-box:hover {
+    background-color: #e2daed;
+    border-color: var(--dark-purple);
+}
+
+.upload-icon {
+    font-size: 40px;
+    color: var(--dark-purple);
+    margin-bottom: 0;
+}
+
+.upload-text {
+    font-size: 15px;
+    color: var(--text-medium);
+}
+
+.image-preview {
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    background-color: var(--surface-white);
+    padding: 5px;
+    margin-top: 10px;
+}
+
+.image-upload-hint {
+    font-size: 13px;
+    color: var(--text-medium);
+    margin: 0;
+    text-align: center;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Modal Action Buttons */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition-ease);
+    box-shadow: 0 4px 10px var(--shadow-sm);
+}
+
+.modal-actions button[type="submit"] {
+    background-color: var(--primary-purple);
+    color: var(--text-light);
+}
+
+.modal-actions button[type="submit"]:hover:not(:disabled) {
+    background-color: var(--dark-purple);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px var(--shadow-md);
+}
+
+.modal-actions button[type="button"] {
+    background-color: var(--text-medium);
+    color: var(--text-light);
+}
+
+.modal-actions button[type="button"]:hover:not(:disabled) {
+    background-color: #7a7a7a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px var(--shadow-md);
+}
+
+.modal-actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.error-message {
+    color: var(--accent-red);
+    font-size: 14px;
+    text-align: left;
+    margin-top: 5px;
+}
+
+/* 🔆 Animations */
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .admin-items-container .items-inventory-wrapper {
+        padding: 20px 15px;
+    }
+
+    .admin-items-container .items-inventory-container {
+        gap: 20px;
+    }
+
+    .admin-items-container .items-list-section {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .admin-items-container .inventory-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .admin-items-container .inventory-title {
+        font-size: 26px;
+    }
+
+    .admin-items-container .add-item-btn {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    .admin-items-container .inventory-search-bar {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .admin-items-container .admin-search-bar,
+    .admin-items-container .admin-filter-dropdown {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .admin-items-container .items-list {
+        gap: 15px;
+    }
+
+    .admin-items-container .items-card {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 15px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .admin-items-container .items-image {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 5px;
+    }
+
+    .admin-items-container .items-details,
+    .admin-items-container .items-status-section,
+    .admin-items-container .items-edit-icon {
+        width: 100%;
+        border-left: none;
+        padding-left: 0;
+        text-align: center;
+        align-items: center;
+    }
+
+    .admin-items-container .items-status-section {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px dashed var(--border-light);
+    }
+
+    .admin-items-container .items-edit-icon {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px dashed var(--border-light);
+    }
+
+    .admin-items-container .items-details h3 {
+        font-size: 17px;
+    }
+
+    /* Modal adjustments for smaller screens */
+    .popup-modal-content {
+        padding: 25px 30px;
+        max-width: 95%;
+        min-width: unset; /* Reset min-width for mobile */
+        gap: 20px;
+    }
+
+    /* Specific adjustments for modal form elements on small screens */
+    .popup-modal-content h2,
+    .add-item-title {
+        font-size: 24px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-input,
+    .form-textarea,
+    select.form-input {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal-actions button {
+        width: 100%;
+        font-size: 15px;
+    }
+
+    .image-upload-box {
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .upload-icon {
+        font-size: 32px;
+    }
+
+    .upload-text {
+        font-size: 13px;
+    }
+}

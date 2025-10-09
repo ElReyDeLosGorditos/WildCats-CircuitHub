@@ -1,0 +1,155 @@
+/* --- Page Wrapper --- */
+.AU-container {
+    min-height: 100vh;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Main Container --- */
+.AU-dashboard {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* --- Header Row (Title + Add Button) --- */
+.AU-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* --- Title --- */
+.AU-title {
+    font-size: 28px;
+    color: black;
+    margin: 0;
+}
+
+/* --- Add Button --- */
+.AU-add-button {
+    padding: 10px 18px;
+    background-color: #441752;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.AU-add-button:hover {
+    background-color: #54415a;
+}
+
+/* --- Filters Row --- */
+.AU-filters {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* --- Search Bar --- */
+.AU-search {
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* --- Table --- */
+.AU-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.AU-table th,
+.AU-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.AU-table th {
+    background-color: #441752;
+    color: white;
+    font-weight: 600;
+}
+
+.AU-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* --- Table Row (Clickable) --- */
+.AU-row {
+    cursor: pointer;
+}
+
+/* --- Modal Overlay --- */
+.admin-user-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.admin-user-modal {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.admin-user-modal-message {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.admin-user-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.admin-user-yes-btn,
+.admin-user-no-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.admin-user-yes-btn {
+    background-color: #e53935;
+    color: white;
+}
+
+.admin-user-yes-btn:hover {
+    background-color: #c62828;
+}
+
+.admin-user-no-btn {
+    background-color: #ccc;
+}
+
+.admin-user-no-btn:hover {
+    background-color: #b3b3b3;
+}

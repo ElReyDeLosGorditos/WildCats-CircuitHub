@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { db } from "../../firebaseconfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import logo from "../../assets/CCSGadgetHub1.png";
+import logo from "../../assets/circuithubLogo2.png";
+import "../../components/css/edit-profile.css"
 
 const navLinks = [
   { label: "Dashboard", to: "/dashboard" },
@@ -95,19 +96,22 @@ const EditProfile = () => {
     <div className="edit-profile-page">
       {/* Navbar */}
       <div className="navbar">
-        <img src={logo} alt="CCS Gadget Hub Logo" />
+        <img src={logo} alt="CCS Gadget Hub Logo"/>
+        <span style={{color: "white", fontSize: "24px", fontWeight: "bold", marginLeft: "10px", lineHeight: "1.2"}}>
+            Wildcats <br/> Circuit Hub
+          </span>
         <nav>
           {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={location.pathname === link.to ? "navbar-link active-link" : "navbar-link"}
-            >
-              {link.label}
-            </Link>
+              <Link
+                  key={link.to}
+                  to={link.to}
+                  className={location.pathname === link.to ? "navbar-link active-link" : "navbar-link"}
+              >
+                {link.label}
+              </Link>
           ))}
         </nav>
-        <div style={{ marginLeft: "auto" }}>
+        <div style={{marginLeft: "auto"}}>
           <button onClick={handleLogout} className="logout-link">Log Out</button>
         </div>
       </div>

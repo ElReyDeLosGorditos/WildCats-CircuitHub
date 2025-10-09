@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import logo from "../../assets/CCSGadgetHub1.png";
+import { db, storage } from "../../firebaseconfig";
+import { collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import "../../components/css/admin/add-item.css";
 
-const AddItem = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
+const AddItem = ({ closeModal }) => {
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
   const [itemCondition, setItemCondition] = useState("Good");
   const [itemImage, setItemImage] = useState(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [itemQuantity, setItemQuantity] = useState(1);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
     setItemImage(e.target.files[0]);
@@ -20,143 +19,131 @@ const AddItem = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setError("");
 
-    if (!itemName || !itemDescription || !itemCondition) {
+    if (!itemName || !itemDescription || !itemCondition || !itemQuantity) {
       setError("All fields are required.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("name", itemName);
-    formData.append("description", itemDescription);
-    formData.append("condition", itemCondition);
-    if (itemImage) {
-      formData.append("image", itemImage);
-    }
+    setLoading(true);
 
     try {
-      await axios.post("https://ccs-gadgethubb.onrender.com/api/items", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      let imageUrl = "";
+      if (itemImage) {
+        const imageRef = ref(storage, `items/${Date.now()}-${itemImage.name}`);
+        await uploadBytes(imageRef, itemImage);
+        imageUrl = await getDownloadURL(imageRef);
+      }
+
+      await addDoc(collection(db, "items"), {
+        name: itemName,
+        description: itemDescription,
+        condition: itemCondition,
+        imagePath: imageUrl,
+        status: "Available",
+        quantity: itemQuantity,
+        createdAt: new Date(),
       });
 
-      setShowSuccessModal(true);
-      setTimeout(() => {
-        setShowSuccessModal(false);
-        navigate("/admin-items");
-      }, 3000);
+      closeModal();
     } catch (err) {
       console.error("Error adding item:", err);
       setError("Failed to add item. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="add-item-page">
-      {/* Navbar */}
-      <div className="navbar">
-        <img src={logo} alt="CCS Gadget Hub Logo" />
-        <nav>
-          {[
-            { label: "Dashboard", to: "/admin-dashboard" },
-            { label: "Manage Items", to: "/admin-items" },
-            { label: "Requests", to: "/admin-requests" },
-            { label: "Manage Users", to: "/admin-users" },
-          ].map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={
-                location.pathname === link.to
-                  ? "navbar-link active-link"
-                  : "navbar-link"
-              }
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div style={{ marginLeft: "auto" }}>
-          <Link to="/" className="logout-link">
-            Log Out
-          </Link>
-        </div>
-      </div>
+      <div className="popup-modal-overlay" onClick={closeModal}>
+        <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="add-item-card">
+            <h2 className="add-item-title">Add Equipment</h2>
 
-      <div style={{ width: "100%", maxWidth: "800px", margin: "0 auto" }}>
-        <Link to="/admin-items" className="back-arrow">
-          ←
-        </Link>
-      </div>
-
-      {/* Content */}
-      <div className="add-item-container">
-        <h2>Add New Item</h2>
-
-        {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
-
-        <form className="add-item-form" onSubmit={handleSubmit}>
-          <label>
-            Item Name:
-            <input
-              type="text"
-              value={itemName}
-              onChange={(e) => setItemName(e.target.value)}
-              placeholder="Enter item name..."
-              required
-            />
-          </label>
-
-          <label>
-            Description:
-            <textarea
-              value={itemDescription}
-              onChange={(e) => setItemDescription(e.target.value)}
-              placeholder="Enter item description..."
-              required
-            />
-          </label>
-
-          <label>
-            Condition:
-            <select
-              value={itemCondition}
-              onChange={(e) => setItemCondition(e.target.value)}
-            >
-              <option value="Good">Good</option>
-              <option value="Fair">Fair</option>
-              <option value="Poor">Poor</option>
-            </select>
-          </label>
-
-          <label>
-            Upload Image:
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-          </label>
-
-          <button type="submit" className="submit-btn">
-            Add Item
-          </button>
-        </form>
-      </div>
-
-      {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            Item added successfully!
-            <div style={{ marginTop: "20px" }}>
-              <Link to="/admin-items" className="modal-link">
-                Back to Items Page
-              </Link>
+            {/* Image Upload Area */}
+            <div className="image-upload-wrapper">
+              <label htmlFor="image-upload" className="image-upload-box">
+                {itemImage ? (
+                    <img
+                        src={URL.createObjectURL(itemImage)}
+                        alt="Preview"
+                        className="image-preview"
+                    />
+                ) : (
+                    <>
+                      <div className="upload-icon">📷</div>
+                      <div className="upload-text">Click or Drag to Upload</div>
+                    </>
+                )}
+              </label>
+              <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  className="file-input"
+                  onChange={handleImageChange}
+              />
             </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="add-item-form">
+              {error && <p className="form-error">{error}</p>}
+
+              {/* Item Name */}
+              <label className="form-label">Item Name</label>
+              <input
+                  type="text"
+                  placeholder="Enter item name"
+                  className="form-input"
+                  value={itemName}
+                  onChange={(e) => setItemName(e.target.value)}
+              />
+
+              {/* Description */}
+              <label className="form-label">Description</label>
+              <textarea
+                  placeholder="Enter description"
+                  className="form-textarea"
+                  value={itemDescription}
+                  onChange={(e) => setItemDescription(e.target.value)}
+              />
+
+              {/* Condition */}
+              <label className="form-label">Condition</label>
+              <select
+                  className="form-input"
+                  value={itemCondition}
+                  onChange={(e) => setItemCondition(e.target.value)}
+              >
+                <option value="">Select Condition</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+              </select>
+
+              {/* Quantity */}
+              <label className="form-label">Quantity</label>
+              <input
+                  type="number"
+                  min={1}
+                  className="form-input"
+                  placeholder="Enter quantity"
+                  value={itemQuantity}
+                  onChange={(e) => setItemQuantity(parseInt(e.target.value))}
+              />
+
+              {/* Submit */}
+              <button type="submit" className="form-button" disabled={loading}>
+                {loading ? "Adding..." : "Add Item"}
+              </button>
+            </form>
+
           </div>
         </div>
-      )}
-    </div>
+      </div>
   );
-};
+}
 
 export default AddItem;

@@ -3,7 +3,7 @@ import { auth } from "../../firebaseconfig";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import logo from "../../assets/CCSGadgetHub.png";
+import logo from "../../assets/circuithubLogo.png";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -12,6 +12,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -34,13 +35,13 @@ const Register = () => {
 
       // 4. Sync with backend
       await axios.post(
-        "https://ccs-gadgethubb.onrender.com/api/sync/user",
+        "http://localhost:8080/api/sync/user",
         {
           uid: user.uid,
           email: user.email,
           firstName: firstName,
           lastName: lastName,
-          role: email.toLowerCase().includes("@cit.edu") ? "Admin" : "User"
+          role: "student"
         },
         {
           headers: {
@@ -51,28 +52,43 @@ const Register = () => {
       );
 
       // 5. Navigate based on role
-      if (email.toLowerCase().includes("@cit.edu")) {
-        navigate("/admin-dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      // Set success message and delay navigation
+      setSuccessMessage("Successfully registered! Redirecting to login page...");
+      setTimeout(() => {
+        if (email.toLowerCase().includes("@cit.edu")) {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/");
+        }
+      }, 2000);
     } catch (err) {
       console.error("Registration error:", err);
-      setError(
-        err.response?.data?.message || 
-        err.message || 
-        "Registration failed. Please try again."
-      );
+
+      if (err.code === "auth/email-already-in-use") {
+        setError("This email is already registered. Please log in or use a different email.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("The email address is not valid.");
+      } else if (err.code === "auth/weak-password") {
+        setError("Password should be at least 6 characters.");
+      } else {
+        setError(
+            err.response?.data?.message ||
+            err.message ||
+            "Registration failed. Please try again."
+        );
+      }
+
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Always re-enable form elements and button
     }
   };
 
   return (
     <div className="login-page">
-      <img src={logo} alt="CCS Gadget Hub Logo" className="login-logo" />
+      <img src={logo} alt="CircuitHub Logo" className="login-logo" />
       <form className="login-form-container" onSubmit={handleRegister}>
         {error && <div className="login-error">{error}</div>}
+        {successMessage && <div className="login-success">{successMessage}</div>}
 
         <input
           type="text"

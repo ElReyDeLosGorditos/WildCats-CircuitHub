@@ -1,0 +1,189 @@
+/* --- Page Layout --- */
+.AR-container {
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
+    min-height: 100vh;
+    padding-bottom: 60px;
+}
+
+/* --- Wrapper --- */
+.AR-wrapper {
+    padding: 30px 20px;
+    display: flex;
+    justify-content: center;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
+}
+
+.AR-content {
+    width: 90%;
+    max-width: 1000px;
+}
+
+.AR-title {
+    font-size: 28px;
+    color: black;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.AR-error {
+    color: #ff4d4f;
+    text-align: center;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+/* --- Filters --- */
+.AR-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.AR-search,
+.AR-dropdown {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+.AR-search {
+    flex: 1;
+}
+
+.AR-dropdown {
+    width: 160px;
+}
+/* --- Requests Grid --- */
+.AR-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.AR-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.AR-card:hover {
+    transform: translateY(-4px);
+}
+
+.AR-card-content p,
+.AR-card-content h3 {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.AR-status {
+    font-size: 13px;
+    font-weight: bold;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    display: inline;
+}
+
+/* Only change the text color */
+.AR-status.pending {
+    color: #f0ad4e !important;
+}
+
+.AR-status.approved {
+    color: #5cb85c !important;
+}
+
+.AR-status.denied {
+    color: #d9534f !important;
+}
+
+.AR-status.returned {
+    color: #0275d8 !important;
+}
+
+
+.AR-status.pending {
+    background-color: #f0ad4e;
+}
+
+.AR-status.approved {
+    background-color: #5cb85c;
+}
+
+.AR-status.denied {
+    background-color: #d9534f;
+}
+
+.AR-status.returned {
+    background-color: #0275d8;
+}
+
+.AR-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.AR-actions button {
+    padding: 8px 14px;
+    font-size: 13px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: white;
+    font-weight: 500;
+}
+
+.AR-approve {
+    background-color: #5cb85c;
+}
+.AR-approve:hover {
+    background-color: #4cae4c;
+}
+
+.AR-deny {
+    background-color: #d9534f;
+}
+.AR-deny:hover {
+    background-color: #c9302c;
+}
+
+.AR-review {
+    background-color: #f0ad4e;
+}
+.AR-review:hover {
+    background-color: #ec971f;
+}
+
+.AR-return {
+    background-color: #0275d8;
+}
+.AR-return:hover {
+    background-color: #025aa5;
+}
+
+.AR-empty {
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.AR-group-label {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 1rem 0 0.5rem;
+}

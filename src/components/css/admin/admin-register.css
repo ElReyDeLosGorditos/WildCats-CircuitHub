@@ -1,0 +1,100 @@
+/* --- Page Wrapper --- */
+.login-page {
+    min-height: 100vh;
+    background-color: #f2f5fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* --- Logo --- */
+.login-logo {
+    width: 180px;
+    margin-bottom: 30px;
+}
+
+/* --- Form Container --- */
+.login-form-container {
+    background-color: white;
+    padding: 30px 25px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* --- Inputs --- */
+.login-input {
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.2s;
+}
+
+.login-input:focus {
+    border-color: #213547;
+    outline: none;
+}
+
+/* --- Button --- */
+.login-button {
+    padding: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #213547;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.login-button:hover:not(:disabled) {
+    background-color: #1a2e3a;
+}
+
+.login-button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+/* --- Success & Error Messages --- */
+.login-error {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.login-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* --- Register Link --- */
+.login-register {
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+}
+
+.login-register a {
+    color: #213547;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-register a:hover {
+    text-decoration: underline;
+}

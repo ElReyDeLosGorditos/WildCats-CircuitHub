@@ -52,7 +52,7 @@ const Signup = () => {
 
   const syncUserWithBackend = async (user, fName, lName, role) => {
     try {
-      await axios.post("https://ccs-gadgethubb.onrender.com/api/sync/user", {
+      await axios.post("https://localhost:8080/api/sync/user", {
         uid: user.uid,
         email: user.email,
         firstName: fName,

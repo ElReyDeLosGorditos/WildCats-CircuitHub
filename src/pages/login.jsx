@@ -3,7 +3,9 @@ import { auth, provider } from "../firebaseconfig";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import logo from "../assets/CCSGadgetHub.png";
+import logo from "../assets/circuithubLogo.png";
+import "../components/css/login.css"
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +15,7 @@ const Login = () => {
 
   const redirectBasedOnRole = async (uid, token) => {
     try {
-      const res = await axios.get(`https://ccs-gadgethubb.onrender.com/api/sync/get-by-uid?uid=${uid}`, {
+      const res = await axios.get(`http://localhost:8080/api/sync/get-by-uid?uid=${uid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -46,7 +48,8 @@ const Login = () => {
       const lastName = nameParts.slice(1).join(" ") || "";
 
       await axios.post(
-        "https://ccs-gadgethubb.onrender.com/api/sync/user",
+        // "https://ccs-gadgethubb.onrender.com/api/sync/user",
+          "http://localhost:8080/api/sync/user",
         {
           uid: user.uid,
           email: user.email,
@@ -79,7 +82,8 @@ const Login = () => {
       const lastName = nameParts.slice(1).join(" ") || "";
 
       await axios.post(
-        "https://ccs-gadgethubb.onrender.com/api/sync/user",
+        // "https://ccs-gadgethubb.onrender.com/api/sync/user",
+          "http://localhost:8080/api/sync/user",
         {
           uid: user.uid,
           email: user.email,
@@ -102,7 +106,7 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      <img src={logo} alt="CCS Gadget Hub Logo" className="login-logo" />
+      <img src={logo} alt="Circuit Hub Logo" className="login-logo" />
       <form className="login-form-container" onSubmit={handleLogin}>
         {error && <div className="login-error">{error}</div>}
 

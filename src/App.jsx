@@ -14,7 +14,7 @@ import MyRequests from "./pages/user/my-requests";
 import ViewRequest from "./pages/user/view-request";
 
 // Admin pages
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ManageItems from "./pages/admin/admin-items";
 import AddItem from "./pages/admin/add-item";
 import ViewItem from "./pages/admin/view-item"; // ✅ Uses :id param now
@@ -26,14 +26,28 @@ import AdminManageUsers from "./pages/admin/admin-users";
 import ViewUser from "./pages/admin/view-user";
 import EditUser from "./pages/admin/edit-user";
 import AddUser from "./pages/admin/add-user";
+import AdminRegister from "./pages/admin/admin-register.jsx";
+import EquipmentMaintenance from "./pages/admin/equipment-maintenance.jsx";
+import LandingPage from "./pages/user/landing.jsx";
+import FeaturesPage from "./pages/features.jsx";
+import HowItWorksPage from "./pages/howItWorks.jsx";
+import FaqsPage from "./pages/faqs.jsx";
+import ContactUsPage from "./pages/contactUs.jsx";
+
+
 
 function App() {
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/FAQs" element={<FaqsPage />} />
+        <Route path="/ContactUs" element={<ContactUsPage />} />
+        <Route path="/HowItWorks" element={<HowItWorksPage />} />
 
         {/* User Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
@@ -46,6 +60,7 @@ function App() {
         <Route path="/view-request/:id" element={<ViewRequest />} />
 
         {/* Admin Routes */}
+        <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/admin-items" element={<ManageItems />} />
         <Route path="/add-item" element={<AddItem />} />
@@ -57,7 +72,8 @@ function App() {
         <Route path="/admin-users" element={<AdminManageUsers />} />
         <Route path="/view-user/:id" element={<ViewUser />} />
         <Route path="/edit-user/:id" element={<EditUser />} />
-        <Route path="/add-user" element={<AddUser />} />
+        <Route path="/add-user"   element={<AddUser />} />
+        <Route path="/equipment-maintenance" element={<EquipmentMaintenance />} />
       </Routes>
     </Router>
   );

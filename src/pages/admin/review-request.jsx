@@ -1,130 +1,156 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
-import logo from "../../assets/CCSGadgetHub1.png";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { db } from "../../firebaseconfig";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import "../../components/css/admin/review-request.css";
 
-const AdminRequestReview = () => {
-  const { id } = useParams();
-  const location = useLocation();
+const AdminRequestReview = ({ request: propRequest, onClose }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams();
 
-  const [request, setRequest] = useState(null);
+  const [currentRequest, setCurrentRequest] = useState(propRequest || location.state?.request || null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(!currentRequest);
 
   useEffect(() => {
     const fetchRequestAndUser = async () => {
       try {
-        const docRef = doc(db, "borrowRequests", id);
-        const docSnap = await getDoc(docRef);
+        let requestToUse = currentRequest;
 
-        if (docSnap.exists()) {
-          const requestData = { id: docSnap.id, ...docSnap.data() };
-          setRequest(requestData);
-
-          // fetch the user details using userId
-          if (requestData.userId) {
-            const userRef = doc(db, "users", requestData.userId);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-              setUser(userSnap.data());
-            }
+        // If no request data is present, fetch from Firestore using the URL param
+        if (!requestToUse && id) {
+          const docRef = doc(db, "borrowRequests", id);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            requestToUse = { id: docSnap.id, ...docSnap.data() };
+            setCurrentRequest(requestToUse);
+          } else {
+            setError("Request not found.");
+            setLoading(false);
+            return;
           }
-        } else {
-          setError("Request not found.");
+        }
+
+        // Fetch user details
+        if (requestToUse?.userId) {
+          const userSnap = await getDoc(doc(db, "users", requestToUse.userId));
+          if (userSnap.exists()) {
+            setUser(userSnap.data());
+          }
         }
       } catch (err) {
-        console.error("Error fetching request:", err);
-        setError("Failed to load request.");
+        console.error("Error loading request/user:", err);
+        setError("Failed to load request or user data.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) fetchRequestAndUser();
-    else setError("Invalid request ID.");
-  }, [id]);
+    fetchRequestAndUser();
+  }, [id, propRequest, location.state]);
 
-  const handleApprove = () => {
-    alert("Request Approved!");
-    navigate("/admin-requests");
+  const [successMsg, setSuccessMsg] = useState(""); // Add this near your other state
+
+  const updateStatus = async (status) => {
+    try {
+      const requestRef = doc(db, "borrowRequests", currentRequest.id);
+      const updateData = { status };
+
+      if (status === "Returned") {
+        updateData.returnDate = Timestamp.now();
+      }
+
+      await updateDoc(requestRef, updateData);
+      setCurrentRequest(prev => ({ ...prev, ...updateData }));
+
+      // Navigate back to dashboard after approval or denial
+      if (status === "Approved" || status === "Denied") {
+        navigate("/admin-dashboard");
+      }
+
+      // Optional: for "Returned" you might want to stay on page
+    } catch (err) {
+      console.error("Status update failed:", err);
+      setError("Failed to update request status.");
+    }
   };
 
-  const handleDeny = () => {
-    alert("Request Denied!");
-    navigate("/admin-requests");
+  const renderItemNames = (req) => {
+    if (Array.isArray(req?.items) && req.items.length > 0) {
+      return req.items.map(item => item.name).join(", ");
+    }
+    return req?.itemName || "N/A";
   };
+
+  if (loading) {
+    return (
+        <div className="RR-overlay">
+          <div className="RR-modal" onClick={(e) => e.stopPropagation()}>
+            <p>Loading request...</p>
+          </div>
+        </div>
+    );
+  }
+
+  if (error || !currentRequest) {
+    return (
+        <div className="RR-overlay">
+          <div className="RR-modal" onClick={(e) => e.stopPropagation()}>
+            <p>{error || "No request data available."}</p>
+            <button className="RR-close-btn" onClick={onClose}>Close</button>
+          </div>
+        </div>
+    );
+  }
+
+  const showApproveDenyButtons = currentRequest.status === "Pending";
+  const showReturnButton = currentRequest.status === "Approved";
+  const showNoActionButtons = ["Returned", "Denied", "Cancelled"].includes(currentRequest.status);
 
   return (
-    <div className="admin-dashboard">
-      {/* Navbar */}
-      <div className="navbar">
-        <img src={logo} alt="CCS Gadget Hub Logo" />
-        <nav>
-          {[
-            { label: "Dashboard", to: "/admin-dashboard" },
-            { label: "Manage Items", to: "/admin-items" },
-            { label: "Requests", to: "/admin-requests" },
-            { label: "Manage Users", to: "/admin-users" },
-          ].map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={
-                location.pathname === link.to
-                  ? "navbar-link active-link"
-                  : "navbar-link"
-              }
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div style={{ marginLeft: "auto" }}>
-          <Link to="/" className="logout-link">Log Out</Link>
+      <div className="RR-overlay" onClick={onClose}>
+        <div className="RR-modal" onClick={(e) => e.stopPropagation()}>
+          <h2 className="RR-title">Review Request</h2>
+
+          <div className="RR-section">
+            <h3 className="RR-subtitle">Request Timeline</h3>
+            <p><strong>Created:</strong> {currentRequest.createdAt?.seconds ? new Date(currentRequest.createdAt.seconds * 1000).toLocaleString() : "N/A"}</p>
+          </div>
+
+          <div className="RR-section">
+            <h3 className="RR-subtitle">Borrowing Schedule</h3>
+            <p><strong>Date:</strong> {currentRequest.borrowDate}</p>
+            <p><strong>Time Slot:</strong> {currentRequest.timeRange || `${currentRequest.startTime} - ${currentRequest.returnTime}`}</p>
+          </div>
+
+          <div className="RR-section">
+            <h3 className="RR-subtitle">Request Info</h3>
+            <p><strong>Borrower:</strong> {user ? `${user.firstName} ${user.lastName}` : "Unknown"}</p>
+            <p><strong>Item(s):</strong> {renderItemNames(currentRequest)}</p>
+            <p><strong>Reason:</strong> {currentRequest.reason}</p>
+            <p><strong>Current Status:</strong> <span className={`status-badge ${currentRequest.status?.toLowerCase()}`}>{currentRequest.status}</span></p>
+          </div>
+
+          <div className="RR-buttons">
+            {showApproveDenyButtons && (
+                <>
+                  <button className="RR-approve" onClick={() => updateStatus("Approved")}>Approve</button>
+                  <button className="RR-deny" onClick={() => updateStatus("Denied")}>Deny</button>
+                </>
+            )}
+
+            {showReturnButton && (
+                <button className="RR-return" onClick={() => updateStatus("Returned")}>Mark as Returned</button>
+            )}
+
+            {showNoActionButtons && (
+                <p className="RR-no-actions-text">No further actions available for this request.</p>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Content */}
-      <div className="admin-dashboard-container">
-        <Link to="/admin-requests" className="back-arrow">←</Link>
-
-        {loading ? (
-          <p>Loading request...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          <div className="request-details-box">
-            <h2>Review Request Details</h2>
-
-            <h3 className="section-header">Request Timeline</h3>
-            <p>
-              <strong>Date Request Was Created:</strong>{" "}
-              {request.createdAt?.seconds
-                ? new Date(request.createdAt.seconds * 1000).toLocaleString()
-                : "N/A"}
-            </p>
-
-            <h3 className="section-header">Borrowing Schedule</h3>
-            <p><strong>Scheduled Borrow Date:</strong> {request.borrowDate}</p>
-            <p><strong>Scheduled Time Slot:</strong> {request.timeRange || `${request.startTime} - ${request.returnTime}`}</p>
-
-            <h3 className="section-header">Request Information</h3>
-            <p><strong>Borrower Name:</strong> {user ? `${user.firstName} ${user.lastName}` : request.userName || "N/A"}</p>
-            <p><strong>Item Requested:</strong> {request.itemName}</p>
-            <p><strong>Reason for Borrowing:</strong> {request.reason}</p>
-            <p><strong>Current Status:</strong> {request.status}</p>
-
-            <div className="request-action-btns">
-              <button className="approve-btn" onClick={handleApprove}>Approve</button>
-              <button className="deny-btn" onClick={handleDeny}>Deny</button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
   );
 };
 
