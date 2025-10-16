@@ -1,0 +1,135 @@
+/* Teacher Request Page */
+.TR-container {
+    min-height: 100vh;
+    background-color: #f8f9fc;
+    transition: filter 0.3s ease;
+}
+
+.modal-blurred {
+    filter: blur(3px);
+    pointer-events: none;
+}
+
+/* Wrapper & Content */
+.TR-wrapper {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.TR-header {
+    margin-bottom: 20px;
+}
+
+.TR-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #213547;
+}
+
+.TR-error {
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* Filters */
+.TR-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.TR-search {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.TR-dropdown {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: white;
+}
+
+/* Group Section */
+.TR-group {
+    margin-bottom: 30px;
+}
+
+.TR-group-label {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Grid Cards */
+.TR-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 15px;
+}
+
+.TR-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.TR-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.TR-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.TR-borrower {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2a3e52;
+}
+
+.TR-status {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+/* Status colors */
+.TR-status.pending {
+    color: #ff9800;
+}
+
+.TR-status.approved {
+    color: #4caf50;
+}
+
+.TR-status.denied {
+    color: #f44336;
+}
+
+.TR-status.returned {
+    color: #2196f3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .TR-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .TR-grid {
+        grid-template-columns: 1fr;
+    }
+}

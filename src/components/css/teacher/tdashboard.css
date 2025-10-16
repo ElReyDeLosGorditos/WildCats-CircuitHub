@@ -1,0 +1,217 @@
+/* ===============================
+   Teacher Dashboard Page
+   =============================== */
+
+.tdb-dashboard {
+    min-height: 100vh;
+    background-color: #f4f7f6; /* Light background for clarity */
+}
+
+/* ===============================
+   Navbar
+   =============================== */
+
+.tdb-navbar {
+    width: 100%;
+    padding: 1rem;
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.tdb-navbar img {
+    height: 100px;
+    margin-right: 20px;
+}
+
+.tdb-navbar nav {
+    display: flex;
+    gap: 40px;
+    margin-left: 50px;
+}
+
+.tdb-navbar-link {
+    color: white;
+    margin: 0 20px;
+    transition: color 0.3s ease;
+}
+
+.tdb-navbar-link:hover {
+    color: lightgray;
+    text-decoration: none;
+}
+
+.tdb-navbar-link.active-link {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.tdb-logout-link {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* ===============================
+   Dashboard Container
+   =============================== */
+
+.tdb-dashboard-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tdb-welcome {
+    font-size: 28px;
+    font-weight: bold;
+    color: #213547;
+}
+
+.tdb-subtext {
+    margin-bottom: 20px;
+    color: #444;
+}
+
+/* ===============================
+   Stats Cards
+   =============================== */
+
+.tdb-cards {
+    display: flex;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.tdb-card {
+    flex: 1;
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.tdb-card:hover {
+    transform: translateY(-5px);
+}
+
+.tdb-card h3 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #d96528;
+}
+
+.tdb-card p {
+    color: #555;
+}
+
+/* ===============================
+   Columns Layout
+   =============================== */
+
+.tdb-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+/* ===============================
+   Recent Approvals Box
+   =============================== */
+
+.tdb-activity-box {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tdb-activity-box h3 {
+    color: #213547;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.tdb-activity-box p {
+    color: #666;
+}
+
+/* ===============================
+   Pending Approvals Box
+   =============================== */
+
+.tdb-pending-box {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tdb-pending-box h3 {
+    color: #213547;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.tdb-pending-request {
+    border-bottom: 1px solid #eee;
+    padding: 12px 0;
+}
+
+.tdb-pending-request:last-child {
+    border-bottom: none;
+}
+
+.tdb-pending-request p {
+    color: #333;
+    margin: 5px 0;
+}
+
+.tdb-review-btn-row {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.tdb-review-request-btn {
+    background-color: #d96528;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.tdb-review-request-btn:hover {
+    background-color: #b84f1e;
+    transform: scale(1.05);
+}
+
+/* ===============================
+   Responsive Design
+   =============================== */
+
+@media (max-width: 768px) {
+    .tdb-navbar {
+        flex-direction: column;
+    }
+
+    .tdb-navbar nav {
+        margin-top: 10px;
+        gap: 20px;
+    }
+
+    .tdb-cards {
+        flex-direction: column;
+    }
+
+    .tdb-columns {
+        grid-template-columns: 1fr;
+    }
+}

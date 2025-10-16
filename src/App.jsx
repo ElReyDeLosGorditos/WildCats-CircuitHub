@@ -33,6 +33,8 @@ import FeaturesPage from "./pages/features.jsx";
 import HowItWorksPage from "./pages/howItWorks.jsx";
 import FaqsPage from "./pages/faqs.jsx";
 import ContactUsPage from "./pages/contactUs.jsx";
+import TeacherDashboard from "./pages/teacher/t-dashboard.jsx";
+import TeacherRequests from "./pages/teacher/t-requests.jsx";
 
 
 
@@ -74,6 +76,11 @@ function App() {
         <Route path="/edit-user/:id" element={<EditUser />} />
         <Route path="/add-user"   element={<AddUser />} />
         <Route path="/equipment-maintenance" element={<EquipmentMaintenance />} />
+
+        {/*Teacher Routes*/}
+        <Route path="/t-dashboard" element={<TeacherDashboard />} />
+        <Route path="/t-requests" element={<TeacherRequests />} />
+
       </Routes>
     </Router>
   );
