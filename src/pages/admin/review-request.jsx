@@ -1,57 +1,52 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { db } from "../../firebaseconfig";
 import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import "../../components/css/admin/review-request.css";
 
 const AdminRequestReview = ({ request: propRequest, onClose }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { id } = useParams();
 
-  const [currentRequest, setCurrentRequest] = useState(propRequest || location.state?.request || null);
+  const [currentRequest, setCurrentRequest] = useState(propRequest || null);
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(!currentRequest);
 
   useEffect(() => {
-    const fetchRequestAndUser = async () => {
+    const fetchUserAndRequest = async () => {
       try {
-        let requestToUse = currentRequest;
+        let request = propRequest;
 
-        // If no request data is present, fetch from Firestore using the URL param
-        if (!requestToUse && id) {
-          const docRef = doc(db, "borrowRequests", id);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            requestToUse = { id: docSnap.id, ...docSnap.data() };
-            setCurrentRequest(requestToUse);
-          } else {
-            setError("Request not found.");
-            setLoading(false);
-            return;
+        // Refetch the full request if it's incomplete
+        if (request && !request.userId) {
+          const fullSnap = await getDoc(doc(db, "borrowRequests", request.id));
+          if (fullSnap.exists()) {
+            request = { id: fullSnap.id, ...fullSnap.data() };
+            setCurrentRequest(request);
           }
         }
 
-        // Fetch user details
-        if (requestToUse?.userId) {
-          const userSnap = await getDoc(doc(db, "users", requestToUse.userId));
+        if (request?.userId) {
+          const userSnap = await getDoc(doc(db, "users", request.userId));
           if (userSnap.exists()) {
             setUser(userSnap.data());
           }
         }
       } catch (err) {
-        console.error("Error loading request/user:", err);
-        setError("Failed to load request or user data.");
+        console.error("Failed to fetch full request or user:", err);
+        setError("Failed to load request details.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRequestAndUser();
-  }, [id, propRequest, location.state]);
+    fetchUserAndRequest();
+  }, [propRequest]);
+
 
   const [successMsg, setSuccessMsg] = useState(""); // Add this near your other state
+
+  if (currentRequest?.status === "Approved" || currentRequest?.status === "Denied") {
+    onClose();
+  }
 
   const updateStatus = async (status) => {
     try {
@@ -67,7 +62,7 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
 
       // Navigate back to dashboard after approval or denial
       if (status === "Approved" || status === "Denied") {
-        navigate("/admin-dashboard");
+        onClose(); // Close the modal
       }
 
       // Optional: for "Returned" you might want to stay on page

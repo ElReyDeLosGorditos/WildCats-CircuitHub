@@ -3,12 +3,17 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/circuithubLogo2.png";
 import AdminHeader from "./AdminHeader";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../firebaseconfig";
 import "../../components/css/admin/equipment-maintenance.css";
 
 const EquipmentMaintenance = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [items, setItems] = useState([]);
     const [activeTab, setActiveTab] = useState("maintenance");
     const [searchQuery, setSearchQuery] = useState("");
     const [showForm, setShowForm] = useState(false);
@@ -36,6 +41,20 @@ const EquipmentMaintenance = () => {
     };
 
     useEffect(() => {
+        const fetchItems = async () => {
+            try {
+                const snapshot = await getDocs(collection(db, "items"));
+                const itemList = snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setItems(itemList);
+            } catch (error) {
+                console.error("Error fetching items:", error);
+            }
+        };
+
+        fetchItems();
         fetchMaintenanceData();
     }, []);
 
@@ -54,7 +73,34 @@ const EquipmentMaintenance = () => {
     };
 
     const handleChange = (e) => {
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({ ...prev, [name]: value }));
+
+        if (name === "equipmentName") {
+            const input = value.toLowerCase().trim();
+            let suggestions = [];
+
+            if (input.length === 0) {
+                // Show only 3 top items when input is empty
+                suggestions = items.slice(0, 3);
+            } else if (input.length >= 3) {
+                // Filter and limit to 3 results
+                suggestions = items
+                    .filter((item) =>
+                        item.name.toLowerCase().includes(input)
+                    )
+                    .slice(0, 3);
+            }
+
+            setFilteredSuggestions(suggestions);
+            setShowSuggestions(true);
+        }
+    };
+
+    const handleSuggestionClick = (name) => {
+        setFormData((prev) => ({ ...prev, equipmentName: name }));
+        setShowSuggestions(false);
     };
 
     const handleSubmit = (e) => {
@@ -68,6 +114,12 @@ const EquipmentMaintenance = () => {
         // 🔒 Validate required fields
         if (!equipmentName?.trim() || !issue?.trim() || !status?.trim() || !date?.trim()) {
             alert("Please fill in all fields (equipment name, issue, status, and date).");
+            return;
+        }
+
+        const isValidEquipment = items.some((item) => item.name === equipmentName);
+        if (!isValidEquipment) {
+            alert("Please select a valid equipment name from the list.");
             return;
         }
 
@@ -233,13 +285,38 @@ const EquipmentMaintenance = () => {
                             </h2>
 
                             <div className="EM-form">
-                                <input
-                                    type="text"
-                                    name="equipmentName"
-                                    placeholder="Equipment Name"
-                                    value={formData.equipmentName}
-                                    onChange={handleChange}
-                                />
+                                <div className="EM-autocomplete">
+                                    <input
+                                        type="text"
+                                        name="equipmentName"
+                                        placeholder="Equipment Name"
+                                        value={formData.equipmentName}
+                                        onChange={handleChange}
+                                        onFocus={() => {
+                                            if (formData.equipmentName.trim() === "") {
+                                                setFilteredSuggestions(items.slice(0, 4));
+                                                setShowSuggestions(true);
+                                            }
+                                        }}
+                                        onBlur={() => {
+                                            // Delay hiding to allow click to register
+                                            setTimeout(() => setShowSuggestions(false), 100);
+                                        }}
+                                    />
+                                    {showSuggestions && filteredSuggestions.length > 0 && (
+                                        <div className="EM-suggestion-container">
+                                            {filteredSuggestions.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    className="EM-suggestion-item"
+                                                    onMouseDown={() => handleSuggestionClick(item.name)}
+                                                >
+                                                    {item.name}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                                 <input
                                     type="text"
                                     name="issue"
