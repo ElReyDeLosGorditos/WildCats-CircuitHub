@@ -15,9 +15,12 @@ import {
 } from "firebase/firestore";
 
 const AdminDashboard = () => {
+
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
   const [approvedCount, setApprovedCount] = useState(0);
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -40,9 +43,7 @@ const AdminDashboard = () => {
           const data = doc.data();
           return {
             id: doc.id,
-            itemName: data.itemName || "Unnamed Item",
-            borrowerName: data.userName || data.borrowerName || "Unknown User",
-            requestDate: data.borrowDate || data.requestDate || "N/A"
+            ...data, // include all original fields
           };
         });
         setPendingRequests(pendingList);
@@ -80,10 +81,21 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => (document.body.style.overflow = 'auto');
+  }, [showModal]);
+
   const navLinks = [
     { label: "Dashboard", to: "/admin-dashboard" },
     { label: "Manage Items", to: "/admin-items" },
     { label: "Requests", to: "/admin-requests" },
+    {label: "Maintenance", to: "/equipment-maintenance"},
     { label: "Manage Users", to: "/admin-users" },
   ];
 
@@ -91,11 +103,21 @@ const AdminDashboard = () => {
     navigate(path);
   };
 
-  const handleReview = (e, id) => {
+  const handleReview = (e, request) => {
     e.stopPropagation();
-    navigate(`/review-request/${id}`);
+    setSelectedRequest(request);
+    setShowModal(true);
+    // navigate(`/review-request/${request.id}`, { state: { request } });
   };
 
+  useEffect(() => {
+    setShowModal(false);
+    setSelectedRequest(null);
+  }, []);
+
+
+  console.log("showModal:", showModal, "selectedRequest:", selectedRequest);
+  console.log("rendered", showModal, selectedRequest);
   return (
     <div className="admin-dashboard">
       <div className="navbar">
@@ -160,7 +182,7 @@ const AdminDashboard = () => {
                   <p><strong>{req.itemName}</strong> - {req.borrowerName}</p>
                   <span>{req.requestDate}</span>
                   <div className="review-btn-row">
-                    <button className="review-request-btn" onClick={(e) => handleReview(e, req.id)}>
+                    <button className="review-request-btn" onClick={(e) => handleReview(e, req)}>
                       Review Request
                     </button>
                   </div>
@@ -172,6 +194,19 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+
+      {showModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>Review Request</h2>
+              <p><strong>Item:</strong> {selectedRequest.itemName}</p>
+              <p><strong>Borrower:</strong> {selectedRequest.borrowerName}</p>
+              <p><strong>Date:</strong> {selectedRequest.requestDate}</p>
+              <button onClick={() => setShowModal(false)}>Close</button>
+            </div>
+          </div>
+      )}
+
     </div>
   );
 };

@@ -45,11 +45,12 @@ public class ItemController {
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("condition") String condition,
-            @RequestParam(value = "image", required = false) MultipartFile image
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam("quantity") int quantity
     ) {
         try {
             System.out.println("Received multipart request: " + name);
-            Item newItem = itemService.saveItem(name, description, condition, image);
+            Item newItem = itemService.saveItem(name, description, condition, image, quantity);
             return ResponseEntity.ok(newItem);
         } catch (Exception e) {
             System.out.println("Error adding item with image: " + e.getMessage());
@@ -59,18 +60,19 @@ public class ItemController {
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
-    
+
     // For JSON data (without image)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addSimpleItem(@RequestBody Map<String, String> itemData) {
         try {
             System.out.println("Received JSON request: " + itemData);
-            
+
             // Extract item data
             String name = itemData.get("name");
             String description = itemData.get("description");
             String condition = itemData.get("condition");
-            
+            int quantity = Integer.parseInt(itemData.getOrDefault("quantity", "0"));
+
             // Create a map for storing in Firestore
             String itemId = UUID.randomUUID().toString();
             Map<String, Object> dbItemData = new HashMap<>();
@@ -81,10 +83,11 @@ public class ItemController {
             dbItemData.put("status", "Available");
             dbItemData.put("createdAt", LocalDateTime.now().toString());
             dbItemData.put("imagePath", "https://placehold.co/150");
+            dbItemData.put("quantity", quantity);
 
             // Save to Firestore
             FirestoreClient.getFirestore().collection("items").document(itemId).set(dbItemData).get();
-            
+
             // Create response
             Map<String, Object> response = new HashMap<>(dbItemData);
             return ResponseEntity.ok(response);
@@ -112,16 +115,16 @@ public class ItemController {
     public ResponseEntity<?> getItemById(@PathVariable String id) {
         try {
             System.out.println("Fetching item with ID: " + id);
-            
+
             // Get document reference from Firestore
             DocumentReference docRef = FirestoreClient.getFirestore().collection("items").document(id);
             ApiFuture<DocumentSnapshot> future = docRef.get();
             DocumentSnapshot document = future.get();
-            
+
             if (!document.exists()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             // Convert document to item object
             Map<String, Object> itemData = document.getData();
             if (itemData != null) {
@@ -141,32 +144,52 @@ public class ItemController {
     public ResponseEntity<?> updateItem(@PathVariable String id, @RequestBody Map<String, String> itemData) {
         try {
             System.out.println("Updating item: " + id);
-            
+
             // Fetch the existing item
             DocumentReference docRef = FirestoreClient.getFirestore().collection("items").document(id);
             ApiFuture<DocumentSnapshot> future = docRef.get();
             DocumentSnapshot document = future.get();
-            
+
             if (!document.exists()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             // Update only the provided fields
             Map<String, Object> updates = new HashMap<>();
+            String prevStatus = document.getString("status");
             if (itemData.containsKey("name")) updates.put("name", itemData.get("name"));
             if (itemData.containsKey("description")) updates.put("description", itemData.get("description"));
             if (itemData.containsKey("condition")) updates.put("condition", itemData.get("condition"));
-            if (itemData.containsKey("status")) updates.put("status", itemData.get("status"));
-            
+            if (itemData.containsKey("status")) {
+                String newStatus = itemData.get("status");
+                updates.put("status", newStatus);
+
+                Long currentQuantity = document.getLong("quantity");
+                if (currentQuantity != null) {
+                    // Subtract 1 if changing to Borrowed or Maintenance
+                    if ((newStatus.equalsIgnoreCase("Borrowed") || newStatus.equalsIgnoreCase("Maintenance"))
+                            && currentQuantity > 0) {
+                        updates.put("quantity", currentQuantity - 1);
+                    }
+
+                    // Add 1 if changing back to Available from Borrowed or Maintenance
+                    if (newStatus.equalsIgnoreCase("Available") &&
+                            (prevStatus.equalsIgnoreCase("Borrowed") || prevStatus.equalsIgnoreCase("Maintenance"))) {
+                        updates.put("quantity", currentQuantity + 1);
+                    }
+                }
+            }
+            if (itemData.containsKey("quantity")) updates.put("quantity", Integer.parseInt(itemData.get("quantity")));
+
             // Update in Firestore
             docRef.update(updates).get();
-            
+
             // Return the updated item
             ApiFuture<DocumentSnapshot> updatedFuture = docRef.get();
             DocumentSnapshot updatedDoc = updatedFuture.get();
             Map<String, Object> updatedData = updatedDoc.getData();
             updatedData.put("id", updatedDoc.getId());
-            
+
             return ResponseEntity.ok(updatedData);
         } catch (Exception e) {
             e.printStackTrace();

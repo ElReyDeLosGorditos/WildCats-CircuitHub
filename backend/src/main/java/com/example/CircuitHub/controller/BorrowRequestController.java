@@ -20,8 +20,7 @@ import com.example.CircuitHub.model.BorrowRequest;
 import com.example.CircuitHub.service.BorrowRequestService;
 
 @RestController
-@RequestMapping("/api/requests")  // Changed from "/api/borrow/requests" to match frontend
-// @CrossOrigin(origins = "https://ccs-gadgethubb.onrender.com", allowCredentials = "true")
+@RequestMapping("/api/requests")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"}, allowCredentials = "true")
 public class BorrowRequestController {
 
@@ -36,7 +35,7 @@ public class BorrowRequestController {
         BorrowRequest createdRequest = borrowRequestService.createRequest(request);
         return ResponseEntity.ok(Map.of(
             "success", true,
-            "message", "Borrow request submitted successfully",
+            "message", "Borrow request submitted successfully and pending teacher approval",
             "request", createdRequest
         ));
     }
@@ -51,6 +50,20 @@ public class BorrowRequestController {
             requests = borrowRequestService.getAllRequests();
         }
         
+        return ResponseEntity.ok(requests);
+    }
+    
+    // NEW: Get requests pending teacher approval
+    @GetMapping("/pending-teacher")
+    public ResponseEntity<?> getPendingTeacherApproval() throws ExecutionException, InterruptedException {
+        List<BorrowRequest> requests = borrowRequestService.getPendingTeacherApproval();
+        return ResponseEntity.ok(requests);
+    }
+    
+    // NEW: Get requests pending lab assistant approval
+    @GetMapping("/pending-lab")
+    public ResponseEntity<?> getPendingLabApproval() throws ExecutionException, InterruptedException {
+        List<BorrowRequest> requests = borrowRequestService.getPendingLabApproval();
         return ResponseEntity.ok(requests);
     }
     
@@ -70,6 +83,71 @@ public class BorrowRequestController {
         List<BorrowRequest> userRequests = borrowRequestService.getRequestsByBorrowerId(userId);
         return ResponseEntity.ok(userRequests);
     }
+    
+    // NEW: Get user's borrow history with late return tracking
+    @GetMapping("/user/{userId}/history")
+    public ResponseEntity<?> getUserBorrowHistory(@PathVariable String userId) throws ExecutionException, InterruptedException {
+        Map<String, Object> history = borrowRequestService.getUserBorrowHistory(userId);
+        return ResponseEntity.ok(history);
+    }
+
+    // NEW: Teacher approval endpoint
+    @PutMapping("/{id}/teacher-approve")
+    public ResponseEntity<?> teacherApprove(
+            @PathVariable String id, 
+            @RequestBody Map<String, String> approvalData) throws ExecutionException, InterruptedException {
+        
+        String teacherId = approvalData.get("teacherId");
+        String teacherName = approvalData.get("teacherName");
+        
+        if (teacherId == null || teacherName == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "error", "Teacher ID and name are required"
+            ));
+        }
+        
+        try {
+            BorrowRequest updatedRequest = borrowRequestService.teacherApprove(id, teacherId, teacherName);
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Request approved by teacher. Awaiting lab assistant approval.",
+                "request", updatedRequest
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "error", e.getMessage()
+            ));
+        }
+    }
+    
+    // NEW: Lab assistant approval endpoint
+    @PutMapping("/{id}/lab-approve")
+    public ResponseEntity<?> labApprove(
+            @PathVariable String id, 
+            @RequestBody Map<String, String> approvalData) throws ExecutionException, InterruptedException {
+        
+        String labAssistantId = approvalData.get("labAssistantId");
+        String labAssistantName = approvalData.get("labAssistantName");
+        
+        if (labAssistantId == null || labAssistantName == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "error", "Lab assistant ID and name are required"
+            ));
+        }
+        
+        try {
+            BorrowRequest updatedRequest = borrowRequestService.labApprove(id, labAssistantId, labAssistantName);
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Request fully approved. Item is now borrowed.",
+                "request", updatedRequest
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "error", e.getMessage()
+            ));
+        }
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateRequest(@PathVariable String id, @RequestBody Map<String, String> updateData) throws ExecutionException, InterruptedException {
@@ -84,9 +162,14 @@ public class BorrowRequestController {
         try {
             BorrowRequest updatedRequest = borrowRequestService.updateStatus(id, status);
             
+            String message = "Request status updated successfully";
+            if ("Returned".equals(status) && Boolean.TRUE.equals(updatedRequest.getIsLate())) {
+                message = "Item returned late. Late return has been recorded.";
+            }
+            
             return ResponseEntity.ok(Map.of(
                 "success", true,
-                "message", "Request status updated successfully",
+                "message", message,
                 "request", updatedRequest
             ));
         } catch (RuntimeException e) {

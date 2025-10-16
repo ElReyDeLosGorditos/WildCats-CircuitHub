@@ -1,0 +1,222 @@
+/* --- Page Wrapper --- */
+.EM-dashboard {
+    min-height: 100vh;
+    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Main Container --- */
+.EM-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* --- Title/Header Row --- */
+.EM-title {
+    font-size: 28px;
+    color: black;
+    margin-bottom: 30px;
+}
+
+/* --- Toolbar (Search + Button) --- */
+.EM-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.EM-controls {
+    display: flex;
+    gap: 15px;
+}
+
+.EM-search {
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+}
+
+/* --- Add Button --- */
+.EM-add-btn {
+    padding: 10px 18px;
+    background-color: #441752;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.EM-add-btn:hover {
+    background-color: #54415a;
+}
+
+/* --- Table Styling --- */
+.EM-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.EM-table th,
+.EM-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.EM-table th {
+    background-color: #441752;
+    color: white;
+    font-weight: 600;
+}
+
+.EM-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.EM-edit-btn,
+.EM-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+.EM-delete-btn:hover {
+    color: #e53935;
+}
+
+/* --- Modal Overlay --- */
+.EM-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.EM-modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 500px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* --- Modal Exit Button --- */
+.EM-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #1a1a1a;
+}
+
+/* --- Modal Title --- */
+.EM-modal-title {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    color: #222;
+}
+
+/* --- Form Styling --- */
+.EM-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.EM-form input,
+.EM-form select {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* --- Form Button Row --- */
+.EM-form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+/* --- Submit and Remove Buttons --- */
+.EM-submit-btn,
+.EM-remove-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.EM-submit-btn {
+    background-color: #441752;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.EM-submit-btn:hover {
+    background-color: #5c3a66;
+}
+
+.EM-remove-btn {
+    background-color: #e53935;
+    color: white;
+}
+
+.EM-remove-btn:hover {
+    background-color: #c62828;
+}
+
+.EM-suggestion-container {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 88%;
+    z-index: 1000;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 4px;
+}
+
+.EM-suggestion-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.EM-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.EM-suggestion-item:hover {
+    background-color: #f3f3f3;
+}

@@ -85,7 +85,7 @@ const Login = () => {
 
       await axios.post(
         // "https://ccs-gadgethubb.onrender.com/api/sync/user",
-          "http:/localhost:8080/api/sync/user",
+          "http://localhost:8080/api/sync/user",
         {
           uid: user.uid,
           email: user.email,

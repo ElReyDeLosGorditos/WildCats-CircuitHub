@@ -27,14 +27,29 @@ import ViewUser from "./pages/admin/view-user";
 import EditUser from "./pages/admin/edit-user";
 import AddUser from "./pages/admin/add-user";
 import AdminRegister from "./pages/admin/admin-register.jsx";
+import EquipmentMaintenance from "./pages/admin/equipment-maintenance.jsx";
+import LandingPage from "./pages/user/landing.jsx";
+import FeaturesPage from "./pages/features.jsx";
+import HowItWorksPage from "./pages/howItWorks.jsx";
+import FaqsPage from "./pages/faqs.jsx";
+import ContactUsPage from "./pages/contactUs.jsx";
+import TeacherDashboard from "./pages/teacher/teacher-dashboard.jsx"
+import AdminUsers from "./pages/admin/admin-users";
+
+
 
 function App() {
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/FAQs" element={<FaqsPage />} />
+        <Route path="/ContactUs" element={<ContactUsPage />} />
+        <Route path="/HowItWorks" element={<HowItWorksPage />} />
 
         {/* User Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
@@ -59,7 +74,11 @@ function App() {
         <Route path="/admin-users" element={<AdminManageUsers />} />
         <Route path="/view-user/:id" element={<ViewUser />} />
         <Route path="/edit-user/:id" element={<EditUser />} />
-        <Route path="/add-user" element={<AddUser />} />
+        <Route path="/add-user"   element={<AddUser />} />
+        <Route path="/equipment-maintenance" element={<EquipmentMaintenance />} />
+
+        {/* Admin Routes */}
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
       </Routes>
     </Router>
   );

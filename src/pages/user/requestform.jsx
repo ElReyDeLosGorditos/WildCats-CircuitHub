@@ -15,6 +15,8 @@ import {
 import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/requestform.css"; // Ensure this path is correct
 
+
+
 // Navigation links for the user dashboard
 const navLinks = [
   { label: "Dashboard", to: "/dashboard" },
@@ -32,6 +34,9 @@ const RequestForm = () => {
   const [allItems, setAllItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [startTime, setStartTime] = useState("");
+
+
 
   const [reason, setReason] = useState("");
   const [borrowDate, setBorrowDate] = useState("");
@@ -158,6 +163,20 @@ const RequestForm = () => {
     return durations;
   };
 
+  // Pre-caution if user tries to paste or manipulate the date manually
+  useEffect(() => {
+    if (borrowDate) {
+      const selected = new Date(borrowDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      selected.setHours(0, 0, 0, 0);
+
+      if (selected < today) {
+        setBorrowDate(""); // Clear invalid date
+      }
+    }
+  }, [borrowDate]);
+
   // Effect to calculate and update the return time whenever startBlock or durationBlocks change
   useEffect(() => {
     if (startBlock && durationBlocks) {
@@ -203,19 +222,49 @@ const RequestForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate all required fields including selected items and valid return time
-    if (
-        !borrowDate ||
-        !startBlock ||
-        !durationBlocks ||
-        !agree ||
-        selectedItems.length === 0 ||
-        returnTime.includes("Invalid") // Prevent submission if return time is invalid
-    ) {
-      return alert("Please complete all required fields, select at least one item, and ensure the time slot is valid.");
+
+    if (selectedItems.length === 0) {
+      alert("Please select at least one item.");
+      return;
     }
-    setShowConfirmModal(true); // Show confirmation modal
+
+    const user = auth.currentUser; // ✅ Fix added here
+    if (!user) {
+      alert("User not logged in.");
+      return;
+    }
+
+    try {
+      const timeRange = `${startTime} - ${returnTime}`;
+
+      await addDoc(collection(db, "borrowRequests"), {
+        userId: user.uid,
+        userName: user.displayName || user.email || "Unknown User",
+        borrowDate,
+        startTime,
+        returnTime,
+        timeRange,
+        reason,
+        status: "Pending",
+        createdAt: serverTimestamp(),
+        items: selectedItems.map((item) => ({
+          id: item.id,
+          name: item.name,
+        })),
+      });
+
+      alert("Request submitted!");
+      setSelectedItems([]);
+      setBorrowDate("");
+      setStartTime("");
+      setReturnTime("");
+      setReason("");
+    } catch (error) {
+      console.error("Error submitting request:", error);
+      alert("Failed to submit request.");
+    }
   };
+
 
   // Handle confirming the request from the modal
   const handleConfirmRequest = async () => {
@@ -381,9 +430,13 @@ const RequestForm = () => {
               <label>Date of Borrowing:</label>
               <input
                   type="date"
+                  id="borrowDate"
                   value={borrowDate}
                   onChange={(e) => setBorrowDate(e.target.value)}
-                  required
+                  min={new Date().toISOString().split("T")[0]} // today
+                  max={new Date(new Date().setMonth(new Date().getMonth() + 5))
+                      .toISOString()
+                      .split("T")[0]} // 5 months from today
               />
             </div>
 
@@ -478,16 +531,31 @@ const RequestForm = () => {
                 Failure to return the equipment on time may result in penalties. Any damaged items must be reported
                 immediately. All borrowers must comply with the department’s borrowing policies.
               </p>
-              <div className="checkbox-row">
-                <label htmlFor="agree" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                  <input type="checkbox" id="agree" checked={agree} onChange={() => setAgree(!agree)} style={{ marginRight: '8px' }} />
-                  I agree to the terms and conditions.
-                </label>
+              <div className="checkbox-row" style={{marginTop: '1rem'}}>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                  <input
+                      type="checkbox"
+                      id="agree"
+                      checked={agree}
+                      onChange={() => setAgree(!agree)}
+                      style={{
+                        width: '16px',
+                        height: '16px',
+                        margin: 0,
+                        marginRight: '8px',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                      }}
+                  />
+                  <label>
+                    I agree to the terms and conditions.
+                  </label>
+                </div>
               </div>
             </div>
 
             {/* Submit Button */}
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+            <div style={{display: "flex", justifyContent: "flex-end", marginTop: "20px"}}>
               <button
                   type="submit"
                   className="submit-btn"
@@ -503,7 +571,7 @@ const RequestForm = () => {
         {showConfirmModal && (
             <div className="modal-overlay">
               <div className="modal">
-                <h3>Confirm Request</h3>
+              <h3>Confirm Request</h3>
                 <p><strong>Items:</strong><br/>{selectedItems.map(item => item.name).join(", ")}</p>
                 <p><strong>Date:</strong> {borrowDate}</p>
                 <p><strong>Reason:</strong> {reason}</p>

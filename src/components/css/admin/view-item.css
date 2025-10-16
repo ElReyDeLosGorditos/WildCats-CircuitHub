@@ -1,110 +1,113 @@
-/* --- Overall Page --- */
-.admin-dashboard {
-    min-height: 100vh;
-    background-color: #E6E6FA;
+.admin-items-item-card {
+    background-color: #b993d6; /* soft violet background */
+    width: 60vw;
+    height: 80vh;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* --- Navbar & Container already styled earlier --- */
-
-/* --- Content Wrapper (centered) --- */
-.equipment-wrapper {
-    padding: 0 15%;
-}
-
-@media (max-width: 768px) {
-    .equipment-wrapper {
-        padding: 0 5%;
-    }
-}
-
-/* --- Card Box --- */
-.equipment-card {
-    display: flex;
-    align-items: center;
-    background-color: #946bb1;
-    padding: 2rem;
-    border-radius: 12px;
-    gap: 2rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* --- Image Container with Highlight Effect --- */
-.equipment-image-container {
-    background-color: #6d4a99;
-    padding: 1.5rem;
-    border-radius: 20px;
+.admin-items-card-header {
+    padding: 20px 30px;
+    background-color: #8a5ca0; /* darker purple header */
+    color: #eee;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.equipment-image-container:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
 }
 
-/* --- Actual Image --- */
-.equipment-image {
-    width: 350px;
+.admin-items-page-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.admin-items-item-content {
+    display: flex;
+    height: 100%;
+    padding: 30px;
+    gap: 30px;
+    background-color: #8a5ca0;
+    color: #222;
+}
+
+/* Image Container */
+.admin-items-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background-color: rgba(158, 120, 176, 0);
+    padding: 20px;
+}
+
+.admin-items-equipment-image {
     max-width: 100%;
-    border-radius: 15px;
+    max-height: 100%;
     object-fit: contain;
+    border-radius: 12px;
+    background-color: #fff;
 }
 
-/* --- Details Section --- */
-.equipment-details {
+/* Right side: Form Fields */
+.admin-items-info-fields {
+    flex: 2;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    flex: 1;
-    max-width: 350px;
+    gap: 18px;
+    padding-right: 10px;
 }
 
-.detail-group label {
-    font-weight: bold;
-    font-size: 0.85rem;
-    color: #fff;
-    margin-bottom: 0.3rem;
+/* Field Label + Input wrapper */
+.admin-items-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.detail-box {
-    background-color: #d4b9e9;
-    padding: 0.6rem 0.9rem;
+/* Text Input Field */
+.admin-items-field-box {
+    background-color: #d9c2e5;
+    border: none;
+    padding: 12px 16px;
     border-radius: 10px;
-    font-size: 1.05rem;
-    font-family: 'Courier New', monospace;
-    width: 100%;
-    color: #1e1e1e;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    outline: none;
 }
 
-/* --- Responsive Layout --- */
-@media (max-width: 768px) {
-    .equipment-card {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .equipment-details {
-        max-width: 100%;
-        width: 100%;
-    }
-
-    .detail-box {
-        font-size: 1rem;
-    }
+/* Description area */
+.admin-items-field-group.large .admin-items-field-box {
+    max-height: 100px;
+    height: 100px;
+    resize: none;
+    overflow-y: auto;
+    scroll-behavior: smooth;
 }
 
-/* --- Link Reset & Back Arrow --- */
-.back-arrow {
-    display: inline-block;
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #213547;
-    text-decoration: none;
-    transition: color 0.2s;
+/* Quantity & Condition: still same style */
+.admin-items-select-box {
+    background-color: #d9c2e5;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    appearance: none;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
 }
-.back-arrow:hover {
-    color: #1a4e9d;
+
+/* Scrollbar hidden for cleaner look */
+.admin-items-info-fields::-webkit-scrollbar {
+    display: none;
 }

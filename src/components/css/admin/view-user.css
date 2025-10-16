@@ -1,53 +1,112 @@
-/* --- Page Wrapper --- */
-.admin-dashboard {
-    background-color: #E6E6FA;
-    min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
+.VU-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
-/* --- User Box --- */
-.view-user-box {
+.VU-modal {
+    display: flex;
+    width: 60vw;
+    height: 80vh;
     background-color: #946bb1;
     color: #fff;
+    border-radius: 14px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: slideUp 0.4s ease;
+}
+
+.VU-left {
+    flex: 1;
+    background-color: #825ba2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.VU-image-placeholder {
+    width: 150px;
+    height: 150px;
+    background-color: #ffd369;
+    border-radius: 50%;
+    font-size: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #4b2e83;
+}
+
+.VU-right {
+    flex: 2;
     padding: 2rem;
-    border-radius: 12px;
-    max-width: 600px;
-    margin: 2rem auto;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.view-user-box:hover {
-    transform: translateY(-2px);
-}
-
-.view-user-title {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    color: #ffffff;
+.VU-title {
+    font-size: 2rem;
     font-weight: bold;
+    margin-bottom: 1rem;
     text-align: center;
 }
 
-/* --- Info Display --- */
-.view-user-box p {
-    font-size: 1.05rem;
-    margin: 0.7rem 0;
+.VU-right p {
+    font-size: 1.1rem;
+    margin: 0.6rem 0;
 }
 
-.view-user-box strong {
+.VU-right strong {
     color: #ffe9a7;
 }
 
-/* --- Back Arrow --- */
-.back-arrow {
-    display: inline-block;
-    font-size: 1.5rem;
-    margin-bottom: 1.2rem;
-    color: #213547;
-    text-decoration: none;
-    transition: color 0.2s ease;
+.VU-actions {
+    margin-top: 2rem;
+    text-align: center;
 }
-.back-arrow:hover {
-    color: #1a4e9d;
+
+.VU-update-btn {
+    background-color: #ffd369;
+    color: #4b2e83;
+    border: none;
+    padding: 0.6rem 1.4rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.VU-right p {
+    font-size: 1.1rem;
+    margin: 0.6rem 0;
+}
+
+.VU-right strong {
+    color: #ffe9a7;
+}
+
+
+.VU-update-btn:hover {
+    background-color: #ffce3d;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
