@@ -14,11 +14,19 @@ public class User {
     private String firstName;       // First name
     private String lastName;        // Last name
     private String email;           // Email
-    private String role;            // "admin" or "student"
+    private String role;            // "admin", "student", "teacher", "lab-assistant"
     private String createdAt;       // Store as string for Firestore compatibility
     private String course;          // Course (e.g., BSIT)
     private String year;            // Year level (e.g., 4th Year)
     private String profileImageUrl; // URL to profile image
+    
+    // NEW: Late return tracking
+    private Integer lateReturnCount;  // Number of times user returned items late
+    private String lastLateReturnDate; // Date of last late return
+    
+    // NEW: Teacher-specific fields
+    private String department;        // Department for teachers (e.g., "HCS-DEPT")
+    private String employeeId;        // Employee ID for teachers
     
     // Helper method to get full name
     public String getFullName() {
@@ -40,6 +48,10 @@ public class User {
         this.course = course;
         this.year = year;
         this.profileImageUrl = profileImageUrl;
+        this.lateReturnCount = 0;  // Initialize to 0
+        this.lastLateReturnDate = null;
+        this.department = null;
+        this.employeeId = null;
     }
 
     public String getUid() {
@@ -95,5 +107,33 @@ public class User {
     }
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+    
+    public Integer getLateReturnCount() {
+        return lateReturnCount != null ? lateReturnCount : 0;
+    }
+    public void setLateReturnCount(Integer lateReturnCount) {
+        this.lateReturnCount = lateReturnCount;
+    }
+    
+    public String getLastLateReturnDate() {
+        return lastLateReturnDate;
+    }
+    public void setLastLateReturnDate(String lastLateReturnDate) {
+        this.lastLateReturnDate = lastLateReturnDate;
+    }
+    
+    public String getDepartment() {
+        return department;
+    }
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+    
+    public String getEmployeeId() {
+        return employeeId;
+    }
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 }
