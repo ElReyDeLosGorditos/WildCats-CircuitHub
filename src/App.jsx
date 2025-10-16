@@ -33,6 +33,8 @@ import FeaturesPage from "./pages/features.jsx";
 import HowItWorksPage from "./pages/howItWorks.jsx";
 import FaqsPage from "./pages/faqs.jsx";
 import ContactUsPage from "./pages/contactUs.jsx";
+import TeacherDashboard from "./pages/teacher/teacher-dashboard.jsx"
+import AdminUsers from "./pages/admin/admin-users";
 
 
 
@@ -74,6 +76,9 @@ function App() {
         <Route path="/edit-user/:id" element={<EditUser />} />
         <Route path="/add-user"   element={<AddUser />} />
         <Route path="/equipment-maintenance" element={<EquipmentMaintenance />} />
+
+        {/* Admin Routes */}
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
       </Routes>
     </Router>
   );
