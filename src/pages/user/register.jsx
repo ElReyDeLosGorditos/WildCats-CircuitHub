@@ -18,7 +18,15 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccessMessage("");
     setIsLoading(true);
+
+    const requiredDomain = "@cit.edu";
+    if (!email.toLowerCase().endsWith(requiredDomain)) {
+      setError(`Invalid email address. Only school emails ending with "${requiredDomain}" are accepted.`);
+      setIsLoading(false);
+      return; // Stop the registration process
+    }
 
     try {
       // 1. Create Firebase auth user
@@ -55,11 +63,7 @@ const Register = () => {
       // Set success message and delay navigation
       setSuccessMessage("Successfully registered! Redirecting to login page...");
       setTimeout(() => {
-        if (role === "teacher") {
-          navigate("/teacher-dashboard");
-        } else {
-          navigate("/");
-        }
+        navigate("/login");
       }, 2000);
     } catch (err) {
       console.error("Registration error:", err);
