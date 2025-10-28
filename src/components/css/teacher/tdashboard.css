@@ -4,7 +4,7 @@
 
 .tdb-dashboard {
     min-height: 100vh;
-    background-color: #f4f7f6; /* Light background for clarity */
+    background-color: #DDC3C3; /* soft pink background */
 }
 
 /* ===============================
@@ -14,14 +14,15 @@
 .tdb-navbar {
     width: 100%;
     padding: 1rem;
-    background-color: black;
-    color: white;
+    background-color: #6B3F69; /* deep plum */
+    color: #F7EEF7;
     display: flex;
     align-items: center;
+    box-shadow: 0 2px 8px rgba(107, 63, 105, 0.4);
 }
 
 .tdb-navbar img {
-    height: 100px;
+    height: 80px;
     margin-right: 20px;
 }
 
@@ -32,27 +33,34 @@
 }
 
 .tdb-navbar-link {
-    color: white;
+    color: #F7EEF7;
     margin: 0 20px;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .tdb-navbar-link:hover {
-    color: lightgray;
+    color: #A376A2;
+    transform: scale(1.05);
     text-decoration: none;
 }
 
 .tdb-navbar-link.active-link {
     font-weight: bold;
     text-decoration: underline;
+    color: #DDC3C3;
 }
 
 .tdb-logout-link {
     background: none;
     border: none;
-    color: white;
+    color: #F7EEF7;
     font-size: 16px;
     cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.tdb-logout-link:hover {
+    color: #A376A2;
 }
 
 /* ===============================
@@ -68,12 +76,12 @@
 .tdb-welcome {
     font-size: 28px;
     font-weight: bold;
-    color: #213547;
+    color: #000000;
 }
 
 .tdb-subtext {
     margin-bottom: 20px;
-    color: #444;
+    color: #000000;
 }
 
 /* ===============================
@@ -88,26 +96,27 @@
 
 .tdb-card {
     flex: 1;
-    background-color: white;
+    background-color: #FDF9FD;
     border-radius: 10px;
     padding: 25px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(141, 95, 140, 0.3);
     text-align: center;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .tdb-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 4px 14px rgba(107, 63, 105, 0.4);
 }
 
 .tdb-card h3 {
     font-size: 28px;
     margin-bottom: 10px;
-    color: #d96528;
+    color: #6B3F69;
 }
 
 .tdb-card p {
-    color: #555;
+    color: #8D5F8C;
 }
 
 /* ===============================
@@ -125,20 +134,21 @@
    =============================== */
 
 .tdb-activity-box {
-    background-color: white;
+    background-color: #FDF9FD;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(141, 95, 140, 0.25);
+    border-left: 5px solid #8D5F8C;
 }
 
 .tdb-activity-box h3 {
-    color: #213547;
+    color: #6B3F69;
     margin-bottom: 15px;
     font-size: 20px;
 }
 
 .tdb-activity-box p {
-    color: #666;
+    color: #8D5F8C;
 }
 
 /* ===============================
@@ -146,20 +156,21 @@
    =============================== */
 
 .tdb-pending-box {
-    background-color: white;
+    background-color: #FDF9FD;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(107, 63, 105, 0.25);
+    border-left: 5px solid #A376A2;
 }
 
 .tdb-pending-box h3 {
-    color: #213547;
+    color: #6B3F69;
     margin-bottom: 15px;
     font-size: 20px;
 }
 
 .tdb-pending-request {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #DDC3C3;
     padding: 12px 0;
 }
 
@@ -168,7 +179,7 @@
 }
 
 .tdb-pending-request p {
-    color: #333;
+    color: #5A3F58;
     margin: 5px 0;
 }
 
@@ -179,8 +190,8 @@
 }
 
 .tdb-review-request-btn {
-    background-color: #d96528;
-    color: white;
+    background-color: #8D5F8C;
+    color: #FFF;
     padding: 8px 16px;
     border: none;
     border-radius: 6px;
@@ -189,7 +200,7 @@
 }
 
 .tdb-review-request-btn:hover {
-    background-color: #b84f1e;
+    background-color: #6B3F69;
     transform: scale(1.05);
 }
 

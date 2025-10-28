@@ -1,7 +1,10 @@
-/* Teacher Request Page */
+/* ===============================
+   Teacher Request Page (Purple Theme)
+   =============================== */
+
 .TR-container {
     min-height: 100vh;
-    background-color: #f8f9fc;
+    background-color: #DDC3C3; /* warm light pink */
     transition: filter 0.3s ease;
 }
 
@@ -10,7 +13,10 @@
     pointer-events: none;
 }
 
-/* Wrapper & Content */
+/* ===============================
+   Wrapper & Content
+   =============================== */
+
 .TR-wrapper {
     padding: 20px;
     max-width: 1200px;
@@ -24,39 +30,68 @@
 .TR-title {
     font-size: 28px;
     font-weight: bold;
-    color: #213547;
+    color: #000000; /* deep plum */
 }
 
 .TR-error {
-    color: red;
+    color: #f44336;
     margin-bottom: 10px;
+    font-weight: 600;
 }
 
-/* Filters */
+/* ===============================
+   Filters
+   =============================== */
+
 .TR-filters {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .TR-search {
-    flex: 1;
+    flex: 0 0 70%;
     padding: 10px 15px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    margin-right: 10px;
+    border-radius: 8px;
+    border: 1px solid #A376A2;
+    background-color: #FDF9FD;
     font-size: 16px;
+    color: #6B3F69;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.TR-search:focus {
+    border-color: #8D5F8C;
+    outline: none;
+    box-shadow: 0 0 5px rgba(141, 95, 140, 0.4);
 }
 
 .TR-dropdown {
+    flex: 0 0 30%;
     padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #A376A2;
+    background-color: #FDF9FD;
+    font-size: 16px;
+    color: #6B3F69;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Group Section */
+.TR-dropdown:focus {
+    border-color: #8D5F8C;
+    outline: none;
+    box-shadow: 0 0 5px rgba(141, 95, 140, 0.4);
+}
+
+/* ===============================
+   Group Section
+   =============================== */
+
 .TR-group {
     margin-bottom: 30px;
 }
@@ -64,11 +99,14 @@
 .TR-group-label {
     font-size: 20px;
     margin-bottom: 10px;
-    color: #333;
+    color: #6B3F69;
     font-weight: 600;
 }
 
-/* Grid Cards */
+/* ===============================
+   Grid Cards
+   =============================== */
+
 .TR-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -76,16 +114,18 @@
 }
 
 .TR-card {
-    background-color: white;
+    background-color: #FDF9FD;
     border-radius: 10px;
     padding: 15px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(107, 63, 105, 0.15);
+    border-left: 5px solid #A376A2;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.3s ease;
 }
 
 .TR-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 12px rgba(107, 63, 105, 0.25);
+    border-color: #8D5F8C;
 }
 
 .TR-card-content {
@@ -97,32 +137,38 @@
 .TR-borrower {
     font-size: 18px;
     font-weight: 600;
-    color: #2a3e52;
+    color: #6B3F69;
 }
+
+/* ===============================
+   Status Colors
+   =============================== */
 
 .TR-status {
     font-weight: bold;
     text-transform: capitalize;
 }
 
-/* Status colors */
 .TR-status.pending {
-    color: #ff9800;
+    color: #A376A2; /* soft mauve */
 }
 
 .TR-status.approved {
-    color: #4caf50;
+    color: #6B3F69; /* deep plum */
 }
 
 .TR-status.denied {
-    color: #f44336;
+    color: #f44336; /* red for denied */
 }
 
 .TR-status.returned {
-    color: #2196f3;
+    color: #8D5F8C; /* muted purple */
 }
 
-/* Responsive */
+/* ===============================
+   Responsive
+   =============================== */
+
 @media (max-width: 768px) {
     .TR-filters {
         flex-direction: column;

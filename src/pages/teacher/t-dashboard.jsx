@@ -4,6 +4,8 @@ import axios from "axios";
 import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/teacher/tdashboard.css";
 import { auth } from "../../firebaseconfig";
+import TeacherHeader from "./t-header.jsx";
+import AdminHeader from "../admin/AdminHeader.jsx";
 
 const TeacherDashboard = () => {
     const location = useLocation();
@@ -58,23 +60,7 @@ const TeacherDashboard = () => {
     return (
         <div className="tdb-dashboard">
             {/* Navigation bar */}
-            <div className="tdb-navbar">
-                <img src={logo} alt="CircuitHub Logo" />
-                <nav>
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.to}
-                            to={link.to}
-                            className={location.pathname === link.to ? "tdb-navbar-link active-link" : "tdb-navbar-link"}
-                        >
-                            {link.label}
-                        </Link>
-                    ))}
-                </nav>
-                <div style={{ marginLeft: "auto" }}>
-                    <Link to="/" className="tdb-logout-link">Log Out</Link>
-                </div>
-            </div>
+            <TeacherHeader />
 
             {/* Dashboard contents */}
             <div className="tdb-dashboard-container">

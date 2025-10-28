@@ -6,10 +6,11 @@ import {
     getDoc,
     updateDoc,
 } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db } from "../../firebaseconfig";
 import "../../components/css/teacher/trequests.css";
-//import TeacherHeader from "./TeacherHeader"; // Optional if you have a teacher navbar/header
-//import TeacherRequestReview from "./review-request.jsx"; // Modal review popup
+// import TeacherRequestReview from "./review-request.jsx";
+import TeacherHeader from "./t-header.jsx";
 
 const TeacherRequests = () => {
     const [requests, setRequests] = useState([]);
@@ -17,18 +18,30 @@ const TeacherRequests = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState("");
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const [teacherId, setTeacherId] = useState(null);
 
     useEffect(() => {
-        fetchRequests();
+        const auth = getAuth();
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                setTeacherId(user.uid);
+                fetchRequests(user.uid);
+            } else {
+                setTeacherId(null);
+                setRequests([]);
+            }
+        });
+        return () => unsubscribe();
     }, []);
 
-    const fetchRequests = async () => {
+    const fetchRequests = async (currentTeacherId) => {
         try {
             const snapshot = await getDocs(collection(db, "borrowRequests"));
             const fetched = await Promise.all(
                 snapshot.docs.map(async (docSnap) => {
                     const data = { id: docSnap.id, ...docSnap.data() };
 
+                    // Fetch borrower user info
                     if (data.userId) {
                         try {
                             const userRef = doc(db, "users", data.userId);
@@ -36,6 +49,7 @@ const TeacherRequests = () => {
                             if (userSnap.exists()) {
                                 const userData = userSnap.data();
                                 data.borrowerName = `${userData.firstName} ${userData.lastName}`;
+                                data.borrowerTeacherId = userData.teacherId || null;
                             }
                         } catch (err) {
                             console.error("User fetch error:", err);
@@ -45,7 +59,13 @@ const TeacherRequests = () => {
                     return data;
                 })
             );
-            setRequests(fetched);
+
+            // 🔒 Filter to show only requests belonging to this teacher
+            const filtered = fetched.filter(
+                (req) => req.borrowerTeacherId === currentTeacherId
+            );
+
+            setRequests(filtered);
         } catch (err) {
             console.error("Request fetch error:", err);
             setError("Failed to fetch requests.");
@@ -55,7 +75,7 @@ const TeacherRequests = () => {
     const handleStatusUpdate = async (id, newStatus) => {
         try {
             await updateDoc(doc(db, "borrowRequests", id), { status: newStatus });
-            fetchRequests();
+            if (teacherId) fetchRequests(teacherId);
         } catch (err) {
             console.error("Status update error:", err);
         }
@@ -122,12 +142,13 @@ const TeacherRequests = () => {
     );
 
     return (
+
         <div className={`TR-container ${selectedRequest ? "modal-blurred" : ""}`}>
             <TeacherHeader />
-
             <div className="TR-wrapper">
                 <div className="TR-content">
                     <div className="TR-header">
+
                         <h1 className="TR-title">Manage Student Requests</h1>
                     </div>
 
@@ -154,41 +175,50 @@ const TeacherRequests = () => {
                         </select>
                     </div>
 
-                    {sortedGroups.map(([label, reqs]) => (
-                        <div key={label} className="TR-group">
-                            <h2 className="TR-group-label">{label}</h2>
-                            <div className="TR-grid">
-                                {reqs.map((req) => (
-                                    <div
-                                        key={req.id}
-                                        className="TR-card"
-                                        onClick={() => setSelectedRequest(req)}
-                                        style={{ cursor: "pointer" }}
-                                    >
-                                        <div className="TR-card-content">
-                                            <h3 className="TR-borrower">
-                                                {req.borrowerName || "Unknown"}
-                                            </h3>
-                                            <p>
-                                                <strong>Item:</strong> {req.itemName || "Unknown"}
-                                            </p>
-                                            <p>
-                                                <strong>Time Slot:</strong>{" "}
-                                                {req.timeRange ||
-                                                    `${req.startTime || ""} - ${req.returnTime || ""}`}
-                                            </p>
-                                            <p>
-                                                <strong>Status:</strong>{" "}
-                                                <span className={`TR-status ${req.status?.toLowerCase()}`}>
-                          {req.status}
-                        </span>
-                                            </p>
+                    {sortedGroups.length === 0 ? (
+                        <p className="TR-empty">No requests available for you.</p>
+                    ) : (
+                        sortedGroups.map(([label, reqs]) => (
+                            <div key={label} className="TR-group">
+                                <h2 className="TR-group-label">{label}</h2>
+                                <div className="TR-grid">
+                                    {reqs.map((req) => (
+                                        <div
+                                            key={req.id}
+                                            className="TR-card"
+                                            onClick={() => setSelectedRequest(req)}
+                                            style={{ cursor: "pointer" }}
+                                        >
+                                            <div className="TR-card-content">
+                                                <h3 className="TR-borrower">
+                                                    {req.borrowerName || "Unknown"}
+                                                </h3>
+                                                <p>
+                                                    <strong>Item:</strong>{" "}
+                                                    {req.itemName || "Unknown"}
+                                                </p>
+                                                <p>
+                                                    <strong>Time Slot:</strong>{" "}
+                                                    {req.timeRange ||
+                                                        `${req.startTime || ""} - ${
+                                                            req.returnTime || ""
+                                                        }`}
+                                                </p>
+                                                <p>
+                                                    <strong>Status:</strong>{" "}
+                                                    <span
+                                                        className={`TR-status ${req.status?.toLowerCase()}`}
+                                                    >
+                                                        {req.status}
+                                                    </span>
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
 

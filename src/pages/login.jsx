@@ -25,7 +25,7 @@ const Login = () => {
       if (user.role === "admin") {
         navigate("/admin-dashboard");
       } else if (user.role === "teacher") {
-        navigate("/teacher-dashboard");
+        navigate("/t-dashboard");
       } else {
         navigate("/dashboard");
       }

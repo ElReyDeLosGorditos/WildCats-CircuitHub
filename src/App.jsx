@@ -33,8 +33,11 @@ import FeaturesPage from "./pages/features.jsx";
 import HowItWorksPage from "./pages/howItWorks.jsx";
 import FaqsPage from "./pages/faqs.jsx";
 import ContactUsPage from "./pages/contactUs.jsx";
+
+//Teacher
 import TeacherDashboard from "./pages/teacher/t-dashboard.jsx";
 import TeacherRequests from "./pages/teacher/t-requests.jsx";
+// import TeacherProfile from "./pages/teacher/t-profile.jsx";
 
 
 
@@ -80,6 +83,7 @@ function App() {
         {/*Teacher Routes*/}
         <Route path="/t-dashboard" element={<TeacherDashboard />} />
         <Route path="/t-requests" element={<TeacherRequests />} />
+        {/* <Route path="/t-profile/:id" element={<TeacherProfile />} />*/}
 
       </Routes>
     </Router>
