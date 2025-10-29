@@ -837,7 +837,7 @@
 }
 
 .edit-btn:hover {
-  background-color: #b8501b;
+  background-color: #461955;
 }
 
 .delete-btn:hover {
@@ -934,7 +934,7 @@
 
 .view-user-title {
   font-size: 28px;
-  color: #b8501b; /* updated to the color you want */
+  color: #461955; /* updated to the color you want */
   margin-bottom: 20px;
 }
 
@@ -970,7 +970,7 @@
 
 .edit-user-title {
   font-size: 28px;
-  color: #b8501b;
+  color: #461955;
   margin-bottom: 20px;
 }
 
@@ -1076,7 +1076,7 @@
 }
 
 .cancel-link {
-  color: #d96528;
+  color: #461955;
   font-weight: bold;
   font-size: 16px;
   text-decoration: none;
