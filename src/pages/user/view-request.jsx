@@ -3,7 +3,14 @@ import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import logo from "../../assets/circuithubLogo2.png";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
-import "../../components/css/view-request.css" // Your CSS file import
+import "../../components/css/view-request.css"; // Your CSS file import
+
+const navLinks = [
+  { label: "Dashboard", to: "/dashboard" },
+  { label: "Items", to: "/useritems" },
+  { label: "My Requests", to: "/my-requests" },
+  { label: "Profile", to: "/userprofile" },
+];
 
 const ViewRequest = () => {
   const { id } = useParams();
@@ -43,7 +50,7 @@ const ViewRequest = () => {
     try {
       const requestRef = doc(db, "borrowRequests", id);
       await updateDoc(requestRef, { status: "Cancelled" });
-      setRequestData(prev => ({ ...prev, status: "Cancelled" }));
+      setRequestData((prev) => ({ ...prev, status: "Cancelled" }));
       setShowCancelModal(false);
       alert("Request has been cancelled.");
       navigate("/my-requests");
@@ -69,114 +76,154 @@ const ViewRequest = () => {
       return new Date(value).toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",
-        day: "numeric"
+        day: "numeric",
       });
     } catch {
       return value;
     }
   };
 
-  if (loading) return (
-      <div className="view-request-page-scope"> {/* Apply scope here too for consistency */}
-        <div className="dashboard-container"><p>Loading...</p></div>
-      </div>
-  );
+  if (loading)
+    return (
+        <div className="view-request-page-scope">
+          <div className="dashboard-container">
+            <p>Loading...</p>
+          </div>
+        </div>
+    );
 
   if (error || !requestData) {
     return (
-        <div className="view-request-page-scope"> {/* Apply scope here too for consistency */}
+        <div className="view-request-page-scope">
           <div className="dashboard-container">
             <p>{error || "Request not found."}</p>
-            <Link to="/my-requests" className="back-arrow">← Back to My Requests</Link>
+            <Link to="/my-requests" className="back-arrow">
+              ← Back to My Requests
+            </Link>
           </div>
         </div>
     );
   }
-// ... (rest of your ViewRequest.js component code) ...
+
+  // Safely derive item list text
+  const itemList =
+      Array.isArray(requestData.items) && requestData.items.length > 0
+          ? requestData.items.map((it) => it.name).join(", ")
+          : requestData.itemName || "N/A";
+
+  // NEW: derive teacher/group fields with safe fallbacks
+  const teacherAssigned = (requestData.teacherAssigned || "").trim() || "—";
+  const groupMembers = Array.isArray(requestData.groupMembers)
+      ? requestData.groupMembers.filter(Boolean).join(", ")
+      : "—";
 
   return (
       <div className="items-page view-request-page-scope">
+        {/* Navbar */}
         <div className="navbar">
           <img src={logo} alt="CCS Gadget Hub Logo" />
           <nav>
-            {["Dashboard", "Items", "My Requests", "Profile"].map((label) => (
+            {navLinks.map((link) => (
                 <Link
-                    key={label}
-                    to={`/${label.toLowerCase().replace(" ", "")}`}
-                    className={location.pathname === `/${label.toLowerCase().replace(" ", "")}` ? "navbar-link active-link" : "navbar-link"}
+                    key={link.to}
+                    to={link.to}
+                    className={
+                      location.pathname === link.to
+                          ? "navbar-link active-link"
+                          : "navbar-link"
+                    }
                 >
-                  {label}
+                  {link.label}
                 </Link>
             ))}
           </nav>
           <div style={{ marginLeft: "auto" }}>
-            <Link to="/" className="logout-link">Log Out</Link>
+            <Link to="/" className="logout-link">
+              Log Out
+            </Link>
           </div>
         </div>
 
         <div className="dashboard-container">
-          <Link to="/my-requests" className="back-arrow">←</Link>
+          <Link to="/my-requests" className="back-arrow">
+            ←
+          </Link>
           <h2 className="featured-title">Request Summary</h2>
 
-          {/* Updated structure for two columns and Reason for Borrowing */}
+          {/* Summary grid */}
           <div className="request-summary-box">
-            {/* Column 1: Items Borrowed / Item Name - UNIFIED STRUCTURE */}
-            <div> {/* This div acts as the grid cell for the first column */}
+            {/* Column 1: Items */}
+            <div>
               <strong>Items Borrowed:</strong>
-              {/* Always use a UL for items, even if it's just one or none */}
-              <ul className="item-list-display"> {/* Added a class for potential specific styling if needed */}
+              <ul className="item-list-display">
                 {Array.isArray(requestData.items) && requestData.items.length > 0 ? (
-                    // Map over items if it's an array with content
-                    requestData.items.map((item, index) => (
-                        <li key={index}>{item.name}</li> // Changed to just item.name, strong already on label
-                    ))
+                    requestData.items.map((item, idx) => <li key={idx}>{item.name}</li>)
                 ) : requestData.itemName ? (
-                    // If 'items' array is empty/missing but 'itemName' exists (for single item)
                     <li>{requestData.itemName}</li>
                 ) : (
-                    // If neither are available
                     <li>N/A</li>
                 )}
               </ul>
             </div>
 
-            {/* Column 2: Status and Dates */}
-            <div> {/* This div acts as the grid cell for the second column */}
+            {/* Column 2: Status & Dates */}
+            <div>
               <p>
-                <strong>Status:</strong> <span className={`status-badge ${requestData.status?.toLowerCase()}`}>{requestData.status}</span>
+                <strong>Status:</strong>{" "}
+                <span className={`status-badge ${requestData.status?.toLowerCase()}`}>
+                {requestData.status}
+              </span>
               </p>
               <p>
                 <strong>Request Date:</strong> {formatDate(requestData.borrowDate)}
               </p>
               <p>
-                <strong>Time Slot:</strong> {requestData.timeRange || `${requestData.startTime} - ${requestData.returnTime}`}
+                <strong>Time Slot:</strong>{" "}
+                {requestData.timeRange ||
+                    `${requestData.startTime || "-"} - ${requestData.returnTime || "-"}`}
               </p>
               <p>
-                <strong>Returned Date & Time:</strong>
-                {requestData.status?.toLowerCase() === "returned" && requestData.borrowDate && requestData.returnTime
+                <strong>Returned Date & Time:</strong>{" "}
+                {requestData.status?.toLowerCase() === "returned" &&
+                requestData.borrowDate &&
+                requestData.returnTime
                     ? new Date(`${requestData.borrowDate} ${requestData.returnTime}`).toLocaleString()
-                    : "-" }
+                    : "-"}
               </p>
             </div>
 
-            {/* Reason for Borrowing (Spans Both Columns) */}
+            {/* Reason (spans full width) */}
             <div className="reason-for-borrowing">
               <strong>Reason for Borrowing:</strong>
               <p>{requestData.reason || "No reason provided."}</p>
             </div>
+
+            {/* NEW: Teacher & Group (spans full width) */}
+            <div className="reason-for-borrowing">
+              <strong>Teacher Assigned:</strong>
+              <p>{teacherAssigned}</p>
+              <strong>Group Members:</strong>
+              <p>{groupMembers}</p>
+            </div>
           </div>
 
-
+          {/* Cancel only when Pending */}
           {requestData.status?.toLowerCase() === "pending" && (
               <>
-                <button className="cancel-btn" onClick={handleCancel}>Cancel Request</button>
+                <button className="cancel-btn" onClick={handleCancel}>
+                  Cancel Request
+                </button>
                 {showCancelModal && (
                     <div className="modal-overlay">
                       <div className="modal-box">
                         <p>Are you sure you want to cancel this request?</p>
                         <div className="modal-actions">
-                          <button className="yes-btn" onClick={confirmCancel}>Yes</button>
-                          <button className="no-btn" onClick={() => setShowCancelModal(false)}>No</button>
+                          <button className="yes-btn" onClick={confirmCancel}>
+                            Yes
+                          </button>
+                          <button className="no-btn" onClick={() => setShowCancelModal(false)}>
+                            No
+                          </button>
                         </div>
                       </div>
                     </div>

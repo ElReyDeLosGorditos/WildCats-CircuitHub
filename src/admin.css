@@ -42,7 +42,7 @@
 
   .admin-card h3 {
     font-size: 28px;
-    color: #d96528;
+    color: #461955;
   }
 
   .admin-card p {
@@ -112,7 +112,7 @@
   }
 
   .review-request-btn {
-    background-color: #E26901;
+    background-color: #461955;
     color: white;
     padding: 8px 20px;
     font-size: 14px;
@@ -122,13 +122,13 @@
   }
 
   .review-request-btn:hover {
-    background-color: #b8501b;
+    background-color: #461955;
   }
 
   .section-header {
     margin-top: 25px;
     font-size: 20px;
-    color: #C94B28; /* Maroon for consistency */
+    color: #461955; /* Maroon for consistency */
     margin-bottom: 10px;
   }
 
@@ -239,7 +239,7 @@
 }
 
 .item-status.borrowed {
-  color: #d96528;
+  color: #461955;
 }
 
 .admin-item-buttons {
@@ -313,7 +313,7 @@
 .admin-item-modal-message {
   font-size: 20px;
   font-weight: 600;
-  color: #d96528;
+  color: #461955;
   margin-bottom: 20px;
 }
 
@@ -324,7 +324,7 @@
 }
 
 .admin-item-yes-btn {
-  background-color: #d96528;
+  background-color: #461955;
   color: white;
   padding: 8px 18px;
   border: none;
@@ -342,7 +342,7 @@
 }
 
 .admin-item-yes-btn:hover {
-  background-color: #b8501b;
+  background-color: #461955;
 }
 
 .admin-item-no-btn:hover {
@@ -460,7 +460,7 @@
   border-radius: 10px;
   font-size: 30px;
   font-weight: bold;
-  color: #d96528;
+  color: #461955;
   text-align: center;
 }
 
@@ -474,7 +474,7 @@
 }
 
 .modal-link:hover {
-  color: #b24a1a;
+  color: #461955;
 }
 
 /* View Item */
@@ -535,7 +535,7 @@
   display: inline-block;
   font-size: 24px;
   margin-bottom: 20px;
-  color: #b24a1a;
+  color: #461955;
   text-decoration: none;
 }
 
@@ -599,7 +599,7 @@
 }
 
 .status.borrowed {
-  color: #d96528;
+  color: #461955;
 }
 
 
@@ -648,7 +648,7 @@
 }
 
 .status {
-  color: #E26901;
+  color: #461955;
   font-weight: 600;
   padding: 5px
 }
@@ -661,7 +661,7 @@
   font-size: 15px;
   font-weight: 600;
   text-transform: capitalize;
-  color: #E26901;
+  color: #461955;
 }
 
 .status-badge.pending {
@@ -770,7 +770,7 @@
 
 .admin-view-back-arrow {
   font-size: 24px;
-  color: #C94B28;
+  color: #461955;
   margin-bottom: 10px;
   margin-left: 5px;
   display: inline-block;
@@ -781,7 +781,7 @@
 .section-header {
   margin-top: 25px;
   font-size: 20px;
-  color: #C94B28; /* Maroon theme */
+  color: #461955;
   margin-bottom: 10px;
 }
 
@@ -823,12 +823,12 @@
 }
 
 .edit-btn {
-  background-color: #d96528;
+  background-color: #461955;
   color: white;
 }
 
 .delete-btn {
-  background-color: #e74c3c;
+  background-color: #461955;
   color: white;
 }
 
@@ -884,7 +884,7 @@
 .admin-user-modal-message {
   font-size: 18px;
   font-weight: 600;
-  color: #d96528;
+  color: #461955;
   margin-bottom: 20px;
 }
 
@@ -895,7 +895,7 @@
 }
 
 .admin-user-yes-btn {
-  background-color: #d96528;
+  background-color: #461955;
   color: white;
   padding: 8px 18px;
   border: none;
@@ -913,7 +913,7 @@
 }
 
 .admin-user-yes-btn:hover {
-  background-color: #b8501b;
+  background-color: #461955;
 }
 
 .admin-user-no-btn:hover {
