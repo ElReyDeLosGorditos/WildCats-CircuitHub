@@ -10,6 +10,7 @@ import {
   getDoc,
   getDocs,
 } from "firebase/firestore";
+import axios from "axios";
 import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/requestform.css";
 
@@ -40,8 +41,10 @@ const RequestForm = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // NEW: group/teacher fields
-  const [teacherAssigned, setTeacherAssigned] = useState("");
+  // NEW: Teacher dropdown and group members
+  const [teachers, setTeachers] = useState([]);
+  const [selectedTeacherId, setSelectedTeacherId] = useState("");
+  const [selectedTeacherName, setSelectedTeacherName] = useState("");
   const [groupMembersText, setGroupMembersText] = useState(""); // comma-separated input
 
   useEffect(() => {
@@ -55,7 +58,20 @@ const RequestForm = () => {
       }
     };
     fetchInitialItemAndAllItems();
+    
+    // Fetch all teachers from backend
+    fetchTeachers();
   }, [itemId]);
+
+  const fetchTeachers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/users/teachers");
+      setTeachers(response.data);
+    } catch (error) {
+      console.error("Error fetching teachers:", error);
+      alert("Failed to load teachers. Please try again.");
+    }
+  };
 
   const addItem = (item) => {
     if (!selectedItems.find((i) => i.id === item.id)) {
@@ -179,6 +195,20 @@ const RequestForm = () => {
     }
   }, [startBlock, durationBlocks]);
 
+  // Handle teacher selection
+  const handleTeacherChange = (e) => {
+    const teacherId = e.target.value;
+    setSelectedTeacherId(teacherId);
+    
+    // Find the teacher's full name
+    const teacher = teachers.find(t => t.uid === teacherId);
+    if (teacher) {
+      setSelectedTeacherName(`${teacher.firstName} ${teacher.lastName}`);
+    } else {
+      setSelectedTeacherName("");
+    }
+  };
+
   // ---- Helpers for new fields ----
   const parseGroupMembers = () =>
       groupMembersText
@@ -194,8 +224,8 @@ const RequestForm = () => {
       alert("Please select at least one item.");
       return;
     }
-    if (!teacherAssigned.trim()) {
-      alert("Please enter the Teacher Assigned.");
+    if (!selectedTeacherId) {
+      alert("Please select a teacher.");
       return;
     }
 
@@ -265,7 +295,8 @@ const RequestForm = () => {
               createdAt: serverTimestamp(),
 
               // NEW FIELDS
-              teacherAssigned: teacherAssigned.trim(),
+              teacherId: selectedTeacherId,
+              teacherAssigned: selectedTeacherName,
               groupMembers, // array of names
             };
             await addDoc(collection(db, "borrowRequests"), requestData);
@@ -281,7 +312,8 @@ const RequestForm = () => {
       setDurationBlocks("");
       setReturnTime("");
       setReason("");
-      setTeacherAssigned("");
+      setSelectedTeacherId("");
+      setSelectedTeacherName("");
       setGroupMembersText("");
     } catch (err) {
       console.error("Error submitting request:", err);
@@ -420,27 +452,49 @@ const RequestForm = () => {
               )}
             </div>
 
-            {/* NEW: Class & Group Info */}
+            {/* NEW: Teacher Dropdown */}
             <div className="input-row full-width">
-              <label>Teacher Assigned:</label>
-              <input
-                  type="text"
-                  value={teacherAssigned}
-                  onChange={(e) => setTeacherAssigned(e.target.value)}
+              <label>Teacher Assigned: <span style={{color: 'red'}}>*</span></label>
+              <select
+                  value={selectedTeacherId}
+                  onChange={handleTeacherChange}
                   required
-              />
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                    fontSize: "14px",
+                  }}
+              >
+                <option value="">-- Select a Teacher --</option>
+                {teachers.map((teacher) => (
+                    <option key={teacher.uid} value={teacher.uid}>
+                      {teacher.firstName} {teacher.lastName} {teacher.department ? `(${teacher.department})` : ''}
+                    </option>
+                ))}
+              </select>
+              <small style={{ color: "#666", display: "block", marginTop: "5px" }}>
+                Select the teacher who will approve this request.
+              </small>
             </div>
 
+            {/* Group Members */}
             <div className="input-row full-width">
               <label>Group Members (comma-separated):</label>
               <textarea
                   value={groupMembersText}
                   onChange={(e) => setGroupMembersText(e.target.value)}
                   rows="2"
-
+                  placeholder="e.g., John Doe, Jane Smith, Bob Johnson"
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                    fontSize: "14px",
+                  }}
               />
               <small style={{ color: "#666" }}>
-                Tip: Separate names with commas. You’ll be recorded as the group leader.
+                Tip: Separate names with commas. You'll be recorded as the group leader.
               </small>
             </div>
 
@@ -468,6 +522,7 @@ const RequestForm = () => {
                   onChange={(e) => setReason(e.target.value)}
                   rows="3"
                   required
+                  placeholder="Please provide a detailed reason for borrowing..."
               />
             </div>
 
@@ -580,7 +635,7 @@ const RequestForm = () => {
                       !agree ||
                       selectedItems.length === 0 ||
                       returnTime.includes("Invalid") ||
-                      !teacherAssigned.trim()
+                      !selectedTeacherId
                   }
               >
                 Submit Request
@@ -606,7 +661,7 @@ const RequestForm = () => {
                   {formatTimeRange(parseFloat(startBlock), parseFloat(startBlock) + parseFloat(durationBlocks))}
                 </p>
                 <p><strong>Estimated Return Time:</strong> {returnTime}</p>
-                <p><strong>Teacher Assigned:</strong> {teacherAssigned || "—"}</p>
+                <p><strong>Teacher Assigned:</strong> {selectedTeacherName || "—"}</p>
                 <p>
                   <strong>Group Members:</strong>{" "}
                   {parseGroupMembers().length ? parseGroupMembers().join(", ") : "—"}
@@ -625,7 +680,7 @@ const RequestForm = () => {
               <div className="modal">
                 <h2 style={{ color: "#d96528", textAlign: "center" }}>Request submitted!</h2>
                 <p style={{ textAlign: "center", marginTop: "10px" }}>
-                  Your request has been successfully submitted and is awaiting approval.
+                  Your request has been successfully submitted and is awaiting teacher approval.
                 </p>
                 <p style={{ textAlign: "center", marginTop: "5px" }}>
                   Check its status in the <strong>My Requests</strong> section.

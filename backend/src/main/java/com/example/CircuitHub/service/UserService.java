@@ -5,6 +5,8 @@ import com.example.CircuitHub.dto.ProfileUpdateDto;
 import com.example.CircuitHub.model.User;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import java.util.List;
+import java.util.stream.Collectors;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -194,6 +196,23 @@ public class UserService {
         if (user.getLateReturnCount() == null) user.setLateReturnCount(0);
 
         return user;
+    }
+
+    public List<User> getAllTeachers() {
+        try {
+            ApiFuture<QuerySnapshot> future = firestore.collection("users")
+                    .whereEqualTo("role", "teacher")
+                    .get();
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            return documents.stream()
+                    .map(doc -> doc.toObject(User.class))
+                    .collect(Collectors.toList());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Error retrieving teachers: interrupted operation", e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException("Error retrieving teachers: execution failed", e);
+        }
     }
 
     public String uploadProfileImage(MultipartFile file, String uid) throws IOException, ExecutionException, InterruptedException {
