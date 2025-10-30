@@ -52,15 +52,6 @@ const AdminRequests = () => {
     }
   };
 
-  const handleStatusUpdate = async (id, newStatus) => {
-    try {
-      await updateDoc(doc(db, "borrowRequests", id), { status: newStatus });
-      fetchRequests();
-    } catch (err) {
-      console.error("Status update error:", err);
-    }
-  };
-
   const groupRequestsByDate = (requests) => {
     const groups = {};
     const today = new Date();
@@ -70,7 +61,9 @@ const AdminRequests = () => {
     const formatKey = (dateObj) => {
       const day = dateObj.getDate().toString().padStart(2, "0");
       const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
-      const dayStr = dateObj.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
+      const dayStr = dateObj.toLocaleDateString("en-US", {
+        weekday: "short",
+      }).toUpperCase();
       return `${day}/${month}, ${dayStr}`;
     };
 
@@ -95,7 +88,8 @@ const AdminRequests = () => {
   };
 
   const filteredRequests = requests.filter((req) => {
-    const matchesStatus = statusFilter === "All" || req.status === statusFilter;
+    const matchesStatus =
+        statusFilter === "All" || req.status === statusFilter;
     const matchesSearch =
         req.borrowerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         req.itemName?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -104,24 +98,26 @@ const AdminRequests = () => {
 
   const groupedRequests = groupRequestsByDate(filteredRequests);
 
-  const sortedGroups = Object.entries(groupedRequests).sort(([aKey, aReqs], [bKey, bReqs]) => {
-    const getDateValue = (key, reqs) => {
-      if (key === "Today") return new Date();
-      if (key === "Yesterday") {
-        const y = new Date();
-        y.setDate(y.getDate() - 1);
-        return y;
+  const sortedGroups = Object.entries(groupedRequests).sort(
+      ([aKey, aReqs], [bKey, bReqs]) => {
+        const getDateValue = (key, reqs) => {
+          if (key === "Today") return new Date();
+          if (key === "Yesterday") {
+            const y = new Date();
+            y.setDate(y.getDate() - 1);
+            return y;
+          }
+          return reqs[0]?.createdDate || new Date(0);
+        };
+        return getDateValue(bKey, bReqs) - getDateValue(aKey, aReqs);
       }
-      return reqs[0]?.createdDate || new Date(0);
-    };
-    return getDateValue(bKey, bReqs) - getDateValue(aKey, aReqs);
-  });
+  );
 
   return (
-      <div className={`AR-container ${selectedRequest ? "modal-blurred" : ""}`}>
+      <div className="AR-container">
         <AdminHeader />
 
-        <div className="AR-wrapper">
+        <div className={`AR-wrapper ${selectedRequest ? "blurred" : ""}`}>
           <div className="AR-content">
             <div className="AR-header">
               <h1 className="AR-title">Manage Borrow Requests</h1>
@@ -162,12 +158,22 @@ const AdminRequests = () => {
                             style={{ cursor: "pointer" }}
                         >
                           <div className="AR-card-content">
-                            <h3 className="AR-borrower">{req.borrowerName || "Unknown"}</h3>
-                            <p><strong>Item:</strong> {req.itemName || "Unknown"}</p>
-                            <p><strong>Time Slot:</strong> {req.timeRange || `${req.startTime || ""} - ${req.returnTime || ""}`}</p>
+                            <h3 className="AR-borrower">
+                              {req.borrowerName || "Unknown"}
+                            </h3>
+                            <p>
+                              <strong>Item:</strong> {req.itemName || "Unknown"}
+                            </p>
+                            <p>
+                              <strong>Time Slot:</strong>{" "}
+                              {req.timeRange ||
+                                  `${req.startTime || ""} - ${req.returnTime || ""}`}
+                            </p>
                             <p>
                               <strong>Status:</strong>{" "}
-                              <span className={`AR-status ${req.status?.toLowerCase()}`}>
+                              <span
+                                  className={`AR-status ${req.status?.toLowerCase()}`}
+                              >
                           {req.status}
                         </span>
                             </p>

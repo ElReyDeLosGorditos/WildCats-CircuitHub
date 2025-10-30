@@ -1,8 +1,9 @@
 /* --- Page Layout --- */
 .AR-container {
-    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
+    background-color: #e6e0f4;
     min-height: 100vh;
     padding-bottom: 60px;
+    position: relative;
 }
 
 /* --- Wrapper --- */
@@ -10,7 +11,13 @@
     padding: 30px 20px;
     display: flex;
     justify-content: center;
-    background-color: #e6e0f4; /* Soft lavender with reduced brightness */
+    background-color: #e6e0f4;
+    transition: filter 0.3s ease;
+}
+
+.AR-wrapper.blurred {
+    filter: blur(4px);
+    pointer-events: none;
 }
 
 .AR-content {
@@ -35,26 +42,29 @@
 /* --- Filters --- */
 .AR-filters {
     display: flex;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 24px;
 }
 
-.AR-search,
-.AR-dropdown {
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-}
-
 .AR-search {
-    flex: 1;
+    flex: 0 0 70%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
 }
 
 .AR-dropdown {
-    width: 160px;
+    flex: 0 0 30%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 15px;
 }
+
 /* --- Requests Grid --- */
 .AR-grid {
     display: grid;
@@ -68,11 +78,7 @@
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     transition: transform 0.2s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
-
 
 .AR-card:hover {
     transform: translateY(-4px);
@@ -88,102 +94,35 @@
 .AR-status {
     font-size: 13px;
     font-weight: bold;
-    background: none !important;
-    border: none !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-    display: inline;
 }
-
-/* Only change the text color */
-.AR-status.pending {
-    color: #f0ad4e !important;
-}
-
-.AR-status.approved {
-    color: #5cb85c !important;
-}
-
-.AR-status.denied {
-    color: #d9534f !important;
-}
-
-.AR-status.returned {
-    color: #0275d8 !important;
-}
-
 
 .AR-status.pending {
-    background-color: #f0ad4e;
+    color: #f0ad4e;
 }
-
 .AR-status.approved {
-    background-color: #5cb85c;
+    color: #5cb85c;
 }
-
 .AR-status.denied {
-    background-color: #d9534f;
+    color: #d9534f;
 }
-
 .AR-status.returned {
-    background-color: #0275d8;
-}
-
-.AR-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-}
-
-.AR-actions button {
-    padding: 8px 14px;
-    font-size: 13px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-    color: white;
-    font-weight: 500;
-}
-
-.AR-approve {
-    background-color: #5cb85c;
-}
-.AR-approve:hover {
-    background-color: #4cae4c;
-}
-
-.AR-deny {
-    background-color: #d9534f;
-}
-.AR-deny:hover {
-    background-color: #c9302c;
-}
-
-.AR-review {
-    background-color: #f0ad4e;
-}
-.AR-review:hover {
-    background-color: #ec971f;
-}
-
-.AR-return {
-    background-color: #0275d8;
-}
-.AR-return:hover {
-    background-color: #025aa5;
-}
-
-.AR-empty {
-    color: white;
-    font-size: 16px;
-    text-align: center;
-    margin-top: 20px;
+    color: #0275d8;
 }
 
 .AR-group-label {
     font-size: 1.25rem;
     font-weight: bold;
     margin: 1rem 0 0.5rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .AR-filters {
+        flex-direction: column;
+    }
+
+    .AR-search,
+    .AR-dropdown {
+        width: 100%;
+    }
 }
