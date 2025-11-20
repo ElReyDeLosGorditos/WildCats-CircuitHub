@@ -131,4 +131,17 @@ public class UserController {
             return ResponseEntity.status(500).body(Map.of("error", "Failed to upload image: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/users/teachers")
+    public ResponseEntity<?> getAllTeachers() {
+        try {
+            System.out.println("GET All teachers requested");
+            java.util.List<User> teachers = userService.getAllTeachers();
+            return ResponseEntity.ok(teachers);
+        } catch (Exception e) {
+            System.err.println("Error fetching teachers: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to fetch teachers: " + e.getMessage()));
+        }
+    }
 }
