@@ -170,3 +170,29 @@
     color: #d96528;
     text-align: center;
 }
+
+/* Fix height of both columns */
+.admin-activity-box,
+.admin-pending-box {
+    height: 400px; /* adjust if you want taller/shorter */
+    overflow-y: auto; /* enables scroll when content exceeds height */
+}
+
+/* Make list inside Activity box scroll smoothly */
+.admin-activity-box ul {
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+/* Style optional (keeps scrollbar neat) */
+.admin-activity-box::-webkit-scrollbar,
+.admin-pending-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-activity-box::-webkit-scrollbar-thumb,
+.admin-pending-box::-webkit-scrollbar-thumb {
+    background: #c3b4d8;
+    border-radius: 6px;
+}
+
