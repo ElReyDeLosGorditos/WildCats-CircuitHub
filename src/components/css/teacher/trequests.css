@@ -1,181 +1,124 @@
-/* ===============================
-   Teacher Request Page (Purple Theme)
-   =============================== */
-
 .TR-container {
+    background-color: #e6e0f4;
     min-height: 100vh;
-    background-color: #DDC3C3; /* warm light pink */
+    padding-bottom: 60px;
+    position: relative;
+}
+
+.TR-wrapper {
+    padding: 30px 20px;
+    display: flex;
+    justify-content: center;
+    background-color: #e6e0f4;
     transition: filter 0.3s ease;
 }
 
-.modal-blurred {
-    filter: blur(3px);
+.TR-wrapper.blurred {
+    filter: blur(4px);
     pointer-events: none;
 }
 
-/* ===============================
-   Wrapper & Content
-   =============================== */
-
-.TR-wrapper {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.TR-header {
-    margin-bottom: 20px;
+.TR-content {
+    width: 90%;
+    max-width: 1000px;
 }
 
 .TR-title {
     font-size: 28px;
-    font-weight: bold;
-    color: #000000; /* deep plum */
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: black;
 }
 
 .TR-error {
-    color: #f44336;
-    margin-bottom: 10px;
-    font-weight: 600;
+    color: #ff4d4f;
+    text-align: center;
+    margin-bottom: 12px;
+    font-weight: bold;
 }
-
-/* ===============================
-   Filters
-   =============================== */
 
 .TR-filters {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
-    width: 100%;
+    margin-bottom: 24px;
 }
 
 .TR-search {
     flex: 0 0 70%;
-    padding: 10px 15px;
+    padding: 12px 15px;
     border-radius: 8px;
-    border: 1px solid #A376A2;
-    background-color: #FDF9FD;
-    font-size: 16px;
-    color: #6B3F69;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.TR-search:focus {
-    border-color: #8D5F8C;
-    outline: none;
-    box-shadow: 0 0 5px rgba(141, 95, 140, 0.4);
+    border: 1px solid #ccc;
+    font-size: 15px;
 }
 
 .TR-dropdown {
     flex: 0 0 30%;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
-    border: 1px solid #A376A2;
-    background-color: #FDF9FD;
-    font-size: 16px;
-    color: #6B3F69;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 15px;
 }
-
-.TR-dropdown:focus {
-    border-color: #8D5F8C;
-    outline: none;
-    box-shadow: 0 0 5px rgba(141, 95, 140, 0.4);
-}
-
-/* ===============================
-   Group Section
-   =============================== */
-
-.TR-group {
-    margin-bottom: 30px;
-}
-
-.TR-group-label {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #6B3F69;
-    font-weight: 600;
-}
-
-/* ===============================
-   Grid Cards
-   =============================== */
 
 .TR-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
 
 .TR-card {
-    background-color: #FDF9FD;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 8px rgba(107, 63, 105, 0.15);
-    border-left: 5px solid #A376A2;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.3s ease;
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s;
 }
 
 .TR-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(107, 63, 105, 0.25);
-    border-color: #8D5F8C;
+    transform: translateY(-4px);
 }
 
-.TR-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.TR-card-content p,
+.TR-card-content h3 {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #333;
 }
-
-.TR-borrower {
-    font-size: 18px;
-    font-weight: 600;
-    color: #6B3F69;
-}
-
-/* ===============================
-   Status Colors
-   =============================== */
 
 .TR-status {
+    font-size: 13px;
     font-weight: bold;
-    text-transform: capitalize;
 }
 
 .TR-status.pending {
-    color: #A376A2; /* soft mauve */
+    color: #f0ad4e;
 }
-
 .TR-status.approved {
-    color: #6B3F69; /* deep plum */
+    color: #5cb85c;
 }
-
 .TR-status.denied {
-    color: #f44336; /* red for denied */
+    color: #d9534f;
 }
-
 .TR-status.returned {
-    color: #8D5F8C; /* muted purple */
+    color: #0275d8;
 }
 
-/* ===============================
-   Responsive
-   =============================== */
+.TR-group-label {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 1rem 0 0.5rem;
+}
 
+/* Responsive */
 @media (max-width: 768px) {
     .TR-filters {
         flex-direction: column;
-        gap: 10px;
     }
 
-    .TR-grid {
-        grid-template-columns: 1fr;
+    .TR-search,
+    .TR-dropdown {
+        width: 100%;
     }
 }

@@ -291,7 +291,7 @@ const RequestForm = () => {
               returnTime, // includes +10 mins
               reason,
               timeRange: formattedTimeRange,
-              status: "Pending",
+              status: "Pending-Teacher",
               createdAt: serverTimestamp(),
 
               // NEW FIELDS

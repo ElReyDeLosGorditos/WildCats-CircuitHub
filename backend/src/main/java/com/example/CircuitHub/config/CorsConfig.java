@@ -20,7 +20,8 @@ public class CorsConfig {
                 "https://ccs-gadgethubb.onrender.com",
                 "https://ccs-gadgethubb-frontend.onrender.com",
                 "http://localhost:3000", // Common port for React/Vite
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "http://localhost:5174"
                 // Add any other localhost ports your frontend might be using
         ));
         config.addAllowedHeader("*");
