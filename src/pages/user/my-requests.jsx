@@ -104,74 +104,76 @@ const MyRequests = () => {
         </div>
 
         {/* Content */}
-        <div className="dashboard-container"> {/* This seems to be your main content wrapper class for this page */}
-          <h2 className="featured-title">My Requests</h2>
+          <div className="dashboard-container"> {/* This seems to be your main content wrapper class for this page */}
+            <h2 className="featured-title">My Requests</h2>
 
-          <div className="filter-bar">
-            <input
-                type="text"
-                placeholder="Search by item name(s)..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="returned">Returned</option>
-              <option value="denied">Denied</option>
-              <option value="all">All</option>
-            </select>
+            <div className="filter-bar">
+              <input
+                  type="text"
+                  placeholder="Search by item name(s)..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="returned">Returned</option>
+                <option value="denied">Denied</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+
+            <div className="request-table-wrapper">
+              <table className="request-table">
+              <thead>
+              <tr>
+                <th>Item(s)</th> {/* Updated column header for clarity */}
+                <th>Request Date</th>
+                <th>Status</th>
+                <th>Return Time</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              {filteredRequests.map((req) => (
+                  <tr key={req.id}>
+                    <td>
+                      {Array.isArray(req.items) && req.items.length > 0 ? (
+                          // If there are multiple items, show the first one and " (+X more)"
+                          req.items.length > 1 ?
+                              `${req.items[0].name} (+${req.items.length - 1} more)` :
+                              // If there's exactly one item in the array, just show its name
+                              req.items[0].name
+                      ) : (
+                          // Fallback to itemName if 'items' array doesn't exist or is empty
+                          req.itemName || 'N/A'
+                      )}
+                    </td>
+                    <td>{formatDate(req.borrowDate)}</td>
+                    <td>
+                    <span className={`status-badge ${req.status.toLowerCase()}`}>
+                      {req.status}
+                    </span>
+                    </td>
+                    <td>
+                      {req.status?.toLowerCase() === "returned" && req.returnDate
+                          ? formatDateTime(req.returnDate)
+                          : "-"
+                      }
+                    </td>
+                    <td>
+                      <button
+                          className="view-btn"
+                          onClick={() => navigate(`/view-request/${req.id}`)}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+              ))}
+              </tbody>
+            </table>
           </div>
-
-          <table className="request-table">
-            <thead>
-            <tr>
-              <th>Item(s)</th> {/* Updated column header for clarity */}
-              <th>Request Date</th>
-              <th>Status</th>
-              <th>Return Time</th>
-              <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            {filteredRequests.map((req) => (
-                <tr key={req.id}>
-                  <td>
-                    {Array.isArray(req.items) && req.items.length > 0 ? (
-                        // If there are multiple items, show the first one and " (+X more)"
-                        req.items.length > 1 ?
-                            `${req.items[0].name} (+${req.items.length - 1} more)` :
-                            // If there's exactly one item in the array, just show its name
-                            req.items[0].name
-                    ) : (
-                        // Fallback to itemName if 'items' array doesn't exist or is empty
-                        req.itemName || 'N/A'
-                    )}
-                  </td>
-                  <td>{formatDate(req.borrowDate)}</td>
-                  <td>
-                  <span className={`status-badge ${req.status.toLowerCase()}`}>
-                    {req.status}
-                  </span>
-                  </td>
-                  <td>
-                    {req.status?.toLowerCase() === "returned" && req.returnDate
-                        ? formatDateTime(req.returnDate)
-                        : "-"
-                    }
-                  </td>
-                  <td>
-                    <button
-                        className="view-btn"
-                        onClick={() => navigate(`/view-request/${req.id}`)}
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-            ))}
-            </tbody>
-          </table>
         </div>
       </div>
   );

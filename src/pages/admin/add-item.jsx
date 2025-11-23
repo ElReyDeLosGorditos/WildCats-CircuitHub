@@ -60,7 +60,6 @@ const AddItem = ({ closeModal }) => {
       <div className="popup-modal-overlay" onClick={closeModal}>
         <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
           <div className="add-item-card">
-            <h2 className="add-item-title">Add Equipment</h2>
 
             {/* Image Upload Area */}
             <div className="image-upload-wrapper">

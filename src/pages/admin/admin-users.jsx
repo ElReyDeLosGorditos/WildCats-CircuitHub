@@ -74,48 +74,52 @@ const AdminManageUsers = () => {
   });
 
   return (
-      <div className={`AU-container ${(selectedUser || showEditModal || showAddModal) ? "modal-blurred" : ""}`}>
-        <AdminHeader />
+      <div className="AU-container">
+        {/* Content Wrapper - This gets blurred */}
+        <div className={`AU-content-wrapper ${(selectedUser || showEditModal || showAddModal) ? "modal-blurred" : ""}`}>
+          <AdminHeader />
 
-        <div className="AU-dashboard">
-          <div className="AU-header-row">
-            <h1 className="AU-title">Manage Users</h1>
+          <div className="AU-dashboard">
+            <div className="AU-header-row">
+              <h1 className="AU-title">Manage Users</h1>
+            </div>
+
+            <div className="AU-filters">
+              <input
+                  type="text"
+                  placeholder="Search by name or email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="AU-search violet-input"
+              />
+            </div>
+
+            <table className="AU-table">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+              </tr>
+              </thead>
+              <tbody>
+              {filteredUsers.map((user) => (
+                  <tr
+                      key={user.id}
+                      className="AU-row"
+                      onClick={() => setSelectedUser(user)}
+                  >
+                    <td>{user.firstName} {user.lastName}</td>
+                    <td>{user.email}</td>
+                    <td>{user.role}</td>
+                  </tr>
+              ))}
+              </tbody>
+            </table>
           </div>
-
-          <div className="AU-filters">
-            <input
-                type="text"
-                placeholder="Search by name or email..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="AU-search violet-input"
-            />
-          </div>
-
-          <table className="AU-table">
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-            </tr>
-            </thead>
-            <tbody>
-            {filteredUsers.map((user) => (
-                <tr
-                    key={user.id}
-                    className="AU-row"
-                    onClick={() => setSelectedUser(user)}
-                >
-                  <td>{user.firstName} {user.lastName}</td>
-                  <td>{user.email}</td>
-                  <td>{user.role}</td>
-                </tr>
-            ))}
-            </tbody>
-          </table>
         </div>
 
+        {/* Modals - Outside the blurred wrapper */}
         {/* VIEW MODAL */}
         {selectedUser && !showEditModal && (
             <div className="modal-overlay" onClick={handleBackgroundClick}>
