@@ -122,3 +122,35 @@
         width: 100%;
     }
 }
+
+/* Status badges */
+.TR-status {
+    font-size: 13px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+/* Pending Teacher - Yellow */
+.TR-status.pending-teacher {
+    color: #f0ad4e; /* darker yellow text */
+}
+
+/* Pending Admin - Blue */
+.TR-status.pending-admin {
+
+    color: #0275d8; /* darker blue text */
+}
+
+/* Other statuses (existing) */
+.TR-status.approved {
+    color: #5cb85c;
+}
+.TR-status.denied {
+    color: #d9534f;
+}
+.TR-status.returned {
+    color: #0275d8;
+}
+

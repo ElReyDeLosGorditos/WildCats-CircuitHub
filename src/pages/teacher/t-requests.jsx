@@ -4,7 +4,7 @@ import { db } from "../../firebaseconfig";
 import { collection, getDocs, getDoc, doc } from "firebase/firestore";
 import "../../components/css/teacher/trequests.css";
 import TeacherHeader from "./t-header.jsx";
-//import TeacherRequestReview from "./t-review.jsx"; // ensure this exists
+import TeacherRequestReview from "./t-view-requests.jsx";
 
 const TeacherRequests = () => {
     const [requests, setRequests] = useState([]);
@@ -12,18 +12,46 @@ const TeacherRequests = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState("");
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const [currentTeacher, setCurrentTeacher] = useState(null);
 
+    const auth = getAuth();
+
+    // ----------------------
+    // GET LOGGED-IN TEACHER
+    // ----------------------
     useEffect(() => {
-        fetchRequests();
+        const unsub = onAuthStateChanged(auth, (user) => {
+            setCurrentTeacher(user || null);
+        });
+        return () => unsub();
     }, []);
 
+    // ----------------------
+    // MAIN FETCH + AUTO REFRESH
+    // ----------------------
+    useEffect(() => {
+        if (!currentTeacher) return;
+
+        fetchRequests(); // initial load
+
+        // Auto refresh every 5 seconds
+        const interval = setInterval(() => {
+            fetchRequests();
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [currentTeacher]); // wait until teacher is loaded
+
     const fetchRequests = async () => {
+        if (!currentTeacher) return;
+
         try {
             const snapshot = await getDocs(collection(db, "borrowRequests"));
             const fetched = await Promise.all(
                 snapshot.docs.map(async (docSnap) => {
                     const data = { id: docSnap.id, ...docSnap.data() };
 
+                    // Fetch borrower name
                     if (data.userId) {
                         try {
                             const userRef = doc(db, "users", data.userId);
@@ -40,13 +68,20 @@ const TeacherRequests = () => {
                     return data;
                 })
             );
-            setRequests(fetched);
+
+            // Filter to only teacher's requests
+            const teacherFiltered = fetched.filter(req => req.teacherId === currentTeacher.uid);
+
+            setRequests(teacherFiltered);
         } catch (err) {
             console.error("Request fetch error:", err);
             setError("Failed to fetch requests.");
         }
     };
 
+    // ----------------------
+    // GROUP BY DATE
+    // ----------------------
     const groupRequestsByDate = (requests) => {
         const groups = {};
         const today = new Date();
@@ -82,35 +117,34 @@ const TeacherRequests = () => {
         return groups;
     };
 
+    // ----------------------
+    // FILTERED LIST
+    // ----------------------
     const filteredRequests = requests.filter((req) => {
         const matchesStatus =
-            statusFilter === "All" || req.status === statusFilter;
+            statusFilter === "All" ||
+            req.status === statusFilter ||
+            (req.status === "PendingTeacher" && statusFilter === "Pending") ||
+            (req.status === "PendingAdmin" && statusFilter === "Pending");
+
         const matchesSearch =
             req.borrowerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             req.itemName?.toLowerCase().includes(searchTerm.toLowerCase());
+
         return matchesStatus && matchesSearch;
     });
 
     const groupedRequests = groupRequestsByDate(filteredRequests);
 
     const sortedGroups = Object.entries(groupedRequests).sort(
-        ([aKey, aReqs], [bKey, bReqs]) => {
-            const getDateValue = (key, reqs) => {
-                if (key === "Today") return new Date();
-                if (key === "Yesterday") {
-                    const y = new Date();
-                    y.setDate(y.getDate() - 1);
-                    return y;
-                }
-                return reqs[0]?.createdDate || new Date(0);
-            };
-            return getDateValue(bKey, bReqs) - getDateValue(aKey, aReqs);
-        }
+        ([, aReqs], [, bReqs]) => (bReqs[0]?.createdDate || 0) - (aReqs[0]?.createdDate || 0)
     );
 
-
+    // ----------------------
+    // RENDER
+    // ----------------------
     return (
-        <div className={`TR-container`}>
+        <div className="TR-container">
             <TeacherHeader />
 
             <div className={`TR-wrapper ${selectedRequest ? "blurred" : ""}`}>
@@ -136,7 +170,7 @@ const TeacherRequests = () => {
                             onChange={(e) => setStatusFilter(e.target.value)}
                         >
                             <option value="Pending-Teacher">Pending</option>
-                            <option value="Approved-Teacher">Approved</option>
+                            <option value="Pending-Admin">Approved</option>
                             <option value="Denied-Teacher">Denied</option>
                             <option value="Returned">Returned</option>
                             <option value="All">All</option>
@@ -156,30 +190,36 @@ const TeacherRequests = () => {
                                             key={req.id}
                                             className="TR-card"
                                             onClick={() => setSelectedRequest(req)}
-                                            style={{ cursor: "pointer" }}
                                         >
                                             <div className="TR-card-content">
                                                 <h3 className="TR-borrower">
                                                     {req.borrowerName || "Unknown"}
                                                 </h3>
+
                                                 <p>
                                                     <strong>Item:</strong> {req.itemName || "Unknown"}
                                                 </p>
+
                                                 <p>
                                                     <strong>Time Slot:</strong>{" "}
                                                     {req.timeRange ||
                                                         `${req.startTime || ""} - ${req.returnTime || ""}`}
                                                 </p>
+
                                                 <p>
                                                     <strong>Status:</strong>{" "}
-                                                    <span className={`TR-status pending`}>
-                                                        {req.status === "Pending-Teacher" || req.status === "Pending-Admin"
-                                                            ? "Pending"
-                                                                : req.status}
+                                                    <span
+                                                        className={`TR-status ${
+                                                            req.status === "Pending-Teacher"
+                                                                ? "pending-teacher"
+                                                                : req.status === "Pending-Admin"
+                                                                    ? "pending-admin"
+                                                                    : req.status.toLowerCase()
+                                                        }`}
+                                                    >
+                                                        {req.status.includes("Pending") ? "Pending" : req.status}
                                                     </span>
-
                                                 </p>
-
                                             </div>
                                         </div>
                                     ))}
@@ -199,7 +239,6 @@ const TeacherRequests = () => {
             )}
         </div>
     );
-
 };
 
 export default TeacherRequests;
