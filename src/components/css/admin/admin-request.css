@@ -126,3 +126,56 @@
         width: 100%;
     }
 }
+
+/* Base Style */
+.AR-status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+/* Pending-Admin → Blue */
+.AR-status.pending-admin {
+
+    color: #265dff;              /* deep blue text */
+
+}
+
+/* Pending-Teacher (optional, in case you want later) */
+.AR-status.pending-teacher {
+
+    color: #b38300;
+
+}
+
+/* Approved */
+.AR-status.approved {
+
+    color: #2e7d32;
+
+}
+
+/* Denied / Rejected */
+.AR-status.denied,
+.AR-status.rejected {
+
+    color: #d32f2f;
+
+}
+
+/* Returned */
+.AR-status.returned {
+
+    color: #0277bd;
+
+}
+
+/* Overdue */
+.AR-status.overdue {
+
+    color: #e65100;
+
+}
