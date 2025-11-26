@@ -1,0 +1,132 @@
+.TP-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: radial-gradient(circle at top left, #3b82f6, #111827);
+    padding: 2rem;
+    font-family: "Inter", sans-serif;
+}
+
+.TP-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    border-radius: 24px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    padding: 2rem 3rem;
+    width: 100%;
+    max-width: 800px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.TP-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
+}
+
+.TP-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.TP-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    object-fit: cover;
+}
+
+.TP-name-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.TP-name {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.TP-role {
+    font-size: 1rem;
+    color: #a5b4fc;
+}
+
+.TP-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 1.5rem 0;
+}
+
+.TP-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+}
+
+.TP-info-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: left;
+    transition: background 0.3s;
+}
+
+.TP-info-box:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.TP-info-box h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #9ca3af;
+    margin-bottom: 0.3rem;
+}
+
+.TP-info-box p {
+    font-size: 1rem;
+    color: #fff;
+    margin: 0;
+}
+
+.TP-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.TP-edit-btn,
+.TP-message-btn {
+    background: #2563eb;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.TP-message-btn {
+    background: #10b981;
+}
+
+.TP-edit-btn:hover {
+    background: #1d4ed8;
+}
+
+.TP-message-btn:hover {
+    background: #059669;
+}
+
+.TP-loading,
+.TP-error {
+    text-align: center;
+    color: white;
+    font-size: 1.2rem;
+    margin-top: 100px;
+}

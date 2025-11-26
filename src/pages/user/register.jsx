@@ -18,7 +18,15 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccessMessage("");
     setIsLoading(true);
+
+    const requiredDomain = "@cit.edu";
+    if (!email.toLowerCase().endsWith(requiredDomain)) {
+      setError(`Invalid email address. Only school emails ending with "${requiredDomain}" are accepted.`);
+      setIsLoading(false);
+      return; // Stop the registration process
+    }
 
     try {
       // 1. Create Firebase auth user
@@ -41,7 +49,7 @@ const Register = () => {
           email: user.email,
           firstName: firstName,
           lastName: lastName,
-          role: "student"
+          role: role //may role na
         },
         {
           headers: {
@@ -55,11 +63,7 @@ const Register = () => {
       // Set success message and delay navigation
       setSuccessMessage("Successfully registered! Redirecting to login page...");
       setTimeout(() => {
-        if (email.toLowerCase().includes("@cit.edu")) {
-          navigate("/admin-dashboard");
-        } else {
-          navigate("/");
-        }
+        navigate("/login");
       }, 2000);
     } catch (err) {
       console.error("Registration error:", err);
@@ -83,6 +87,9 @@ const Register = () => {
     }
   };
 
+
+  const [role, setRole] = useState("student");
+
   return (
     <div className="login-page">
       <img src={logo} alt="CircuitHub Logo" className="login-logo" />
@@ -91,50 +98,62 @@ const Register = () => {
         {successMessage && <div className="login-success">{successMessage}</div>}
 
         <input
-          type="text"
-          placeholder="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          required
-          className="login-input"
-          disabled={isLoading}
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+            className="login-input"
+            disabled={isLoading}
         />
 
         <input
-          type="text"
-          placeholder="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          required
-          className="login-input"
-          disabled={isLoading}
+            type="text"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+            className="login-input"
+            disabled={isLoading}
         />
 
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="login-input"
-          disabled={isLoading}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="login-input"
+            disabled={isLoading}
         />
+
+        <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="login-input"
+            disabled={isLoading}
+            required
+        >
+          <option value="" disabled>Select Role</option>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
 
         <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="login-input"
-          disabled={isLoading}
-          minLength="6"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="login-input"
+            disabled={isLoading}
+            minLength="6"
         />
 
-        <button 
-          type="submit" 
-          className="login-button"
-          disabled={isLoading}
+        <button
+            type="submit"
+            className="login-button"
+            disabled={isLoading}
         >
           {isLoading ? "Registering..." : "Register"}
         </button>

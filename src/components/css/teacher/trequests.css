@@ -1,13 +1,11 @@
-/* --- Page Layout --- */
-.AR-container {
+.TR-container {
     background-color: #e6e0f4;
     min-height: 100vh;
     padding-bottom: 60px;
     position: relative;
 }
 
-/* --- Wrapper --- */
-.AR-wrapper {
+.TR-wrapper {
     padding: 30px 20px;
     display: flex;
     justify-content: center;
@@ -15,32 +13,31 @@
     transition: filter 0.3s ease;
 }
 
-.AR-wrapper.blurred {
+.TR-wrapper.blurred {
     filter: blur(4px);
     pointer-events: none;
 }
 
-.AR-content {
+.TR-content {
     width: 90%;
     max-width: 1000px;
 }
 
-.AR-title {
+.TR-title {
     font-size: 28px;
-    color: black;
     font-weight: 700;
     margin-bottom: 20px;
+    color: black;
 }
 
-.AR-error {
+.TR-error {
     color: #ff4d4f;
     text-align: center;
     margin-bottom: 12px;
     font-weight: bold;
 }
 
-/* --- Filters --- */
-.AR-filters {
+.TR-filters {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -48,7 +45,7 @@
     margin-bottom: 24px;
 }
 
-.AR-search {
+.TR-search {
     flex: 0 0 70%;
     padding: 12px 15px;
     border-radius: 8px;
@@ -56,7 +53,7 @@
     font-size: 15px;
 }
 
-.AR-dropdown {
+.TR-dropdown {
     flex: 0 0 30%;
     padding: 12px;
     border-radius: 8px;
@@ -65,14 +62,13 @@
     font-size: 15px;
 }
 
-/* --- Requests Grid --- */
-.AR-grid {
+.TR-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
 }
 
-.AR-card {
+.TR-card {
     background-color: white;
     padding: 20px;
     border-radius: 12px;
@@ -80,102 +76,81 @@
     transition: transform 0.2s;
 }
 
-.AR-card:hover {
+.TR-card:hover {
     transform: translateY(-4px);
 }
 
-.AR-card-content p,
-.AR-card-content h3 {
+.TR-card-content p,
+.TR-card-content h3 {
     margin: 6px 0;
     font-size: 14px;
     color: #333;
 }
 
-.AR-status {
+.TR-status {
     font-size: 13px;
     font-weight: bold;
 }
 
-.AR-status.pending {
+.TR-status.pending {
     color: #f0ad4e;
 }
-.AR-status.approved {
+.TR-status.approved {
     color: #5cb85c;
 }
-.AR-status.denied {
+.TR-status.denied {
     color: #d9534f;
 }
-.AR-status.returned {
+.TR-status.returned {
     color: #0275d8;
 }
 
-.AR-group-label {
+.TR-group-label {
     font-size: 1.25rem;
     font-weight: bold;
     margin: 1rem 0 0.5rem;
 }
 
-/* --- Responsive --- */
+/* Responsive */
 @media (max-width: 768px) {
-    .AR-filters {
+    .TR-filters {
         flex-direction: column;
     }
 
-    .AR-search,
-    .AR-dropdown {
+    .TR-search,
+    .TR-dropdown {
         width: 100%;
     }
 }
 
-/* Base Style */
-.AR-status {
-    padding: 4px 10px;
+/* Status badges */
+.TR-status {
+    font-size: 13px;
+    font-weight: bold;
+    padding: 3px 8px;
     border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: capitalize;
     display: inline-block;
 }
 
-/* Pending-Admin → Blue */
-.AR-status.pending-admin {
-
-    color: #265dff;              /* deep blue text */
-
+/* Pending Teacher - Yellow */
+.TR-status.pending-teacher {
+    color: #f0ad4e; /* darker yellow text */
 }
 
-/* Pending-Teacher (optional, in case you want later) */
-.AR-status.pending-teacher {
+/* Pending Admin - Blue */
+.TR-status.pending-admin {
 
-    color: #b38300;
-
+    color: #0275d8; /* darker blue text */
 }
 
-/* Approved */
-.AR-status.approved {
-
-    color: #2e7d32;
-
+/* Other statuses (existing) */
+.TR-status.approved {
+    color: #5cb85c;
+}
+.TR-status.denied {
+    color: #d9534f;
+}
+.TR-status.returned {
+    color: #0275d8;
 }
 
-/* Denied / Rejected */
-.AR-status.denied,
-.AR-status.rejected {
-
-    color: #d32f2f;
-
-}
-
-/* Returned */
-.AR-status.returned {
-
-    color: #0277bd;
-
-}
-
-/* Overdue */
-.AR-status.overdue {
-
-    color: #e65100;
-
-}

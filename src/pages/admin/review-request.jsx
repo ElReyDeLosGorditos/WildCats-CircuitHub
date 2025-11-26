@@ -1,57 +1,63 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { db } from "../../firebaseconfig";
 import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import "../../components/css/admin/review-request.css";
 
 const AdminRequestReview = ({ request: propRequest, onClose }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { id } = useParams();
 
-  const [currentRequest, setCurrentRequest] = useState(propRequest || location.state?.request || null);
+  const [currentRequest, setCurrentRequest] = useState(propRequest || null);
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(!currentRequest);
+  const [teacher, setTeacher] = useState(null); // NEW: store teacher profile
 
   useEffect(() => {
-    const fetchRequestAndUser = async () => {
+    const fetchUserAndRequest = async () => {
       try {
-        let requestToUse = currentRequest;
+        let request = propRequest;
 
-        // If no request data is present, fetch from Firestore using the URL param
-        if (!requestToUse && id) {
-          const docRef = doc(db, "borrowRequests", id);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            requestToUse = { id: docSnap.id, ...docSnap.data() };
-            setCurrentRequest(requestToUse);
-          } else {
-            setError("Request not found.");
-            setLoading(false);
-            return;
+        // Reload full request if incomplete
+        if (request && !request.userId) {
+          const fullSnap = await getDoc(doc(db, "borrowRequests", request.id));
+          if (fullSnap.exists()) {
+            request = { id: fullSnap.id, ...fullSnap.data() };
+            setCurrentRequest(request);
           }
         }
 
-        // Fetch user details
-        if (requestToUse?.userId) {
-          const userSnap = await getDoc(doc(db, "users", requestToUse.userId));
+        // Fetch borrower profile
+        if (request?.userId) {
+          const userSnap = await getDoc(doc(db, "users", request.userId));
           if (userSnap.exists()) {
             setUser(userSnap.data());
           }
         }
+
+        // ⭐ NEW — Fetch teacher profile
+        if (request?.teacherId) {
+          const teacherSnap = await getDoc(doc(db, "users", request.teacherId));
+          if (teacherSnap.exists()) {
+            setTeacher(teacherSnap.data());
+          }
+        }
+
       } catch (err) {
-        console.error("Error loading request/user:", err);
-        setError("Failed to load request or user data.");
+        console.error("Failed to fetch full request or user:", err);
+        setError("Failed to load request details.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRequestAndUser();
-  }, [id, propRequest, location.state]);
+    fetchUserAndRequest();
+  }, [propRequest]);
 
-  const [successMsg, setSuccessMsg] = useState(""); // Add this near your other state
+
+  const [successMsg, setSuccessMsg] = useState("");
+
+  if (currentRequest?.status === "Approved" || currentRequest?.status === "Denied") {
+    onClose();
+  }
 
   const updateStatus = async (status) => {
     try {
@@ -65,12 +71,9 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
       await updateDoc(requestRef, updateData);
       setCurrentRequest(prev => ({ ...prev, ...updateData }));
 
-      // Navigate back to dashboard after approval or denial
       if (status === "Approved" || status === "Denied") {
-        navigate("/admin-dashboard");
+        onClose();
       }
-
-      // Optional: for "Returned" you might want to stay on page
     } catch (err) {
       console.error("Status update failed:", err);
       setError("Failed to update request status.");
@@ -114,41 +117,117 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
         <div className="RR-modal" onClick={(e) => e.stopPropagation()}>
           <h2 className="RR-title">Review Request</h2>
 
+          {/* TIMELINE */}
           <div className="RR-section">
             <h3 className="RR-subtitle">Request Timeline</h3>
-            <p><strong>Created:</strong> {currentRequest.createdAt?.seconds ? new Date(currentRequest.createdAt.seconds * 1000).toLocaleString() : "N/A"}</p>
+            <p><strong>Created:</strong>
+              {currentRequest.createdAt?.seconds
+                  ? new Date(currentRequest.createdAt.seconds * 1000).toLocaleString()
+                  : "N/A"}
+            </p>
           </div>
 
+          {/* SCHEDULE */}
           <div className="RR-section">
             <h3 className="RR-subtitle">Borrowing Schedule</h3>
             <p><strong>Date:</strong> {currentRequest.borrowDate}</p>
-            <p><strong>Time Slot:</strong> {currentRequest.timeRange || `${currentRequest.startTime} - ${currentRequest.returnTime}`}</p>
+            <p><strong>Time Slot:</strong>
+              {currentRequest.timeRange || `${currentRequest.startTime} - ${currentRequest.returnTime}`}
+            </p>
           </div>
 
+          {/* REQUEST INFO */}
           <div className="RR-section">
             <h3 className="RR-subtitle">Request Info</h3>
-            <p><strong>Borrower:</strong> {user ? `${user.firstName} ${user.lastName}` : "Unknown"}</p>
+
+            <p><strong>Borrower: </strong>
+              {user ? `${user.firstName} ${user.lastName}` : "Unknown"}
+            </p>
+
+            {/* NEW — TEACHER IN-CHARGE */}
+            <p><strong>Teacher In-Charge: </strong>
+              {teacher
+                  ? `${teacher.firstName} ${teacher.lastName}`
+                  : currentRequest.teacherName || "N/A"}
+            </p>
+
+            {/* NEW — GROUP MEMBERS */}
+            <p><strong>Group Members: </strong>
+              {Array.isArray(currentRequest.groupMembers)
+                  ? currentRequest.groupMembers.join(", ")
+                  : currentRequest.groupMembers || "N/A"}
+            </p>
+
             <p><strong>Item(s):</strong> {renderItemNames(currentRequest)}</p>
             <p><strong>Reason:</strong> {currentRequest.reason}</p>
-            <p><strong>Current Status:</strong> <span className={`status-badge ${currentRequest.status?.toLowerCase()}`}>{currentRequest.status}</span></p>
+
+            <p><strong>Current Status:</strong>
+              <span
+                  className={`status-badge ${
+                      currentRequest.status === "Pending-Teacher"
+                          ? "pending-teacher"
+                          : currentRequest.status === "Pending-Admin"
+                              ? "pending-admin"
+                              : currentRequest.status?.toLowerCase()
+                  }`}
+              >
+    {currentRequest.status === "Pending-Teacher" ||
+    currentRequest.status === "Pending-Admin"
+        ? "Pending"
+        : currentRequest.status}
+</span>
+
+            </p>
           </div>
 
+          {/* BUTTONS */}
+          {/* BUTTONS */}
           <div className="RR-buttons">
-            {showApproveDenyButtons && (
+
+            {/* Admin can approve only when it already passed teacher approval */}
+            {currentRequest.status === "Pending-Admin" && (
                 <>
-                  <button className="RR-approve" onClick={() => updateStatus("Approved")}>Approve</button>
-                  <button className="RR-deny" onClick={() => updateStatus("Denied")}>Deny</button>
+                  <button
+                      className="RR-approve"
+                      onClick={() => updateStatus("Approved")}
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                      className="RR-deny"
+                      onClick={() => updateStatus("Denied")}
+                  >
+                    Deny
+                  </button>
                 </>
             )}
 
-            {showReturnButton && (
-                <button className="RR-return" onClick={() => updateStatus("Returned")}>Mark as Returned</button>
+            {/* Status after admin approval */}
+            {currentRequest.status === "Approved" && (
+                <button
+                    className="RR-return"
+                    onClick={() => updateStatus("Returned")}
+                >
+                  Mark as Returned
+                </button>
             )}
 
-            {showNoActionButtons && (
-                <p className="RR-no-actions-text">No further actions available for this request.</p>
+            {/* Final states */}
+            {["Returned", "Denied", "Cancelled"].includes(currentRequest.status) && (
+                <p className="RR-no-actions-text">
+                  No further actions available for this request.
+                </p>
+            )}
+
+            {/* Admin cannot act if teacher has not approved yet */}
+            {currentRequest.status === "Pending-Teacher" && (
+                <p className="RR-no-actions-text">
+                  Waiting for teacher approval.
+                </p>
             )}
           </div>
+
         </div>
       </div>
   );
