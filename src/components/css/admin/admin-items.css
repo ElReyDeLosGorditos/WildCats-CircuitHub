@@ -449,7 +449,7 @@ body.modal-open {
 /* Styles for the actual modal content (view, add, edit forms) */
 .popup-modal-content {
     animation: slideUp 0.4s ease; /* Consistent animation with overlay */
-    background-color: var(--surface-white);
+    
     border-radius: 16px; /* Larger border-radius for modern look */
     padding: 35px 40px; /* More generous padding inside the modal content */
     box-shadow: 0 15px 40px var(--shadow-lg); /* Prominent, soft shadow */

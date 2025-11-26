@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; // ✅ import useEffect
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 
 import "../../components/css/admin/landing.css";
@@ -17,7 +17,8 @@ const LandingPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // ✅ Add body class only when this component mounts
+    const [menuOpen, setMenuOpen] = useState(false);
+
     useEffect(() => {
         document.body.classList.add("landing-body");
         return () => {
@@ -41,6 +42,8 @@ const LandingPage = () => {
         <div className="landing-container">
             {/* ✅ Navbar */}
             <div className="navbar">
+
+                {/* LOGO */}
                 <div className="logo">
                     <img src={logo} alt="Wildcats Circuit Hub Logo" className="logo-img" />
                     <span className="logo-text">
@@ -48,12 +51,24 @@ const LandingPage = () => {
                     </span>
                 </div>
 
-                <nav className="nav-links">
+                {/* ✅ Hamburger Button */}
+                <div
+                    className={`hamburger ${menuOpen ? "open" : ""}`}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                {/* NAV LINKS */}
+                <nav className={`nav-links ${menuOpen ? "show-menu" : ""}`}>
                     {navItems.map((link) => (
                         <Link
                             key={link.to}
                             to={link.to}
                             className="navbar-link"
+                            onClick={() => setMenuOpen(false)}  // close menu on click
                         >
                             <span
                                 className={
@@ -74,7 +89,7 @@ const LandingPage = () => {
                 </nav>
             </div>
 
-            {/* ✅ Hero Section */}
+            {/* HERO SECTION */}
             <main className="hero-section">
                 <div
                     className="hero-card"
@@ -94,19 +109,19 @@ const LandingPage = () => {
                     }}
                 >
                     <h1>
-                        "Effortless Laboratory Equipment Borrowing – <br/>
+                        "Effortless Laboratory Equipment Borrowing – <br />
                         Fast, Reliable, and Organized!"
                     </h1>
                     <p>
                         Reserve laboratory with ease. Track availability, request
                         equipments, and manage returns seamlessly.
                     </p>
-                    <div style={{marginTop: "2rem"}}>
+                    <div style={{ marginTop: "2rem" }}>
                         <button className="start-button" onClick={handleStart}>
-                            <img src={loanIcon} alt="Loan Icon" className="icon-img"/> Start Borrowing
+                            <img src={loanIcon} alt="Loan Icon" className="icon-img" />
+                            Start Borrowing
                         </button>
                     </div>
-
                 </div>
             </main>
         </div>

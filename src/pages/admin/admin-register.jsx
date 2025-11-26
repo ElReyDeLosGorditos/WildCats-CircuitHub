@@ -134,7 +134,7 @@ const AdminRegister = () => {
                 </button>
 
                 <div className="login-register">
-                    Already have an account? <Link to="/">Login here</Link>
+                    Already have an account? <Link to="/login">Login here</Link>
                 </div>
             </form>
         </div>

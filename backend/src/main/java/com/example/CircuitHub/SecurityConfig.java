@@ -8,11 +8,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
 
-    @Bean
+    /* @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             // .cors().and() // ❌ Deprecated in Spring Security 6 — replaced below
@@ -25,6 +26,7 @@ public class SecurityConfig {
                 );
         return http.build();
     }
+*/
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -45,4 +47,29 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(true);
+                    config.setAllowedOrigins(List.of(
+                            "https://ccs-gadgethubb.onrender.com",
+                            "https://ccs-gadgethubb-frontend.onrender.com",
+                            "http://localhost:3000",
+                            "http://localhost:5173",
+                            "http://localhost:5174"
+                    ));
+                    config.addAllowedHeader("*");
+                    config.addAllowedMethod("*");
+                    return config;
+                }))
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                );
+
+        return http.build();
+    }
+
 }    
