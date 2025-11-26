@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 
 import "../components/css/admin/landing.css";
@@ -13,6 +13,7 @@ import heroBg from "../assets/heroimg.jfif";
 
 const FaqsPage = () => {
     const location = useLocation();
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         document.body.classList.add("landing-body");
@@ -31,8 +32,11 @@ const FaqsPage = () => {
 
     return (
         <div className="landing-container">
+
             {/* ✅ Navbar */}
             <div className="navbar">
+
+                {/* Logo */}
                 <div className="logo">
                     <img src={logo} alt="Wildcats Circuit Hub Logo" className="logo-img" />
                     <span className="logo-text">
@@ -40,12 +44,24 @@ const FaqsPage = () => {
                     </span>
                 </div>
 
-                <nav className="nav-links">
+                {/* ✅ Hamburger */}
+                <div
+                    className={`hamburger ${menuOpen ? "open" : ""}`}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                {/* Slide-out Nav */}
+                <nav className={`nav-links ${menuOpen ? "show-menu" : ""}`}>
                     {navItems.map((link) => (
                         <Link
                             key={link.to}
                             to={link.to}
                             className="navbar-link"
+                            onClick={() => setMenuOpen(false)}
                         >
                             <span
                                 className={
@@ -66,11 +82,12 @@ const FaqsPage = () => {
                 </nav>
             </div>
 
-            {/* ✅ Hero Section */}
+            {/* HERO SECTION */}
             <main className="hero-section">
-                <div className="hero-card"
-                     style={{
-                         background: `
+                <div
+                    className="hero-card"
+                    style={{
+                        background: `
                             linear-gradient(
                                 to right,
                                 rgba(80, 45, 130, 0.9) 0%,
@@ -79,11 +96,12 @@ const FaqsPage = () => {
                                 rgba(80, 45, 130, 0.9) 100%
                             ),
                             url(${heroBg})`,
-                         backgroundSize: "cover",
-                         backgroundPosition: "center",
-                         backgroundRepeat: "no-repeat",
-                     }}
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                    }}
                 >
+
                     <div className="hero-section-block">
                         <h1 className="title">FAQs</h1>
                     </div>
@@ -115,12 +133,14 @@ const FaqsPage = () => {
                         <div className="feature-block">
                             <h3 className="feature-title">Who do I contact for help?</h3>
                             <p className="feature-description">
-                                You can visit the "Contact Us" page or speak directly with the lab supervisor for assistance.
+                                Visit "Contact Us" or speak directly with the lab supervisor for assistance.
                             </p>
                         </div>
+
                     </div>
                 </div>
             </main>
+
         </div>
     );
 };

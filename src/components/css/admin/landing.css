@@ -350,17 +350,85 @@ ul.contact-list {
     }
 }
 
-@media (max-width: 480px) {
+/* -------------------------------------------------
+   RESPONSIVE NAVIGATION
+-------------------------------------------------- */
+@media (max-width: 768px) {
+
+    /* Navbar layout */
+    .navbar {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 1rem;
+    }
+
+    /* Show hamburger */
+    .hamburger {
+        display: flex;
+    }
+
+    /* Hide desktop navbar initially */
+    .nav-links {
+        margin-top: 0;
+        position: absolute;
+        top: 70px;
+        right: 0;
+        width: 40%;  /* <<< adjust here: 40%, 45%, or 50% */
+        height: auto;
+        max-height: 100vh; /* not full height */
+        background: #000;
+        flex-direction: column;
+        padding: 0.2rem 0rem;
+        gap: 0.2rem;
+
+        border-radius: 10px 0 0 10px;
+
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+        box-shadow: -4px 0 14px rgba(0, 0, 0, 0.4);
+        z-index: 1100;
+    }
+
+    /* When menu is toggled */
+    .nav-links.show-menu {
+        transform: translateX(0);
+    }
+
+    /* Mobile link styling */
     .navbar-link {
-        font-size: 0.85rem;
+        font-size: 0.95rem;
+    }
+
+    .nav-icon-img {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* Existing hero responsiveness (unchanged but kept) */
+    .hero-card {
+        padding: 2.5rem 2rem;
+        max-width: 90%;
+        min-height: auto;
     }
 
     .title {
-        font-size: 1.7rem;
+        font-size: 2rem;
     }
 
-    .start-button {
-        font-size: 0.95rem;
-        padding: 0.9rem 2rem;
+    .sub-heading {
+        font-size: 1.4rem;
+    }
+
+    .feature-title {
+        font-size: 1.3rem;
+    }
+
+    .feature-description {
+        font-size: 1rem;
+    }
+
+    .member-card {
+        width: 100%;
     }
 }

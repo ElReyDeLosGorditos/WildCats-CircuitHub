@@ -131,10 +131,6 @@ const Login = () => {
 
         <button type="submit" className="login-button">Log In</button>
 
-        <button type="button" className="google-button" onClick={handleGoogleLogin}>
-          Sign in with Google
-        </button>
-
         <div className="login-register">
           No account yet? <Link to="/register">Register here</Link>
         </div>
