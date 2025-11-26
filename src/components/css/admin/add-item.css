@@ -16,7 +16,7 @@
     --surface-off-white: #fefefe; /* Very slight off-white for backgrounds within sections */
 
     /* Borders & Shadows */
-    --border-light: #e6e6e6; /* Subtle light gray border */
+    --border-light: #dddddd; /* Subtle light gray border */
     --shadow-sm: rgba(0, 0, 0, 0.05); /* Small, subtle shadow */
     --shadow-md: rgba(0, 0, 0, 0.1); /* Medium shadow for cards */
     --shadow-lg: rgba(0, 0, 0, 0.2); /* Larger shadow for modals */
@@ -46,19 +46,22 @@
 .popup-modal-content {
     /* Removed max-width and width: fit-content here */
     /* The sizing will be controlled by the .add-item-card */
+    background: none;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0;
     width: 100%; /* Allows the card to naturally define its max width within the padding of the overlay */
     animation: slideUp 0.3s ease-out; /* Add slide-up animation */
+
 }
 
 /* Card Container */
 .add-item-card {
     background: var(--surface-white); /* Use variable */
     border-radius: 16px;
-    padding: 35px 45px; /* Slightly more generous padding for a spacious feel */
-    max-width: 480px; /* **Adjusted: Increased max-width for a less narrow feel on desktop** */
+    padding: 5px 45px; /* Slightly more generous padding for a spacious feel */
+    max-width: 6000px; /* **Adjusted: Increased max-width for a less narrow feel on desktop** */
     width: 100%; /* Ensures it's responsive and takes full width up to max-width */
     box-shadow: 0 15px 40px var(--shadow-lg); /* Use variable, slightly stronger shadow */
     margin: 0 auto; /* Center the card horizontally */
@@ -84,7 +87,7 @@
 .image-upload-box {
     border: 2px dashed var(--primary-purple); /* Use primary purple for dashed border */
     border-radius: 14px;
-    padding: 30px;
+    padding: 10px;
     width: 100%; /* Ensures it fills the container */
     text-align: center;
     cursor: pointer;

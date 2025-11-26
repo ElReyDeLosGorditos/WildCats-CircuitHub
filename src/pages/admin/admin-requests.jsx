@@ -13,7 +13,7 @@ import AdminRequestReview from "./review-request.jsx";
 
 const AdminRequests = () => {
   const [requests, setRequests] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("Pending");
+  const [statusFilter, setStatusFilter] = useState("Pending-Admin");
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -138,7 +138,7 @@ const AdminRequests = () => {
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
               >
-                <option value="Pending">Pending</option>
+                <option value="Pending-Admin">Pending</option>
                 <option value="Approved">Approved</option>
                 <option value="Denied">Denied</option>
                 <option value="Returned">Returned</option>
@@ -172,10 +172,15 @@ const AdminRequests = () => {
                             <p>
                               <strong>Status:</strong>{" "}
                               <span
-                                  className={`AR-status ${req.status?.toLowerCase()}`}
+                                  className={`AR-status ${
+                                      req.status === "Pending-Admin"
+                                          ? "pending-admin"
+                                          : req.status.toLowerCase()
+                                  }`}
                               >
-                          {req.status}
-                        </span>
+  {req.status === "Pending-Admin" ? "Pending" : req.status}
+</span>
+
                             </p>
                           </div>
                         </div>

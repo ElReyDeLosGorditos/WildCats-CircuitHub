@@ -1,92 +1,160 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import logo from "../../assets/circuithubLogo2.png";
+import { useNavigate } from "react-router-dom";
 import "../../components/css/teacher/tdashboard.css";
-import { auth } from "../../firebaseconfig";
+
+import { auth, db } from "../../firebaseconfig";
+import {
+    collection,
+    getDocs,
+    doc,
+    getDoc,
+    query,
+    where,
+} from "firebase/firestore";
+
 import TeacherHeader from "./t-header.jsx";
-import AdminHeader from "../admin/AdminHeader.jsx";
 
 const TeacherDashboard = () => {
-    const location = useLocation();
     const navigate = useNavigate();
 
     const [pendingRequests, setPendingRequests] = useState([]);
-    const [approvedCount, setApprovedCount] = useState(0);
-    const [recentApprovals, setRecentApprovals] = useState([]);
+    const [approvedRequests, setApprovedRequests] = useState([]);
+    const [recentActivities, setRecentActivities] = useState([]);
 
-    const currentUser = auth.currentUser;
+    const currentUser = auth.currentUser; // logged-in teacher
 
     useEffect(() => {
-        fetchDashboardData();
-    }, []);
+        if (currentUser) {
+            fetchDashboardData();
+        }
+    }, [currentUser]);
 
+    // ------------------------------------------------------------
+    // FETCH DATA (Firebase version, matches TeacherRequests logic)
+    // ------------------------------------------------------------
     const fetchDashboardData = async () => {
         try {
-            // Fetch pending requests for the teacher
-            const pendingRes = await axios.get("http://localhost:8080/api/requests/pending-teacher");
-            setPendingRequests(pendingRes.data);
+            const snapshot = await getDocs(collection(db, "borrowRequests"));
 
-            // Fetch approved count
-            const approvedRes = await axios.get("http://localhost:8080/api/requests/approved-teacher");
-            setApprovedCount(approvedRes.data.length);
+            let fetched = await Promise.all(
+                snapshot.docs.map(async (docSnap) => {
+                    const data = { id: docSnap.id, ...docSnap.data() };
 
-            // Fetch recent approvals
-            const recentRes = await axios.get("http://localhost:8080/api/requests/recent-teacher");
-            setRecentApprovals(recentRes.data.slice(0, 3));
+                    // Fetch borrower name
+                    if (data.userId) {
+                        try {
+                            const userRef = doc(db, "users", data.userId);
+                            const userSnap = await getDoc(userRef);
+                            if (userSnap.exists()) {
+                                const userData = userSnap.data();
+                                data.borrowerName = `${userData.firstName} ${userData.lastName}`;
+                            }
+                        } catch (err) {
+                            console.error("Borrower fetch error:", err);
+                        }
+                    }
+
+                    return data;
+                })
+            );
+
+            // Filter only requests belonging to this teacher
+            fetched = fetched.filter(
+                (req) => req.teacherId === currentUser?.uid
+            );
+
+            // Separate pending and approved
+            const pending = fetched.filter(
+                (req) => req.status === "Pending-Teacher"
+            );
+
+            const approved = fetched.filter(
+                (req) => req.status === "Pending-Admin"
+            );
+
+            setPendingRequests(pending);
+            setApprovedRequests(approved);
+
+            // ---------------------------------------
+            // RECENT ACTIVITY = recently approved requests
+            // ---------------------------------------
+            const recent = approved
+                .slice(0, 3)
+                .map((req) => ({
+                    id: req.id,
+                    text: `${req.borrowerName} was approved to borrow ${req.itemName}`,
+                    date: req.approvalDate || "N/A",
+                }));
+
+            setRecentActivities(recent);
         } catch (error) {
-            console.error("Error fetching teacher dashboard data:", error);
+            console.error("Teacher Dashboard Firestore error:", error);
         }
     };
 
+    // ------------------------------------------------------------
+    // TEACHER APPROVAL
+    // ------------------------------------------------------------
     const approveRequest = async (requestId) => {
         try {
-            await axios.put(`http://localhost:8080/api/requests/${requestId}/teacher-approve`, {
-                teacherId: currentUser?.uid || "unknown",
+            const reqRef = doc(db, "borrowRequests", requestId);
+
+            await updateDoc(reqRef, {
+                status: "Pending-Admin",
+                teacherId: currentUser?.uid,
                 teacherName: currentUser?.displayName || "Unnamed Teacher",
+                approvalDate: new Date(),
             });
+
             fetchDashboardData();
-        } catch (error) {
-            console.error("Error approving request:", error);
+        } catch (err) {
+            console.error("Teacher approval error:", err);
         }
     };
 
-    const navLinks = [
-        { label: "Dashboard", to: "/teacher-dashboard" },
-        { label: "Borrow Requests", to: "/t-requests" },
-        { label: "Items", to: "/teacher-items" },
-    ];
+    const handleCardClick = (path) => {
+        navigate(path);
+    };
 
     return (
         <div className="tdb-dashboard">
-            {/* Navigation bar */}
             <TeacherHeader />
 
-            {/* Dashboard contents */}
             <div className="tdb-dashboard-container">
                 <h1 className="tdb-welcome">Welcome back, Teacher!</h1>
-                <p className="tdb-subtext">Here’s your request approval summary.</p>
+                <p className="tdb-subtext">Here’s an overview of your request activity.</p>
 
-                {/* Stats cards */}
+                {/* Dashboard Cards */}
                 <div className="tdb-cards">
-                    <div className="tdb-card">
+                    <div
+                        className="tdb-card clickable"
+                        onClick={() => handleCardClick("/t-requests")}
+                    >
                         <h3>{pendingRequests.length}</h3>
                         <p>Pending Requests</p>
                     </div>
-                    <div className="tdb-card">
-                        <h3>{approvedCount}</h3>
+
+                    <div
+                        className="tdb-card clickable"
+                        onClick={() => handleCardClick("/t-requests")}
+                    >
+                        <h3>{approvedRequests.length}</h3>
                         <p>Approved Requests</p>
                     </div>
                 </div>
 
-                {/* Columns: recent approvals + pending requests */}
+                {/* 2-Column Section */}
                 <div className="tdb-columns">
-                    {/* Recent Approvals */}
-                    <div className="tdb-activity-box">
-                        <h3>Recent Approvals</h3>
+                    {/* Recent Activity */}
+                    <div
+                        className="tdb-activity-box clickable"
+                        onClick={() => handleCardClick("/t-requests")}
+                    >
+                        <h3>Recent Activity</h3>
+
                         <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-                            {recentApprovals.length > 0 ? (
-                                recentApprovals.map((log) => (
+                            {recentActivities.length > 0 ? (
+                                recentActivities.map((log) => (
                                     <li
                                         key={log.id}
                                         style={{
@@ -97,35 +165,40 @@ const TeacherDashboard = () => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <div>
-                                            {log.borrowerName} - {log.itemName}
-                                        </div>
+                                        <div>{log.text}</div>
                                         <div style={{ color: "#888", fontSize: "0.85em" }}>
-                                            {log.approvalDate || "N/A"}
+                                            {log.date}
                                         </div>
                                     </li>
                                 ))
                             ) : (
-                                <p>No recent approvals.</p>
+                                <p>No recent activity.</p>
                             )}
                         </ul>
                     </div>
 
                     {/* Pending Approvals */}
-                    <div className="tdb-pending-box">
+                    <div
+                        className="tdb-pending-box clickable"
+                        onClick={() => handleCardClick("/t-requests")}
+                    >
                         <h3>Pending Approvals</h3>
+
                         {pendingRequests.length > 0 ? (
                             pendingRequests.map((req) => (
                                 <div key={req.id} className="tdb-pending-request">
                                     <p>
-                                        <strong>{req.itemName}</strong> — {req.borrowerName} ({req.borrowerCourse}{" "}
-                                        {req.borrowerYear})
+                                        <strong>{req.itemName}</strong> - {req.borrowerName}
                                     </p>
                                     <p>Room: {req.roomNumber}</p>
+
                                     <div className="tdb-review-btn-row">
                                         <button
                                             className="tdb-review-request-btn"
-                                            onClick={() => approveRequest(req.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                approveRequest(req.id);
+                                            }}
                                         >
                                             Approve
                                         </button>
@@ -139,7 +212,6 @@ const TeacherDashboard = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 
