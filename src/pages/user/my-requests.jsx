@@ -21,7 +21,7 @@ const MyRequests = () => {
 
         const q = query(
             collection(db, "borrowRequests"),
-            where("userID", "==", user.uid)
+            where("userId", "==", user.uid)
         );
 
         const querySnapshot = await getDocs(q);
