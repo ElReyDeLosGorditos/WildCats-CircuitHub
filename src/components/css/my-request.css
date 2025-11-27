@@ -19,7 +19,7 @@
 
 .filter-bar input:focus {
     outline: none;
-    border-color: #d96528;
+    border-color: #461955;
     box-shadow: 0 0 0 3px rgba(217, 101, 40, 0.1);
 }
 
@@ -38,7 +38,7 @@
 
 .filter-bar select:focus {
     outline: none;
-    border-color: #d96528;
+    border-color: #461955;
 }
 
 /* Mobile optimization */

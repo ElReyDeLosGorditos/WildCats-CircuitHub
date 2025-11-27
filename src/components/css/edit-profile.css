@@ -47,7 +47,7 @@
 }
 
 .cancel-link {
-    color: #d96528;
+    color: #461955;
     font-size: 15px;
     font-weight: 500;
     text-decoration: underline;
@@ -56,13 +56,13 @@
     align-items: center;
 }
 .cancel-link:hover {
-    color: #b8501b;
+    color: #461955;
 }
 
 
 
 .edit-save-btn {
-    background-color: #d96528;
+    background-color: #461955;
     color: white;
     padding: 8px 20px;
     border-radius: 6px;
@@ -77,7 +77,7 @@
 }
 
 .edit-save-btn:hover {
-    background-color: #b8501b;
+    background-color: #461955;
 }
 
 .edit-container-card {

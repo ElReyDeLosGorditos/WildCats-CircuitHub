@@ -79,7 +79,7 @@
 /* Buttons */
 .borrow-btn,
 .item-details-btn {
-    background-color: #d96528;
+    background-color: #461955;
     color: white;
     padding: 8px 16px;
     border-radius: 5px;
@@ -93,7 +93,7 @@
 
 .borrow-btn:hover,
 .item-details-btn:hover {
-    background-color: #b8501b;
+    background-color: #461955;
 }
 
 /* Not Available Button */
@@ -145,7 +145,7 @@
 }
 
 .filter-container select:focus {
-    border-color: #d96528;
+    border-color: #461955;
     outline: none;
 }
 
@@ -177,7 +177,7 @@
 
 /* Focus state for input */
 .search-bar input:focus {
-    border-color: #d96528;
+    border-color: #461955;
     outline: none;
 }
 
