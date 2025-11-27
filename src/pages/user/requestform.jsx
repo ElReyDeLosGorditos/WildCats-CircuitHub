@@ -678,7 +678,7 @@ const RequestForm = () => {
         {showSuccessModal && (
             <div className="modal-overlay">
               <div className="modal">
-                <h2 style={{ color: "#d96528", textAlign: "center" }}>Request submitted!</h2>
+                <h2 style={{ color: "#461955", textAlign: "center" }}>Request submitted!</h2>
                 <p style={{ textAlign: "center", marginTop: "10px" }}>
                   Your request has been successfully submitted and is awaiting teacher approval.
                 </p>
