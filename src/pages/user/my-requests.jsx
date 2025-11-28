@@ -47,7 +47,8 @@ const MyRequests = () => {
 
     const matchesSearch = itemNamesToSearch.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus =
-        statusFilter === "all" || (req.status || "").toLowerCase() === statusFilter;
+        statusFilter === "all" ||
+        (req.status || "").toLowerCase().includes(statusFilter);
     return matchesSearch && matchesStatus;
   });
 
@@ -156,10 +157,7 @@ const MyRequests = () => {
                     </span>
                     </td>
                     <td>
-                      {req.status?.toLowerCase() === "returned" && req.returnDate
-                          ? formatDateTime(req.returnDate)
-                          : "-"
-                      }
+                      {req.returnTime ? req.returnTime : "-"}
                     </td>
                     <td>
                       <button

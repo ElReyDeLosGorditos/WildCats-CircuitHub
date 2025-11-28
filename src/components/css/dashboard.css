@@ -6,14 +6,15 @@
     background-color: #f4f7f6 ; /* This background color is lighter than #E6E6FA */
 }
 
-/* Navbar */
+/* Navbar Base */
 .navbar {
     width: 100%;
     padding: 1rem;
-    background-color: black; /* Changed to black */
-    color: white; /* Changed to white */
+    background: black;
+    color: white;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .navbar img {

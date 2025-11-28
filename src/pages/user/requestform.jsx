@@ -276,32 +276,36 @@ const RequestForm = () => {
 
       const groupMembers = parseGroupMembers();
 
-      await Promise.all(
-          selectedItems.map(async (item) => {
-            const requestData = {
-              userId: user.uid,
-              userName: user.displayName || user.email || "Unknown User",
-              itemId: item.id,
-              itemName: item.name,
-              borrowDate,
-              startTime: formatTime(
-                  Math.floor(startTimeNumeric),
-                  startTimeNumeric % 1 === 0.5 ? 30 : 0
-              ),
-              returnTime, // includes +10 mins
-              reason,
-              timeRange: formattedTimeRange,
-              status: "Pending-Teacher",
-              createdAt: serverTimestamp(),
+      const itemsForRequest = selectedItems.map(item => ({
+        id: item.id,
+        name: item.name
+      }));
 
-              // NEW FIELDS
-              teacherId: selectedTeacherId,
-              teacherAssigned: selectedTeacherName,
-              groupMembers, // array of names
-            };
-            await addDoc(collection(db, "borrowRequests"), requestData);
-          })
-      );
+      await addDoc(collection(db, "borrowRequests"), {
+        userId: user.uid,
+        userName: user.displayName || user.email || "Unknown User",
+
+        // all items in ONE array
+        items: itemsForRequest,
+
+        borrowDate,
+        startTime: formatTime(
+            Math.floor(startTimeNumeric),
+            startTimeNumeric % 1 === 0.5 ? 30 : 0
+        ),
+        returnTime,
+        reason,
+        timeRange: formattedTimeRange,
+        status: "Pending-Teacher",
+        createdAt: serverTimestamp(),
+
+        // teacher fields
+        teacherId: selectedTeacherId,
+        teacherAssigned: selectedTeacherName,
+
+        // group
+        groupMembers,
+      });
 
       setShowConfirmModal(false);
       setShowSuccessModal(true);

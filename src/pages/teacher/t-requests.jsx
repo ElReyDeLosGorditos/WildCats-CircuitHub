@@ -197,7 +197,12 @@ const TeacherRequests = () => {
                                                 </h3>
 
                                                 <p>
-                                                    <strong>Item:</strong> {req.itemName || "Unknown"}
+                                                    <strong>Item(s):</strong>{" "}
+                                                    {Array.isArray(req.items) && req.items.length > 0
+                                                        ? req.items.length === 1
+                                                            ? req.items[0].name
+                                                            : `${req.items[0].name} (+${req.items.length - 1} more)`
+                                                        : req.itemName || "Unknown"}
                                                 </p>
 
                                                 <p>

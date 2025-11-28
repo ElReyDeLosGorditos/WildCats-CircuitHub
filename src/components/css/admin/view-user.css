@@ -1,3 +1,4 @@
+/* --- Overlay --- */
 .VU-overlay {
     position: fixed;
     top: 0;
@@ -11,12 +12,16 @@
     align-items: center;
     z-index: 1000;
     animation: fadeIn 0.3s ease-in-out;
+    padding: 1rem; /* so modal doesn’t touch edges on small screens */
 }
 
+/* --- Modal Container --- */
 .VU-modal {
     display: flex;
     width: 60vw;
+    max-width: 700px;
     height: 80vh;
+    max-height: 600px;
     background-color: #946bb1;
     color: #fff;
     border-radius: 14px;
@@ -25,8 +30,10 @@
     animation: slideUp 0.4s ease;
 }
 
+/* --- Left Side (Image) --- */
 .VU-left {
     flex: 1;
+    min-width: 150px;
     background-color: #825ba2;
     display: flex;
     justify-content: center;
@@ -45,12 +52,14 @@
     color: #4b2e83;
 }
 
+/* --- Right Side (Details) --- */
 .VU-right {
     flex: 2;
     padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow-y: auto; /* scroll if content too long */
 }
 
 .VU-title {
@@ -69,6 +78,7 @@
     color: #ffe9a7;
 }
 
+/* --- Actions --- */
 .VU-actions {
     margin-top: 2rem;
     text-align: center;
@@ -86,21 +96,11 @@
     transition: background-color 0.3s ease;
 }
 
-.VU-right p {
-    font-size: 1.1rem;
-    margin: 0.6rem 0;
-}
-
-.VU-right strong {
-    color: #ffe9a7;
-}
-
-
 .VU-update-btn:hover {
     background-color: #ffce3d;
 }
 
-/* Animations */
+/* --- Animations --- */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -109,4 +109,77 @@
 @keyframes slideUp {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+    .VU-modal {
+        width: 80vw;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .VU-left {
+        width: 100%;
+        min-height: 150px;
+        padding: 1rem 0;
+    }
+
+    .VU-image-placeholder {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+    }
+
+    .VU-right {
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    .VU-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .VU-modal {
+        width: 90vw;
+    }
+
+    .VU-image-placeholder {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+    }
+
+    .VU-title {
+        font-size: 1.6rem;
+    }
+
+    .VU-update-btn {
+        width: 100%;
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .VU-modal {
+        width: 95vw;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .VU-right {
+        padding: 1rem;
+    }
+
+    .VU-image-placeholder {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+
+    .VU-title {
+        font-size: 1.4rem;
+    }
 }
