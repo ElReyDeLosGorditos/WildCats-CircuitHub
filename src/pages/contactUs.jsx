@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 
 import "../components/css/admin/landing.css";
@@ -13,6 +13,7 @@ import heroBg from "../assets/heroimg.jfif";
 
 const ContactUsPage = () => {
     const location = useLocation();
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         document.body.classList.add("landing-body");
@@ -32,61 +33,72 @@ const ContactUsPage = () => {
             name: "Xyrill Dereck N. Canete",
             role: "Project Manager, Backend Developer",
             email: "xyrilldereck.canete@cit.edu",
-            phone: "+63 912 111 2233",
         },
         {
             name: "Karl T. Baricuatro",
             role: "UI/UX Designer, Frontend Developer",
             email: "karl.baricuatro@cit.edu",
-            phone: "+63 912 444 5566",
         },
         {
             name: "Jestopher Dela Torre",
             role: "Backend Developer",
             email: "jestopher.delatorre@cit.edu",
-            phone: "+63 912 777 8899",
         },
         {
             name: "John Lawrence Regis",
             role: "Backend Developer",
             email: "johnlawrence.regis@cit.edu",
-            phone: "+63 912 000 1122",
         },
         {
             name: "Geanna Ricci Pacana",
             role: "Frontend Developer",
             email: "geannaricci.pacana@cit.edu",
-            phone: "+63 912 333 4455",
         },
     ];
 
     return (
         <div className="landing-container">
+
             {/* ✅ Navbar */}
             <div className="navbar">
+
+                {/* Logo */}
                 <div className="logo">
                     <img src={logo} alt="Wildcats Circuit Hub Logo" className="logo-img" />
                     <span className="logo-text">
-            <strong>Wildcats<br />Circuit Hub</strong>
-          </span>
+                        <strong>Wildcats<br />Circuit Hub</strong>
+                    </span>
                 </div>
 
-                <nav className="nav-links">
+                {/* ✅ Hamburger */}
+                <div
+                    className={`hamburger ${menuOpen ? "open" : ""}`}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                {/* Slide-out navigation */}
+                <nav className={`nav-links ${menuOpen ? "show-menu" : ""}`}>
                     {navItems.map((link) => (
                         <Link
                             key={link.to}
                             to={link.to}
                             className="navbar-link"
+                            onClick={() => setMenuOpen(false)}
                         >
-              <span
-                  className={
-                      location.pathname === link.to
-                          ? "nav-label active-link"
-                          : "nav-label"
-                  }
-              >
-                {link.label}
-              </span>
+                            <span
+                                className={
+                                    location.pathname === link.to
+                                        ? "nav-label active-link"
+                                        : "nav-label"
+                                }
+                            >
+                                {link.label}
+                            </span>
+
                             <img
                                 src={link.icon}
                                 alt={`${link.label} icon`}
@@ -97,50 +109,51 @@ const ContactUsPage = () => {
                 </nav>
             </div>
 
-            {/* ✅ Hero Section */}
+            {/* HERO SECTION */}
             <main className="hero-section">
                 <div
                     className="hero-card"
                     style={{
                         background: `
-              linear-gradient(
-                to right,
-                rgba(80,45,130,.9) 0%,
-                rgba(164,139,224,.85) 25%,
-                rgba(164,139,224,.85) 75%,
-                rgba(80,45,130,.9) 100%
-              ),
-              url(${heroBg})`,
+                            linear-gradient(
+                                to right,
+                                rgba(80,45,130,.9) 0%,
+                                rgba(164,139,224,.85) 25%,
+                                rgba(164,139,224,.85) 75%,
+                                rgba(80,45,130,.9) 100%
+                            ),
+                            url(${heroBg})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundRepeat: "no-repeat",
                     }}
                 >
-                    {/* Contact details */}
+                    {/* Contact header */}
                     <div className="hero-section-block">
                         <h1 className="title">Contact&nbsp;Us</h1>
                         <p className="feature-description" style={{ maxWidth: 700 }}>
                             If you have questions or need assistance, please reach out:
                         </p>
                     </div>
+
                     {/* Members */}
                     <div className="hero-section-block">
                         <h2 className="sub-heading">Members</h2>
 
-                        {/* contact-section uses flexbox & wrap */}
                         <div className="contact-section">
                             {members.map((m, i) => (
                                 <div key={i} className="contact-card">
                                     <h4>{m.name}</h4>
                                     <p className="contact-role">{m.role}</p>
                                     <p>Email:&nbsp;{m.email}</p>
-                                    {/*<p>Phone:&nbsp;{m.phone}</p>*/}
                                 </div>
                             ))}
                         </div>
                     </div>
+
                 </div>
             </main>
+
         </div>
     );
 };

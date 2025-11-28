@@ -42,11 +42,12 @@ const AdminManageUsers = () => {
 
   const handleCloseEditModal = () => {
     setShowEditModal(false);
+    // ✅ Do NOT reset selectedUser here
     setTimeout(() => {
-      setSelectedUser(null);
-      fetchUsers(); // ✅ Refresh after closing edit modal
+      fetchUsers(); // refresh after closing edit
     }, 300);
   };
+
 
   const handleCloseAddModal = () => {
     setShowAddModal(false);

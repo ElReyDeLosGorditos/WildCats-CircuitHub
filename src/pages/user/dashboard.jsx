@@ -62,7 +62,7 @@ const Dashboard = () => {
         const pendingQuery = query(
             requestsRef,
             where("userId", "==", currentUser.uid),
-            where("status", "==", "Pending")
+            where("status", "in", ["Pending-Teacher", "Pending-Admin"])
         );
         const pendingSnap = await getDocs(pendingQuery);
 

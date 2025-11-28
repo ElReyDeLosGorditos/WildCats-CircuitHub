@@ -177,3 +177,26 @@
 .admin-user-no-btn:hover {
     background-color: #b3b3b3;
 }
+
+/* --- Responsive Adjustments --- */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .AU-title {
+        font-size: 24px;
+    }
+
+    .AU-add-button {
+        font-size: 13px;
+        padding: 8px 16px;
+    }
+
+    .AU-search {
+        max-width: 300px;
+    }
+
+    .AU-dashboard {
+        padding: 0 15px;
+        margin: 30px auto;
+    }
+}

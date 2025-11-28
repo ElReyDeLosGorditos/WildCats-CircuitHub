@@ -111,3 +111,132 @@
 .admin-items-info-fields::-webkit-scrollbar {
     display: none;
 }
+
+
+/* --- Tablet & smaller desktops --- */
+@media (max-width: 1024px) {
+    .admin-items-item-card {
+        width: 80vw;
+        max-height: 90vh;
+        overflow-y: auto; /* Scroll if content exceeds max height */
+    }
+
+    .admin-items-item-content {
+        flex-direction: row; /* Keep image & info side by side */
+        flex-wrap: wrap; /* Allow wrapping on narrower widths */
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .admin-items-image-container {
+        flex: 1 1 40%; /* Take up ~40% width, shrinkable */
+        max-height: 300px;
+        padding: 10px;
+    }
+
+    .admin-items-equipment-image {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .admin-items-info-fields {
+        flex: 1 1 55%; /* Take up remaining width */
+        padding-right: 0;
+        gap: 12px;
+        min-width: 200px; /* Prevent too narrow fields */
+    }
+
+    .admin-items-page-title {
+        font-size: 22px;
+    }
+}
+
+/* Mobile & portrait tablets */
+@media (max-width: 768px) {
+    .admin-items-item-card {
+        width: 90vw;
+        max-height: 85vh;
+        border-radius: 12px;
+        overflow-y: auto;
+    }
+
+    .admin-items-card-header {
+        padding: 12px 18px;
+    }
+
+    .admin-items-page-title {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .admin-items-item-content {
+        flex-direction: column; /* Stack vertically on small screens */
+        padding: 10px;
+        gap: 12px;
+    }
+
+    .admin-items-image-container {
+        width: 100%;
+        max-height: 220px;
+        padding: 8px;
+    }
+
+    .admin-items-equipment-image {
+        max-height: 100%;
+    }
+
+    .admin-items-info-fields {
+        width: 100%;
+        padding: 0;
+    }
+
+    .admin-items-field-box,
+    .admin-items-select-box {
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+
+    .admin-items-field-group.large .admin-items-field-box {
+        height: 70px;
+        max-height: 70px;
+    }
+}
+
+/* Extra small devices (e.g., iPhone SE) */
+@media (max-width: 480px) {
+    .admin-items-item-card {
+        width: 95vw;
+        max-height: 80vh;
+        border-radius: 10px;
+        margin: 0;
+        overflow-y: auto;
+    }
+
+    .admin-items-card-header {
+        padding: 10px 12px;
+    }
+
+    .admin-items-page-title {
+        font-size: 18px;
+    }
+
+    .admin-items-image-container {
+        max-height: 150px;
+        padding: 5px;
+    }
+
+    .admin-items-equipment-image {
+        max-height: 100%;
+    }
+
+    .admin-items-field-box,
+    .admin-items-select-box {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+    .admin-items-field-group.large .admin-items-field-box {
+        height: 60px;
+        max-height: 60px;
+    }
+}

@@ -146,3 +146,58 @@ select.EI-field-box {
     background-position: right 0.7rem center;
     background-size: 0.65em auto;
 }
+
+
+/* Mobile responsiveness for modals */
+@media (max-width: 768px) {
+    .EI-item-card {
+        width: 90vw;               /* almost full width */
+        max-height: 90vh;          /* limit modal height */
+        flex-direction: column;
+        padding: 15px;
+        overflow-y: auto;          /* scroll internally if content is too tall */
+        box-sizing: border-box;
+    }
+
+    .EI-item-content {
+        flex-direction: column;
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .EI-image-container,
+    .EI-info-fields {
+        flex: unset;               /* remove proportional flex */
+        width: 100%;               /* full width */
+    }
+
+    .EI-card-header {
+        font-size: 22px;           /* slightly smaller */
+        padding: 12px 15px;
+    }
+
+    .EI-page-title {
+        font-size: 20px;
+    }
+
+    .EI-field-box {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .EI-submit-button {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .EI-image-label {
+        font-size: 12px;
+        gap: 6px;
+    }
+
+    .EI-image-icon {
+        font-size: 22px;
+        padding: 4px;
+    }
+}

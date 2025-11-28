@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 import "../components/css/admin/landing.css";
@@ -11,12 +11,13 @@ import iconFaqs from "../assets/icons/conversation.png";
 import iconContact from "../assets/icons/phone.png";
 import heroBg from "../assets/heroimg.jfif";
 
-
 const FeaturesPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // ✅ Add landing-body class to <body> only on this page
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    // Add landing-body class to <body>
     useEffect(() => {
         document.body.classList.add("landing-body");
         return () => {
@@ -34,8 +35,11 @@ const FeaturesPage = () => {
 
     return (
         <div className="landing-container">
+
             {/* ✅ Navbar */}
             <div className="navbar">
+
+                {/* logo */}
                 <div className="logo">
                     <img src={logo} alt="Wildcats Circuit Hub Logo" className="logo-img" />
                     <span className="logo-text">
@@ -43,12 +47,24 @@ const FeaturesPage = () => {
                     </span>
                 </div>
 
-                <nav className="nav-links">
+                {/* ✅ Hamburger */}
+                <div
+                    className={`hamburger ${menuOpen ? "open" : ""}`}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                {/* nav links */}
+                <nav className={`nav-links ${menuOpen ? "show-menu" : ""}`}>
                     {navItems.map((link) => (
                         <Link
                             key={link.to}
                             to={link.to}
                             className="navbar-link"
+                            onClick={() => setMenuOpen(false)}
                         >
                             <span
                                 className={
@@ -69,24 +85,24 @@ const FeaturesPage = () => {
                 </nav>
             </div>
 
-            {/* ✅ Hero Section */}
+            {/* HERO SECTION */}
             <main className="hero-section">
-
                 <div className="hero-card"
                      style={{
                          background: `
-            linear-gradient(
-                to right,
-                rgba(80, 45, 130, 0.9) 0%,
-                rgba(164, 139, 224, 0.85) 25%,
-                rgba(164, 139, 224, 0.85) 75%,
-                rgba(80, 45, 130, 0.9) 100%
-            ),
-            url(${heroBg})`,
+                            linear-gradient(
+                                to right,
+                                rgba(80, 45, 130, 0.9) 0%,
+                                rgba(164, 139, 224, 0.85) 25%,
+                                rgba(164, 139, 224, 0.85) 75%,
+                                rgba(80, 45, 130, 0.9) 100%
+                            ),
+                            url(${heroBg})`,
                          backgroundSize: "cover",
                          backgroundPosition: "center",
                          backgroundRepeat: "no-repeat",
                      }}>
+
                     <div className="hero-section-block">
                         <h1 className="title">Features</h1>
                     </div>
@@ -121,9 +137,10 @@ const FeaturesPage = () => {
                         <div className="feature-block">
                             <h3 className="feature-title">User-friendly Dashboard</h3>
                             <p className="feature-description">
-                                Track your borrowed equipments, return history, and account details in one clean interface.
+                                Track your borrowed equipment, return history, and account details in one clean interface.
                             </p>
                         </div>
+
                     </div>
                 </div>
             </main>

@@ -276,32 +276,36 @@ const RequestForm = () => {
 
       const groupMembers = parseGroupMembers();
 
-      await Promise.all(
-          selectedItems.map(async (item) => {
-            const requestData = {
-              userId: user.uid,
-              userName: user.displayName || user.email || "Unknown User",
-              itemId: item.id,
-              itemName: item.name,
-              borrowDate,
-              startTime: formatTime(
-                  Math.floor(startTimeNumeric),
-                  startTimeNumeric % 1 === 0.5 ? 30 : 0
-              ),
-              returnTime, // includes +10 mins
-              reason,
-              timeRange: formattedTimeRange,
-              status: "Pending-Teacher",
-              createdAt: serverTimestamp(),
+      const itemsForRequest = selectedItems.map(item => ({
+        id: item.id,
+        name: item.name
+      }));
 
-              // NEW FIELDS
-              teacherId: selectedTeacherId,
-              teacherAssigned: selectedTeacherName,
-              groupMembers, // array of names
-            };
-            await addDoc(collection(db, "borrowRequests"), requestData);
-          })
-      );
+      await addDoc(collection(db, "borrowRequests"), {
+        userId: user.uid,
+        userName: user.displayName || user.email || "Unknown User",
+
+        // all items in ONE array
+        items: itemsForRequest,
+
+        borrowDate,
+        startTime: formatTime(
+            Math.floor(startTimeNumeric),
+            startTimeNumeric % 1 === 0.5 ? 30 : 0
+        ),
+        returnTime,
+        reason,
+        timeRange: formattedTimeRange,
+        status: "Pending-Teacher",
+        createdAt: serverTimestamp(),
+
+        // teacher fields
+        teacherId: selectedTeacherId,
+        teacherAssigned: selectedTeacherName,
+
+        // group
+        groupMembers,
+      });
 
       setShowConfirmModal(false);
       setShowSuccessModal(true);
@@ -678,7 +682,7 @@ const RequestForm = () => {
         {showSuccessModal && (
             <div className="modal-overlay">
               <div className="modal">
-                <h2 style={{ color: "#d96528", textAlign: "center" }}>Request submitted!</h2>
+                <h2 style={{ color: "#461955", textAlign: "center" }}>Request submitted!</h2>
                 <p style={{ textAlign: "center", marginTop: "10px" }}>
                   Your request has been successfully submitted and is awaiting teacher approval.
                 </p>
