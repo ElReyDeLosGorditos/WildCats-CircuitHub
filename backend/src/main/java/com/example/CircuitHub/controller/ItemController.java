@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import com.example.CircuitHub.security.RoleAuthorization;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,7 +30,6 @@ import com.google.firebase.cloud.FirestoreClient;
 
 @RestController
 @RequestMapping("/api/items")
-// @CrossOrigin(origins = "https://ccs-gadgethubb.onrender.com", allowCredentials = "true")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"}, allowCredentials = "true")
 public class ItemController {
 
@@ -39,7 +39,8 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    // For multipart form data (with image)
+    // Admin and Lab Assistant can add items
+    @RoleAuthorization.AdminOrLabAssistant
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addItemWithImage(
             @RequestParam("name") String name,
@@ -61,19 +62,17 @@ public class ItemController {
         }
     }
 
-    // For JSON data (without image)
+    @RoleAuthorization.AdminOrLabAssistant
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addSimpleItem(@RequestBody Map<String, String> itemData) {
         try {
             System.out.println("Received JSON request: " + itemData);
 
-            // Extract item data
             String name = itemData.get("name");
             String description = itemData.get("description");
             String condition = itemData.get("condition");
             int quantity = Integer.parseInt(itemData.getOrDefault("quantity", "0"));
 
-            // Create a map for storing in Firestore
             String itemId = UUID.randomUUID().toString();
             Map<String, Object> dbItemData = new HashMap<>();
             dbItemData.put("id", itemId);
@@ -85,10 +84,8 @@ public class ItemController {
             dbItemData.put("imagePath", "https://placehold.co/150");
             dbItemData.put("quantity", quantity);
 
-            // Save to Firestore
             FirestoreClient.getFirestore().collection("items").document(itemId).set(dbItemData).get();
 
-            // Create response
             Map<String, Object> response = new HashMap<>(dbItemData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -100,6 +97,8 @@ public class ItemController {
         }
     }
 
+    // Everyone can view items (authenticated users)
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping
     public ResponseEntity<List<Item>> getAllItems() {
         try {
@@ -111,12 +110,12 @@ public class ItemController {
         }
     }
 
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping("/{id}")
     public ResponseEntity<?> getItemById(@PathVariable String id) {
         try {
             System.out.println("Fetching item with ID: " + id);
 
-            // Get document reference from Firestore
             DocumentReference docRef = FirestoreClient.getFirestore().collection("items").document(id);
             ApiFuture<DocumentSnapshot> future = docRef.get();
             DocumentSnapshot document = future.get();
@@ -125,10 +124,8 @@ public class ItemController {
                 return ResponseEntity.notFound().build();
             }
 
-            // Convert document to item object
             Map<String, Object> itemData = document.getData();
             if (itemData != null) {
-                // Make sure id is included in the response
                 itemData.put("id", document.getId());
                 return ResponseEntity.ok(itemData);
             } else {
@@ -140,12 +137,13 @@ public class ItemController {
         }
     }
 
+    // Only admin and lab assistant can update items
+    @RoleAuthorization.AdminOrLabAssistant
     @PutMapping("/{id}")
     public ResponseEntity<?> updateItem(@PathVariable String id, @RequestBody Map<String, String> itemData) {
         try {
             System.out.println("Updating item: " + id);
 
-            // Fetch the existing item
             DocumentReference docRef = FirestoreClient.getFirestore().collection("items").document(id);
             ApiFuture<DocumentSnapshot> future = docRef.get();
             DocumentSnapshot document = future.get();
@@ -154,7 +152,6 @@ public class ItemController {
                 return ResponseEntity.notFound().build();
             }
 
-            // Update only the provided fields
             Map<String, Object> updates = new HashMap<>();
             String prevStatus = document.getString("status");
             if (itemData.containsKey("name")) updates.put("name", itemData.get("name"));
@@ -166,13 +163,11 @@ public class ItemController {
 
                 Long currentQuantity = document.getLong("quantity");
                 if (currentQuantity != null) {
-                    // Subtract 1 if changing to Borrowed or Maintenance
                     if ((newStatus.equalsIgnoreCase("Borrowed") || newStatus.equalsIgnoreCase("Maintenance"))
                             && currentQuantity > 0) {
                         updates.put("quantity", currentQuantity - 1);
                     }
 
-                    // Add 1 if changing back to Available from Borrowed or Maintenance
                     if (newStatus.equalsIgnoreCase("Available") &&
                             (prevStatus.equalsIgnoreCase("Borrowed") || prevStatus.equalsIgnoreCase("Maintenance"))) {
                         updates.put("quantity", currentQuantity + 1);
@@ -181,10 +176,8 @@ public class ItemController {
             }
             if (itemData.containsKey("quantity")) updates.put("quantity", Integer.parseInt(itemData.get("quantity")));
 
-            // Update in Firestore
             docRef.update(updates).get();
 
-            // Return the updated item
             ApiFuture<DocumentSnapshot> updatedFuture = docRef.get();
             DocumentSnapshot updatedDoc = updatedFuture.get();
             Map<String, Object> updatedData = updatedDoc.getData();
@@ -197,6 +190,7 @@ public class ItemController {
         }
     }
 
+    @RoleAuthorization.AdminOrLabAssistant
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteItem(@PathVariable String id) {
         try {

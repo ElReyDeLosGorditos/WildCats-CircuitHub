@@ -1,4 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { 
+  ProtectedRoute, 
+  AdminRoute, 
+  TeacherRoute, 
+  StaffRoute,
+  StudentRoute 
+} from "./components/ProtectedRoute";
 
 import Login from "./pages/login";
 
@@ -17,7 +25,7 @@ import ViewRequest from "./pages/user/view-request";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ManageItems from "./pages/admin/admin-items";
 import AddItem from "./pages/admin/add-item";
-import ViewItem from "./pages/admin/view-item"; // ✅ Uses :id param now
+import ViewItem from "./pages/admin/view-item";
 import EditItem from "./pages/admin/edit-item";
 import Requests from "./pages/admin/admin-requests";
 import ReviewRequest from "./pages/admin/review-request";
@@ -28,65 +36,160 @@ import EditUser from "./pages/admin/edit-user";
 import AddUser from "./pages/admin/add-user";
 import AdminRegister from "./pages/admin/admin-register.jsx";
 import EquipmentMaintenance from "./pages/admin/equipment-maintenance.jsx";
+
+// Public pages
 import LandingPage from "./pages/user/landing.jsx";
 import FeaturesPage from "./pages/features.jsx";
 import HowItWorksPage from "./pages/howItWorks.jsx";
 import FaqsPage from "./pages/faqs.jsx";
 import ContactUsPage from "./pages/contactUs.jsx";
 
-//Teacher
+// Teacher pages
 import TeacherDashboard from "./pages/teacher/t-dashboard.jsx";
 import TeacherRequests from "./pages/teacher/t-requests.jsx";
-// import TeacherProfile from "./pages/teacher/t-profile.jsx";
-
-
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/features" element={<FeaturesPage />} />
-        <Route path="/FAQs" element={<FaqsPage />} />
-        <Route path="/ContactUs" element={<ContactUsPage />} />
-        <Route path="/HowItWorks" element={<HowItWorksPage />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/features" element={<FeaturesPage />} />
+          <Route path="/FAQs" element={<FaqsPage />} />
+          <Route path="/ContactUs" element={<ContactUsPage />} />
+          <Route path="/HowItWorks" element={<HowItWorksPage />} />
 
-        {/* User Routes */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/useritems" element={<Items />} />
-        <Route path="/useritem-details/:itemId" element={<ItemDetails />} />
-        <Route path="/borrow/:itemId" element={<RequestForm />} />
-        <Route path="/userprofile" element={<Profile />} />
-        <Route path="/usereditprofile" element={<EditProfile />} />
-        <Route path="/my-requests" element={<MyRequests />} />
-        <Route path="/view-request/:id" element={<ViewRequest />} />
+          {/* Student/User Routes - Protected */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/useritems" element={
+            <ProtectedRoute>
+              <Items />
+            </ProtectedRoute>
+          } />
+          <Route path="/useritem-details/:itemId" element={
+            <ProtectedRoute>
+              <ItemDetails />
+            </ProtectedRoute>
+          } />
+          <Route path="/borrow/:itemId" element={
+            <ProtectedRoute>
+              <RequestForm />
+            </ProtectedRoute>
+          } />
+          <Route path="/userprofile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/usereditprofile" element={
+            <ProtectedRoute>
+              <EditProfile />
+            </ProtectedRoute>
+          } />
+          <Route path="/my-requests" element={
+            <ProtectedRoute>
+              <MyRequests />
+            </ProtectedRoute>
+          } />
+          <Route path="/view-request/:id" element={
+            <ProtectedRoute>
+              <ViewRequest />
+            </ProtectedRoute>
+          } />
 
-        {/* Admin Routes */}
-        <Route path="/admin-register" element={<AdminRegister />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/admin-items" element={<ManageItems />} />
-        <Route path="/add-item" element={<AddItem />} />
-        <Route path="/view-item/:id" element={<ViewItem />} /> {/* ✅ Matches useParams().id */}
-        <Route path="/edit-item/:id" element={<EditItem />} />
-        <Route path="/admin-requests" element={<Requests />} />
-        <Route path="/review-request/:id" element={<ReviewRequest />} />
-        <Route path="/admin-view-request/:id" element={<AdminViewRequest />} />
-        <Route path="/admin-users" element={<AdminManageUsers />} />
-        <Route path="/view-user/:id" element={<ViewUser />} />
-        <Route path="/edit-user/:id" element={<EditUser />} />
-        <Route path="/add-user"   element={<AddUser />} />
-        <Route path="/equipment-maintenance" element={<EquipmentMaintenance />} />
+          {/* Admin Routes - Admin Only */}
+          <Route path="/admin-register" element={
+            <AdminRoute>
+              <AdminRegister />
+            </AdminRoute>
+          } />
+          <Route path="/admin-dashboard" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          } />
+          <Route path="/admin-items" element={
+            <AdminRoute>
+              <ManageItems />
+            </AdminRoute>
+          } />
+          <Route path="/add-item" element={
+            <AdminRoute>
+              <AddItem />
+            </AdminRoute>
+          } />
+          <Route path="/view-item/:id" element={
+            <AdminRoute>
+              <ViewItem />
+            </AdminRoute>
+          } />
+          <Route path="/edit-item/:id" element={
+            <AdminRoute>
+              <EditItem />
+            </AdminRoute>
+          } />
+          <Route path="/admin-requests" element={
+            <AdminRoute>
+              <Requests />
+            </AdminRoute>
+          } />
+          <Route path="/review-request/:id" element={
+            <AdminRoute>
+              <ReviewRequest />
+            </AdminRoute>
+          } />
+          <Route path="/admin-view-request/:id" element={
+            <AdminRoute>
+              <AdminViewRequest />
+            </AdminRoute>
+          } />
+          <Route path="/admin-users" element={
+            <AdminRoute>
+              <AdminManageUsers />
+            </AdminRoute>
+          } />
+          <Route path="/view-user/:id" element={
+            <AdminRoute>
+              <ViewUser />
+            </AdminRoute>
+          } />
+          <Route path="/edit-user/:id" element={
+            <AdminRoute>
+              <EditUser />
+            </AdminRoute>
+          } />
+          <Route path="/add-user" element={
+            <AdminRoute>
+              <AddUser />
+            </AdminRoute>
+          } />
+          <Route path="/equipment-maintenance" element={
+            <AdminRoute>
+              <EquipmentMaintenance />
+            </AdminRoute>
+          } />
 
-        {/*Teacher Routes*/}
-        <Route path="/t-dashboard" element={<TeacherDashboard />} />
-        <Route path="/t-requests" element={<TeacherRequests />} />
-        {/* <Route path="/t-profile/:id" element={<TeacherProfile />} />*/}
-
-      </Routes>
-    </Router>
+          {/* Teacher Routes - Teacher or Admin */}
+          <Route path="/t-dashboard" element={
+            <TeacherRoute>
+              <TeacherDashboard />
+            </TeacherRoute>
+          } />
+          <Route path="/t-requests" element={
+            <TeacherRoute>
+              <TeacherRequests />
+            </TeacherRoute>
+          } />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
