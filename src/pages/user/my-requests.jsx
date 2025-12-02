@@ -10,15 +10,21 @@ const MyRequests = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("pending");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         const user = auth.currentUser;
-        if (!user) return;
+        if (!user) {
+          console.log("No user logged in");
+          setLoading(false);
+          return;
+        }
 
+        console.log("Fetching requests for user:", user.uid);
         const q = query(
             collection(db, "borrowRequests"),
             where("userId", "==", user.uid)
@@ -30,9 +36,26 @@ const MyRequests = () => {
           ...doc.data(),
         }));
 
+        fetchedRequests.sort((a, b) => {
+          const dateA = a.borrowDate?.toDate
+              ? a.borrowDate.toDate()
+              : new Date(a.borrowDate);
+
+          const dateB = b.borrowDate?.toDate
+              ? b.borrowDate.toDate()
+              : new Date(b.borrowDate);
+
+          return dateB - dateA; // newest → oldest
+        });
+
+        console.log("Fetched requests:", fetchedRequests);
+        console.log("Total requests found:", fetchedRequests.length);
+        
         setRequests(fetchedRequests);
+        setLoading(false);
       } catch (err) {
         console.error("Failed to fetch requests:", err);
+        setLoading(false);
       }
     };
 
@@ -46,9 +69,29 @@ const MyRequests = () => {
         : req.itemName || ''; // Fallback to itemName if no 'items' array
 
     const matchesSearch = itemNamesToSearch.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-        statusFilter === "all" ||
-        (req.status || "").toLowerCase().includes(statusFilter);
+    
+    // Improved status filtering to handle various status formats
+    let matchesStatus = false;
+    if (statusFilter === "all") {
+      matchesStatus = true;
+    } else {
+      const reqStatus = (req.status || "").toLowerCase();
+      const filter = statusFilter.toLowerCase();
+      
+      // Map filter options to actual status values
+      if (filter === "pending") {
+        matchesStatus = reqStatus.includes("pending");
+      } else if (filter === "approved") {
+        matchesStatus = reqStatus.includes("approved") && !reqStatus.includes("pending");
+      } else if (filter === "denied") {
+        matchesStatus = reqStatus.includes("denied") || reqStatus.includes("rejected");
+      } else if (filter === "returned") {
+        matchesStatus = reqStatus.includes("returned") || reqStatus.includes("completed");
+      } else {
+        matchesStatus = reqStatus.includes(filter);
+      }
+    }
+    
     return matchesSearch && matchesStatus;
   });
 
@@ -116,15 +159,45 @@ const MyRequests = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
               />
               <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="all">All Status</option>
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
                 <option value="returned">Returned</option>
                 <option value="denied">Denied</option>
-                <option value="all">All</option>
               </select>
             </div>
 
             <div className="request-table-wrapper">
+              {loading ? (
+                <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
+                  <p>Loading your requests...</p>
+                </div>
+              ) : requests.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
+                  <p>You haven't made any requests yet.</p>
+                  <Link to="/useritems" style={{ color: "#d96528", textDecoration: "underline" }}>
+                    Browse items to make your first request
+                  </Link>
+                </div>
+              ) : filteredRequests.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
+                  <p>No requests found matching your filters.</p>
+                  <button 
+                    onClick={() => { setSearchTerm(""); setStatusFilter("all"); }}
+                    style={{ 
+                      marginTop: "10px",
+                      padding: "8px 16px",
+                      backgroundColor: "#d96528",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer"
+                    }}
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              ) : (
               <table className="request-table">
               <thead>
               <tr>
@@ -171,6 +244,7 @@ const MyRequests = () => {
               ))}
               </tbody>
             </table>
+              )}
           </div>
         </div>
       </div>

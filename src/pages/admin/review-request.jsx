@@ -61,6 +61,7 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
 
   const updateStatus = async (status) => {
     try {
+      console.log(`Updating request ${currentRequest.id} status from "${currentRequest.status}" to "${status}"`);
       const requestRef = doc(db, "borrowRequests", currentRequest.id);
       const updateData = { status };
 
@@ -69,13 +70,16 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
       }
 
       await updateDoc(requestRef, updateData);
+      console.log(`✅ Successfully updated request status to "${status}"`);
       setCurrentRequest(prev => ({ ...prev, ...updateData }));
 
       if (status === "Approved" || status === "Denied") {
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 500); // Small delay to show success
       }
     } catch (err) {
-      console.error("Status update failed:", err);
+      console.error("❌ Status update failed:", err);
       setError("Failed to update request status.");
     }
   };
@@ -181,10 +185,9 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
           </div>
 
           {/* BUTTONS */}
-          {/* BUTTONS */}
           <div className="RR-buttons">
 
-            {/* Admin can approve only when it already passed teacher approval */}
+            {/* Admin can approve only when teacher has already approved */}
             {currentRequest.status === "Pending-Admin" && (
                 <>
                   <button
@@ -213,17 +216,17 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
                 </button>
             )}
 
-            {/* Final states */}
-            {["Returned", "Denied", "Cancelled"].includes(currentRequest.status) && (
+            {/* Show message when waiting for teacher */}
+            {currentRequest.status === "Pending-Teacher" && (
                 <p className="RR-no-actions-text">
-                  No further actions available for this request.
+                  ⏳ Waiting for teacher approval.
                 </p>
             )}
 
-            {/* Admin cannot act if teacher has not approved yet */}
-            {currentRequest.status === "Pending-Teacher" && (
+            {/* Admin cannot act on final states */}
+            {["Returned", "Denied", "Cancelled"].includes(currentRequest.status) && (
                 <p className="RR-no-actions-text">
-                  Waiting for teacher approval.
+                  No further actions available for this request.
                 </p>
             )}
           </div>

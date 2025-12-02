@@ -172,7 +172,7 @@ public class UserController {
         }
     }
 
-    @RoleAuthorization.StaffOnly
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping("/users/teachers")
     public ResponseEntity<?> getAllTeachers() {
         try {

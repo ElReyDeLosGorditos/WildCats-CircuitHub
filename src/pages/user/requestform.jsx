@@ -10,7 +10,7 @@ import {
   getDoc,
   getDocs,
 } from "firebase/firestore";
-import axios from "axios";
+import { api } from "../../services/api";
 import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/requestform.css";
 
@@ -65,7 +65,7 @@ const RequestForm = () => {
 
   const fetchTeachers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/users/teachers");
+      const response = await api.users.getAllTeachers();
       setTeachers(response.data);
     } catch (error) {
       console.error("Error fetching teachers:", error);
