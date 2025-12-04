@@ -273,3 +273,42 @@ select.form-input {
         font-size: 15px;
     }
 }
+
+/* --------------------------------------------- */
+/*  MODERN SEAMLESS SCROLLBAR FOR TEXTAREAS     */
+/* --------------------------------------------- */
+
+/* Remove default arrows & box styles */
+.form-textarea {
+    scrollbar-width: thin;                 /* Firefox smooth thin bar */
+    scrollbar-color: var(--primary-purple) transparent;
+    padding-right: 14px;
+}
+
+/* Chrome / Edge / Safari scrollbars */
+.form-textarea::-webkit-scrollbar {
+    width: 6px;                            /* Slim clean bar */
+}
+
+/* Track (background of scrollbar) */
+.form-textarea::-webkit-scrollbar-track {
+    background: transparent;               /* Seamless against textarea */
+    border-radius: 10px;
+}
+
+/* Thumb (scroll handle) */
+.form-textarea::-webkit-scrollbar-thumb {
+    background: var(--primary-purple);     /* Soft purple */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+/* Hover effect (subtle highlight) */
+.form-textarea::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-purple);
+}
+
+/* Remove scrollbar arrows entirely */
+.form-textarea::-webkit-scrollbar-button {
+    display: none;
+}

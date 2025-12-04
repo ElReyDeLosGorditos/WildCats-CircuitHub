@@ -103,9 +103,42 @@
     flex-direction: column;
 }
 
+/* Textarea base */
 .EI-field-group.large textarea {
     height: 100px;
+    resize: vertical;
+    padding-right: 10px;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox hide scrollbar */
 }
+
+/* Hide scrollbar track + arrows (Chrome, Edge, Safari) */
+.EI-field-group.large textarea::-webkit-scrollbar {
+    width: 6px;           /* extremely thin */
+    background: transparent; /* no track */
+}
+
+.EI-field-group.large textarea::-webkit-scrollbar-track {
+    background: transparent; /* seamless */
+}
+
+/* Minimal thumb */
+.EI-field-group.large textarea::-webkit-scrollbar-thumb {
+    background: rgba(150, 120, 220, 0.4); /* subtle soft-purple */
+    border-radius: 50px;
+    border: none;
+}
+
+/* Hover effect (still subtle) */
+.EI-field-group.large textarea::-webkit-scrollbar-thumb:hover {
+    background: rgba(150, 120, 220, 0.6);
+}
+
+/* Fully hide scrollbar for Firefox */
+.EI-field-group.large textarea {
+    scrollbar-color: transparent transparent;
+}
+
 
 .EI-field-box {
     background-color: #d7bde2;
