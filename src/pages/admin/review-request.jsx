@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebaseconfig";
-import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { doc, getDoc, updateDoc, Timestamp, increment } from "firebase/firestore";
 import "../../components/css/admin/review-request.css";
 
 const AdminRequestReview = ({ request: propRequest, onClose }) => {
@@ -10,6 +10,12 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(!currentRequest);
   const [teacher, setTeacher] = useState(null); // NEW: store teacher profile
+
+  // Late return modal state
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [isLateReturn, setIsLateReturn] = useState(false);
+  const [daysLate, setDaysLate] = useState(0);
+  const [lateReturnNotes, setLateReturnNotes] = useState("");
 
   useEffect(() => {
     const fetchUserAndRequest = async () => {
@@ -55,9 +61,9 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
 
   const [successMsg, setSuccessMsg] = useState("");
 
-  if (currentRequest?.status === "Approved" || currentRequest?.status === "Denied") {
-    onClose();
-  }
+  // if (currentRequest?.status === "Approved" || currentRequest?.status === "Denied") {
+  //   onClose();
+  // }
 
   const updateStatus = async (status) => {
     try {
@@ -81,6 +87,98 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
     } catch (err) {
       console.error("❌ Status update failed:", err);
       setError("Failed to update request status.");
+    }
+  };
+
+  // NEW: Calculate if return is late
+  const calculateLateReturn = () => {
+    if (!currentRequest.borrowDate || !currentRequest.returnTime) {
+      return { isLate: false, daysLate: 0 };
+    }
+
+    try {
+      // Parse the borrow date
+      const borrowDateObj = new Date(currentRequest.borrowDate);
+
+      // Parse return time (format: "3:40 PM")
+      const returnTimeParts = currentRequest.returnTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (returnTimeParts) {
+        let hours = parseInt(returnTimeParts[1]);
+        const minutes = parseInt(returnTimeParts[2]);
+        const meridiem = returnTimeParts[3].toUpperCase();
+
+        if (meridiem === "PM" && hours !== 12) hours += 12;
+        if (meridiem === "AM" && hours === 12) hours = 0;
+
+        borrowDateObj.setHours(hours, minutes, 0, 0);
+      }
+
+      const now = new Date();
+      const diffMs = now - borrowDateObj;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+      // Consider late if more than 1 hour past return time
+      const isLate = diffHours > 1;
+
+      return {
+        isLate,
+        daysLate: Math.max(0, diffDays),
+        hoursLate: Math.max(0, diffHours)
+      };
+    } catch (err) {
+      console.error("Error calculating late return:", err);
+      return { isLate: false, daysLate: 0 };
+    }
+  };
+
+  // NEW: Handle return button click
+  const handleReturnClick = () => {
+    const lateInfo = calculateLateReturn();
+    setIsLateReturn(lateInfo.isLate);
+    setDaysLate(lateInfo.daysLate);
+    setShowReturnModal(true);
+  };
+
+  // NEW: Confirm return with late tracking
+  const confirmReturn = async () => {
+    try {
+      console.log("Processing return...");
+
+      const requestRef = doc(db, "borrowRequests", currentRequest.id);
+      const updateData = {
+        status: "Returned",
+        returnDate: Timestamp.now(),
+        isLate: isLateReturn,
+        daysLate: daysLate,
+        lateReturnNotes: lateReturnNotes || ""
+      };
+
+      await updateDoc(requestRef, updateData);
+      console.log("✅ Request marked as returned");
+
+      // If late, update user's late return count
+      if (isLateReturn && currentRequest.userId) {
+        console.log("Updating user late return count...");
+        const userRef = doc(db, "users", currentRequest.userId);
+
+        await updateDoc(userRef, {
+          lateReturnCount: increment(1),
+          lastLateReturnDate: new Date().toISOString()
+        });
+
+        console.log("✅ User late return count updated");
+      }
+
+      setShowReturnModal(false);
+      setCurrentRequest(prev => ({ ...prev, ...updateData }));
+
+      setTimeout(() => {
+        onClose();
+      }, 500);
+    } catch (err) {
+      console.error("❌ Failed to process return:", err);
+      setError("Failed to process return. Please try again.");
     }
   };
 
@@ -117,6 +215,7 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
   const showNoActionButtons = ["Returned", "Denied", "Cancelled"].includes(currentRequest.status);
 
   return (
+      <>
       <div className="RR-overlay" onClick={onClose}>
         <div className="RR-modal" onClick={(e) => e.stopPropagation()}>
           <h2 className="RR-title">Review Request</h2>
@@ -210,7 +309,7 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
             {currentRequest.status === "Approved" && (
                 <button
                     className="RR-return"
-                    onClick={() => updateStatus("Returned")}
+                    onClick={handleReturnClick}
                 >
                   Mark as Returned
                 </button>
@@ -233,6 +332,122 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
 
         </div>
       </div>
+
+      {/* Return Modal */}
+      {showReturnModal && (
+        <div className="RR-overlay" style={{ zIndex: 10000 }}>
+          <div className="RR-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "500px" }}>
+            <h2 className="RR-title">Confirm Return</h2>
+
+            {isLateReturn && (
+              <div style={{
+                backgroundColor: "#fff3cd",
+                border: "1px solid #ffc107",
+                borderRadius: "8px",
+                padding: "15px",
+                marginBottom: "20px"
+              }}>
+                <h3 style={{ color: "#856404", marginTop: 0, marginBottom: "10px", fontSize: "16px" }}>
+                  ⚠️ Late Return Detected
+                </h3>
+                <p style={{ color: "#856404", margin: 0, fontSize: "14px" }}>
+                  This item is being returned <strong>{daysLate} day{daysLate !== 1 ? 's' : ''}</strong> late.
+                  <br/>
+                  The student's late return count will be incremented.
+                </p>
+              </div>
+            )}
+
+            {!isLateReturn && (
+              <div style={{
+                backgroundColor: "#d4edda",
+                border: "1px solid #28a745",
+                borderRadius: "8px",
+                padding: "15px",
+                marginBottom: "20px"
+              }}>
+                <p style={{ color: "#155724", margin: 0, fontSize: "14px" }}>
+                  ✅ On-time return
+                </p>
+              </div>
+            )}
+
+            <div style={{ marginBottom: "20px" }}>
+              <p style={{ marginBottom: "10px", fontWeight: "600" }}>
+                Return Details:
+              </p>
+              <p style={{ fontSize: "14px", marginBottom: "5px" }}>
+                <strong>Borrower:</strong> {user ? `${user.firstName} ${user.lastName}` : "Unknown"}
+              </p>
+              <p style={{ fontSize: "14px", marginBottom: "5px" }}>
+                <strong>Item(s):</strong> {renderItemNames(currentRequest)}
+              </p>
+              <p style={{ fontSize: "14px", marginBottom: "5px" }}>
+                <strong>Expected Return:</strong> {currentRequest.returnTime || "N/A"}
+              </p>
+              <p style={{ fontSize: "14px", marginBottom: "5px" }}>
+                <strong>Actual Return:</strong> {new Date().toLocaleString()}
+              </p>
+            </div>
+
+            {isLateReturn && (
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                  Notes (optional):
+                </label>
+                <textarea
+                  value={lateReturnNotes}
+                  onChange={(e) => setLateReturnNotes(e.target.value)}
+                  placeholder="Add any notes about the late return (reason, condition, etc.)..."
+                  rows="3"
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                    fontSize: "14px",
+                    fontFamily: "inherit",
+                    resize: "vertical"
+                  }}
+                />
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setShowReturnModal(false)}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#6c757d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  fontSize: "14px"
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmReturn}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: isLateReturn ? "#ffc107" : "#28a745",
+                  color: isLateReturn ? "#000" : "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "600"
+                }}
+              >
+                Confirm Return
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

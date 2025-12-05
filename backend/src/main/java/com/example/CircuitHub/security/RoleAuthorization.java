@@ -11,27 +11,27 @@ import java.lang.annotation.Target;
  * Custom annotations for role-based access control
  */
 public class RoleAuthorization {
-    
+
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @PreAuthorize("hasRole('ADMIN')")
     public @interface AdminOnly {}
-    
+
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("hasAnyRole('ADMIN', 'LAB-ASSISTANT')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LAB_ASSISTANT')")
     public @interface AdminOrLabAssistant {}
-    
+
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public @interface AdminOrTeacher {}
-    
+
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("hasAnyRole('ADMIN', 'LAB-ASSISTANT', 'TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LAB_ASSISTANT', 'TEACHER')")
     public @interface StaffOnly {}
-    
+
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @PreAuthorize("isAuthenticated()")

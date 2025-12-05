@@ -1,20 +1,34 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
+import { signOut } from "firebase/auth"; // Import signOut
+import { auth } from "../../firebaseconfig"; // Import auth
 import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/admin/admin-header.css";
 
 const navLinks = [
     { label: "Dashboard", to: "/t-dashboard" },
     { label: "Requests", to: "/t-requests" },
-    // { label: "Profile", to: "/t-profile" },
 ];
 
 const TeacherHeader = () => {
     const location = useLocation();
+    const navigate = useNavigate(); // Hook for navigation
     const [menuOpen, setMenuOpen] = useState(false);
 
     const toggleMenu = () => {
         setMenuOpen((prev) => !prev);
+    };
+
+    // ✅ ADD THIS FUNCTION
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        try {
+            await signOut(auth);
+            setMenuOpen(false);
+            navigate("/");
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
     };
 
     return (
@@ -32,7 +46,7 @@ const TeacherHeader = () => {
                     <Link
                         key={link.to}
                         to={link.to}
-                        onClick={() => setMenuOpen(false)} // close menu on link click
+                        onClick={() => setMenuOpen(false)}
                         className={
                             location.pathname === link.to
                                 ? "head-link active-link"
@@ -42,9 +56,11 @@ const TeacherHeader = () => {
                         {link.label}
                     </Link>
                 ))}
-                <Link to="/" className="logout-link" onClick={() => setMenuOpen(false)}>
+
+                {/* ✅ UPDATED LOGOUT LINK */}
+                <a href="/" className="logout-link" onClick={handleLogout}>
                     Log Out
-                </Link>
+                </a>
             </nav>
         </header>
     );

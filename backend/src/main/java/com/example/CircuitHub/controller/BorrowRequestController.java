@@ -62,7 +62,7 @@ public class BorrowRequestController {
         boolean isStaff = auth.getAuthorities().stream()
             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
                           a.getAuthority().equals("ROLE_TEACHER") ||
-                          a.getAuthority().equals("ROLE_LAB-ASSISTANT"));
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
         
         List<BorrowRequest> requests;
         
@@ -104,7 +104,7 @@ public class BorrowRequestController {
         boolean isStaff = auth.getAuthorities().stream()
             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
                           a.getAuthority().equals("ROLE_TEACHER") ||
-                          a.getAuthority().equals("ROLE_LAB-ASSISTANT"));
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
         
         BorrowRequest request = borrowRequestService.getRequestById(id);
         
@@ -128,7 +128,7 @@ public class BorrowRequestController {
         boolean isStaff = auth.getAuthorities().stream()
             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
                           a.getAuthority().equals("ROLE_TEACHER") ||
-                          a.getAuthority().equals("ROLE_LAB-ASSISTANT"));
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
         
         // Users can only view their own requests unless they're staff
         if (!isStaff && !currentUserId.equals(userId)) {
@@ -147,7 +147,7 @@ public class BorrowRequestController {
         boolean isStaff = auth.getAuthorities().stream()
             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
                           a.getAuthority().equals("ROLE_TEACHER") ||
-                          a.getAuthority().equals("ROLE_LAB-ASSISTANT"));
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
         
         if (!isStaff && !currentUserId.equals(userId)) {
             return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
@@ -256,7 +256,7 @@ public class BorrowRequestController {
         boolean isStaff = auth.getAuthorities().stream()
             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
                           a.getAuthority().equals("ROLE_TEACHER") ||
-                          a.getAuthority().equals("ROLE_LAB-ASSISTANT"));
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
         
         BorrowRequest request = borrowRequestService.getRequestById(id);
         if (request != null && !isStaff && !currentUserId.equals(request.getBorrowerId())) {

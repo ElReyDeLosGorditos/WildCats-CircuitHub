@@ -5,7 +5,8 @@ import {
   AdminRoute, 
   TeacherRoute, 
   StaffRoute,
-  StudentRoute 
+  StudentRoute,
+  AdminOrLabRoute
 } from "./components/ProtectedRoute";
 
 import Login from "./pages/login";
@@ -171,9 +172,9 @@ function App() {
             </AdminRoute>
           } />
           <Route path="/equipment-maintenance" element={
-            <AdminRoute>
+            <AdminOrLabRoute>
               <EquipmentMaintenance />
-            </AdminRoute>
+            </AdminOrLabRoute>
           } />
 
           {/* Teacher Routes - Teacher or Admin */}

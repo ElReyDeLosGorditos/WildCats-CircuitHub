@@ -102,7 +102,7 @@ export const LabAssistantRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (userRole !== 'lab-assistant' && userRole !== 'admin') {
+  if (userRole !== 'lab_assistant' && userRole !== 'admin') {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -130,8 +130,36 @@ export const StaffRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  const allowedRoles = ['admin', 'teacher', 'lab-assistant'];
+  const allowedRoles = ['admin', 'teacher', 'lab_assistant'];
   if (!allowedRoles.includes(userRole)) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
+
+// Admin or Lab Assistant route (for maintenance, etc.)
+export const AdminOrLabRoute = ({ children }) => {
+  const { currentUser, userRole, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh' 
+      }}>
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (userRole !== 'admin' && userRole !== 'lab_assistant') {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -163,7 +191,7 @@ export const StudentRoute = ({ children }) => {
     // Redirect staff to their respective dashboards
     if (userRole === 'admin') return <Navigate to="/admin-dashboard" replace />;
     if (userRole === 'teacher') return <Navigate to="/t-dashboard" replace />;
-    if (userRole === 'lab-assistant') return <Navigate to="/dashboard" replace />;
+    if (userRole === 'lab_assistant') return <Navigate to="/admin-dashboard" replace />;
   }
 
   return children;
