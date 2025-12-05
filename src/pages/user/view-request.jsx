@@ -211,7 +211,11 @@ const ViewRequest = () => {
                     borderRadius: "5px",
                     marginTop: "10px"
                   }}>
-                    <strong>Late by:</strong> {requestData.daysLate} day{requestData.daysLate !== 1 ? 's' : ''}
+                    <strong>Late by:</strong> 
+                    {requestData.daysLate > 0 && ` ${requestData.daysLate} day${requestData.daysLate !== 1 ? 's' : ''}`}
+                    {requestData.daysLate > 0 && requestData.hoursLate % 24 > 0 && ' and'}
+                    {requestData.hoursLate % 24 > 0 && ` ${requestData.hoursLate % 24} hour${requestData.hoursLate % 24 !== 1 ? 's' : ''}`}
+                    {requestData.daysLate === 0 && requestData.hoursLate && ` ${requestData.hoursLate} hour${requestData.hoursLate !== 1 ? 's' : ''}`}
                     {requestData.lateReturnNotes && (
                         <>
                           <br/>

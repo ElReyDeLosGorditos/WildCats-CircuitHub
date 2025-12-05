@@ -15,6 +15,7 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [isLateReturn, setIsLateReturn] = useState(false);
   const [daysLate, setDaysLate] = useState(0);
+  const [hoursLate, setHoursLate] = useState(0);
   const [lateReturnNotes, setLateReturnNotes] = useState("");
 
   useEffect(() => {
@@ -92,43 +93,45 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
 
   // NEW: Calculate if return is late
   const calculateLateReturn = () => {
-    if (!currentRequest.borrowDate || !currentRequest.returnTime) {
-      return { isLate: false, daysLate: 0 };
-    }
+  if (!currentRequest.borrowDate || !currentRequest.returnTime) {
+  return { isLate: false, daysLate: 0, hoursLate: 0 };
+  }
 
-    try {
-      // Parse the borrow date
-      const borrowDateObj = new Date(currentRequest.borrowDate);
-
-      // Parse return time (format: "3:40 PM")
-      const returnTimeParts = currentRequest.returnTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
-      if (returnTimeParts) {
-        let hours = parseInt(returnTimeParts[1]);
-        const minutes = parseInt(returnTimeParts[2]);
-        const meridiem = returnTimeParts[3].toUpperCase();
-
-        if (meridiem === "PM" && hours !== 12) hours += 12;
-        if (meridiem === "AM" && hours === 12) hours = 0;
-
-        borrowDateObj.setHours(hours, minutes, 0, 0);
-      }
-
-      const now = new Date();
-      const diffMs = now - borrowDateObj;
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-
-      // Consider late if more than 1 hour past return time
-      const isLate = diffHours > 1;
-
-      return {
-        isLate,
-        daysLate: Math.max(0, diffDays),
-        hoursLate: Math.max(0, diffHours)
-      };
-    } catch (err) {
-      console.error("Error calculating late return:", err);
-      return { isLate: false, daysLate: 0 };
+  try {
+  // Parse the borrow date
+  const borrowDateObj = new Date(currentRequest.borrowDate);
+  
+  // Parse return time (format: "3:40 PM")
+  const returnTimeParts = currentRequest.returnTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (returnTimeParts) {
+  let hours = parseInt(returnTimeParts[1]);
+  const minutes = parseInt(returnTimeParts[2]);
+  const meridiem = returnTimeParts[3].toUpperCase();
+  
+  if (meridiem === "PM" && hours !== 12) hours += 12;
+  if (meridiem === "AM" && hours === 12) hours = 0;
+  
+  borrowDateObj.setHours(hours, minutes, 0, 0);
+  }
+  
+  const now = new Date();
+  const diffMs = now - borrowDateObj;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const remainingHours = diffHours % 24; // Hours after accounting for full days
+  
+  // Consider late if more than 1 hour past return time
+  const isLate = diffHours > 1;
+  
+  return { 
+  isLate, 
+  daysLate: Math.max(0, diffDays),
+    hoursLate: Math.max(0, diffHours),
+      remainingHours: Math.max(0, remainingHours)
+  };
+  } catch (err) {
+    console.error("Error calculating late return:", err);
+      return { isLate: false, daysLate: 0, hoursLate: 0, remainingHours: 0 };
     }
   };
 
@@ -137,48 +140,50 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
     const lateInfo = calculateLateReturn();
     setIsLateReturn(lateInfo.isLate);
     setDaysLate(lateInfo.daysLate);
+    setHoursLate(lateInfo.hoursLate);
     setShowReturnModal(true);
   };
 
   // NEW: Confirm return with late tracking
   const confirmReturn = async () => {
-    try {
-      console.log("Processing return...");
-
-      const requestRef = doc(db, "borrowRequests", currentRequest.id);
-      const updateData = {
-        status: "Returned",
-        returnDate: Timestamp.now(),
-        isLate: isLateReturn,
-        daysLate: daysLate,
-        lateReturnNotes: lateReturnNotes || ""
+  try {
+  console.log("Processing return...");
+  
+  const requestRef = doc(db, "borrowRequests", currentRequest.id);
+  const updateData = {
+  status: "Returned",
+  returnDate: Timestamp.now(),
+  isLate: isLateReturn,
+  daysLate: daysLate,
+  hoursLate: hoursLate,
+    lateReturnNotes: lateReturnNotes || ""
       };
 
-      await updateDoc(requestRef, updateData);
+  await updateDoc(requestRef, updateData);
       console.log("✅ Request marked as returned");
 
-      // If late, update user's late return count
-      if (isLateReturn && currentRequest.userId) {
-        console.log("Updating user late return count...");
-        const userRef = doc(db, "users", currentRequest.userId);
-
-        await updateDoc(userRef, {
-          lateReturnCount: increment(1),
-          lastLateReturnDate: new Date().toISOString()
-        });
-
-        console.log("✅ User late return count updated");
+  // If late, update user's late return count
+  if (isLateReturn && currentRequest.userId) {
+  console.log("Updating user late return count...");
+  const userRef = doc(db, "users", currentRequest.userId);
+  
+  await updateDoc(userRef, {
+  lateReturnCount: increment(1),
+    lastLateReturnDate: new Date().toISOString()
+  });
+  
+    console.log("✅ User late return count updated");
       }
 
-      setShowReturnModal(false);
-      setCurrentRequest(prev => ({ ...prev, ...updateData }));
-
-      setTimeout(() => {
-        onClose();
-      }, 500);
-    } catch (err) {
-      console.error("❌ Failed to process return:", err);
-      setError("Failed to process return. Please try again.");
+  setShowReturnModal(false);
+  setCurrentRequest(prev => ({ ...prev, ...updateData }));
+  
+  setTimeout(() => {
+    onClose();
+    }, 500);
+  } catch (err) {
+  console.error("❌ Failed to process return:", err);
+    setError("Failed to process return. Please try again.");
     }
   };
 
@@ -351,7 +356,12 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
                   ⚠️ Late Return Detected
                 </h3>
                 <p style={{ color: "#856404", margin: 0, fontSize: "14px" }}>
-                  This item is being returned <strong>{daysLate} day{daysLate !== 1 ? 's' : ''}</strong> late.
+                  This item is being returned <strong>
+                  {daysLate > 0 && `${daysLate} day${daysLate !== 1 ? 's' : ''}`}
+                  {daysLate > 0 && hoursLate % 24 > 0 && ' and '}
+                  {hoursLate % 24 > 0 && `${hoursLate % 24} hour${hoursLate % 24 !== 1 ? 's' : ''}`}
+                  {daysLate === 0 && hoursLate % 24 === 0 && `${hoursLate} hour${hoursLate !== 1 ? 's' : ''}`}
+                  </strong> late.
                   <br/>
                   The student's late return count will be incremented.
                 </p>
