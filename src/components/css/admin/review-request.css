@@ -107,3 +107,60 @@
         transform: translateY(0);
     }
 }
+
+/*.status-badge {*/
+/*    padding: 5px 10px;*/
+/*    border-radius: 6px;*/
+/*    font-weight: 600;*/
+/*    font-size: 14px;*/
+/*    display: inline-block;*/
+/*}*/
+
+/*.status-badge.approved {*/
+/*    background-color: #d4edda;*/
+/*    color: #155724;*/
+/*}*/
+
+/*.status-badge.denied {*/
+/*    background-color: #f8d7da;*/
+/*    color: #721c24;*/
+/*}*/
+
+/*.status-badge.pending,*/
+/*.status-badge.pending-admin,*/
+/*.status-badge.pending-teacher {*/
+/*    background-color: #fff3cd;*/
+/*    color: #856404;*/
+/*}*/
+
+/*!* Specific style for Returned *!*/
+/*.status-badge.returned {*/
+/*    background-color: #cce5ff; !* Light Blue *!*/
+/*    color: #004085;           !* Dark Blue *!*/
+/*    border: 1px solid #b8daff;*/
+/*}*/
+
+/*!* Button for Returned inside the modal *!*/
+/*.RR-return {*/
+/*    background-color: #E26901; !* Orange *!*/
+/*    color: white;*/
+/*    padding: 12px 25px;*/
+/*    font-size: 16px;*/
+/*    font-weight: 600;*/
+/*    border: none;*/
+/*    border-radius: 8px;*/
+/*    cursor: pointer;*/
+/*    transition: all 0.3s ease;*/
+/*}*/
+
+/*.RR-return:hover {*/
+/*    background-color: #c75b00;*/
+/*    transform: translateY(-2px);*/
+/*    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);*/
+/*}*/
+
+/*.RR-no-actions-text {*/
+/*    color: #6c757d;*/
+/*    font-style: italic;*/
+/*    margin-top: 10px;*/
+/*}*/

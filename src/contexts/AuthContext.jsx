@@ -72,9 +72,9 @@ export const AuthProvider = ({ children }) => {
   // Helper functions to check roles
   const isAdmin = () => userRole === 'admin';
   const isTeacher = () => userRole === 'teacher';
-  const isLabAssistant = () => userRole === 'lab-assistant';
+  const isLabAssistant = () => userRole === 'lab_assistant';
   const isStudent = () => userRole === 'student';
-  const isStaff = () => ['admin', 'teacher', 'lab-assistant'].includes(userRole);
+  const isStaff = () => ['admin', 'teacher', 'lab_assistant'].includes(userRole);
 
   const value = {
     currentUser,

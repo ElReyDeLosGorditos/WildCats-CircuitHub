@@ -44,14 +44,14 @@ export const TeacherOnly = ({ children }) => {
  * Lab Assistant only content (includes admin)
  */
 export const LabAssistantOnly = ({ children }) => {
-  return <RoleBasedRender roles={['admin', 'lab-assistant']}>{children}</RoleBasedRender>;
+  return <RoleBasedRender roles={['admin', 'lab_assistant']}>{children}</RoleBasedRender>;
 };
 
 /**
  * Staff only content (admin, teacher, or lab assistant)
  */
 export const StaffOnly = ({ children }) => {
-  return <RoleBasedRender roles={['admin', 'teacher', 'lab-assistant']}>{children}</RoleBasedRender>;
+  return <RoleBasedRender roles={['admin', 'teacher', 'lab_assistant']}>{children}</RoleBasedRender>;
 };
 
 /**

@@ -192,7 +192,9 @@ const AdminRequests = () => {
                                           ? "pending-admin"
                                           : req.status === "Pending-Teacher"
                                               ? "pending-teacher"
-                                              : req.status.toLowerCase()
+                                              : req.status === "Returned"
+                                                  ? "returned"
+                                                  : req.status.toLowerCase()
                                   }`}
                               >
                                 {req.status === "Pending-Admin"

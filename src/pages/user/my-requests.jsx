@@ -228,6 +228,20 @@ const MyRequests = () => {
                     <span className={`status-badge ${req.status.toLowerCase()}`}>
                       {req.status}
                     </span>
+                      {req.status === "Returned" && req.isLate && (
+                          <span style={{
+                            display: "inline-block",
+                            marginLeft: "8px",
+                            padding: "2px 8px",
+                            backgroundColor: "#fff3cd",
+                            color: "#856404",
+                            borderRadius: "12px",
+                            fontSize: "12px",
+                            fontWeight: "600"
+                          }}>
+                            ⚠️ Late
+                          </span>
+                      )}
                     </td>
                     <td>
                       {req.returnTime ? req.returnTime : "-"}

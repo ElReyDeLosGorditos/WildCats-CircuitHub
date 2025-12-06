@@ -151,6 +151,42 @@ const Profile = () => {
                 </Link>
               </div>
 
+              {userData.lateReturnCount > 0 && (
+                  <div style={{
+                    backgroundColor: userData.lateReturnCount >= 3 ? "#f8d7da" : "#fff3cd",
+                    border: `1px solid ${userData.lateReturnCount >= 3 ? "#f5c6cb" : "#ffc107"}`,
+                    borderRadius: "8px",
+                    padding: "15px",
+                    marginBottom: "20px"
+                  }}>
+                    <p style={{ 
+                      color: userData.lateReturnCount >= 3 ? "#721c24" : "#856404", 
+                      margin: 0, 
+                      fontWeight: "600",
+                      fontSize: "15px"
+                    }}>
+                      {userData.lateReturnCount >= 3 ? "⛔" : "⚠️"} Late Return Warning
+                    </p>
+                    <p style={{ 
+                      color: userData.lateReturnCount >= 3 ? "#721c24" : "#856404", 
+                      margin: "8px 0 0 0",
+                      fontSize: "14px"
+                    }}>
+                      You have <strong>{userData.lateReturnCount}</strong> late return{userData.lateReturnCount > 1 ? 's' : ''} on record.
+                      {userData.lateReturnCount >= 3 && " Your borrowing privileges may be restricted."}
+                    </p>
+                    {userData.lastLateReturnDate && (
+                      <p style={{ 
+                        color: "#666", 
+                        margin: "5px 0 0 0",
+                        fontSize: "13px"
+                      }}>
+                        Last late return: {new Date(userData.lastLateReturnDate).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+              )}
+
               <h2 className="profile-name" style={{ fontSize: "28px", marginBottom: "5px" }}>
                 {userData.firstName} {userData.lastName}
               </h2>

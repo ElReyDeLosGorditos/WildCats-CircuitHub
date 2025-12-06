@@ -173,6 +173,20 @@ const ViewRequest = () => {
                 <span className={`status-badge ${requestData.status?.toLowerCase()}`}>
                 {requestData.status}
               </span>
+                {requestData.status === "Returned" && requestData.isLate && (
+                    <span style={{
+                      display: "inline-block",
+                      marginLeft: "8px",
+                      padding: "3px 10px",
+                      backgroundColor: "#fff3cd",
+                      color: "#856404",
+                      borderRadius: "12px",
+                      fontSize: "13px",
+                      fontWeight: "600"
+                    }}>
+                      ⚠️ Late Return
+                    </span>
+                )}
               </p>
               <p>
                 <strong>Request Date:</strong> {formatDate(requestData.borrowDate)}
@@ -185,11 +199,31 @@ const ViewRequest = () => {
               <p>
                 <strong>Returned Date & Time:</strong>{" "}
                 {requestData.status?.toLowerCase() === "returned" &&
-                requestData.borrowDate &&
-                requestData.returnTime
-                    ? new Date(`${requestData.borrowDate} ${requestData.returnTime}`).toLocaleString()
+                requestData.returnDate?.seconds
+                    ? new Date(requestData.returnDate.seconds * 1000).toLocaleString()
                     : "-"}
               </p>
+              {requestData.status === "Returned" && requestData.isLate && (
+                  <p style={{
+                    color: "#856404",
+                    backgroundColor: "#fff3cd",
+                    padding: "10px",
+                    borderRadius: "5px",
+                    marginTop: "10px"
+                  }}>
+                    <strong>Late by:</strong> 
+                    {requestData.daysLate > 0 && ` ${requestData.daysLate} day${requestData.daysLate !== 1 ? 's' : ''}`}
+                    {requestData.daysLate > 0 && requestData.hoursLate % 24 > 0 && ' and'}
+                    {requestData.hoursLate % 24 > 0 && ` ${requestData.hoursLate % 24} hour${requestData.hoursLate % 24 !== 1 ? 's' : ''}`}
+                    {requestData.daysLate === 0 && requestData.hoursLate && ` ${requestData.hoursLate} hour${requestData.hoursLate !== 1 ? 's' : ''}`}
+                    {requestData.lateReturnNotes && (
+                        <>
+                          <br/>
+                          <strong>Notes:</strong> {requestData.lateReturnNotes}
+                        </>
+                    )}
+                  </p>
+              )}
             </div>
 
             {/* Reason (spans full width) */}
