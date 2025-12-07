@@ -1,4 +1,8 @@
-.head {
+/* =======================
+   TEACHER HEADER
+   ======================= */
+
+.TH-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -9,19 +13,20 @@
     position: relative;
 }
 
-.head-logo {
+.TH-logo {
     height: 48px;
     z-index: 10;
 }
 
-.head-links {
+/* Desktop nav */
+.TH-links {
     display: flex;
     gap: 30px;
     align-items: center;
 }
 
-.head-link,
-.logout-link {
+.TH-link,
+.TH-logout {
     text-decoration: none;
     color: #fff;
     font-weight: 500;
@@ -31,18 +36,19 @@
     transition: background-color 0.2s;
 }
 
-.head-link:hover,
-.logout-link:hover {
+.TH-link:hover,
+.TH-logout:hover {
     background-color: #222;
 }
 
+/* Active (soft purple) */
 .active-link {
     background-color: #441752;
     color: #fff;
 }
 
-/* Hamburger styles */
-.hamburger {
+/* Hamburger */
+.TH-hamburger {
     display: none;
     flex-direction: column;
     justify-content: center;
@@ -51,20 +57,22 @@
     z-index: 10;
 }
 
-.hamburger span {
+.TH-hamburger span {
     width: 25px;
     height: 3px;
     background-color: #fff;
     transition: all 0.3s ease;
 }
 
-/* Mobile */
+/* =======================
+   MOBILE
+   ======================= */
 @media screen and (max-width: 768px) {
-    .hamburger {
+    .TH-hamburger {
         display: flex;
     }
 
-    .head-links {
+    .TH-links {
         position: absolute;
         top: 100%;
         right: 0;
@@ -77,12 +85,12 @@
         border-top: 1px solid #333;
     }
 
-    .head-links.show {
+    .TH-links.show {
         display: flex;
     }
 
-    .head-link,
-    .logout-link {
+    .TH-link,
+    .TH-logout {
         width: 100%;
         padding: 12px;
         font-size: 16px;

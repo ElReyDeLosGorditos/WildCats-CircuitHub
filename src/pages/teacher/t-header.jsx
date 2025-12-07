@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
-import { signOut } from "firebase/auth"; // Import signOut
-import { auth } from "../../firebaseconfig"; // Import auth
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebaseconfig";
 import logo from "../../assets/circuithubLogo2.png";
-import "../../components/css/admin/admin-header.css";
+import "../../components/css/teacher/theader.css";
 
 const navLinks = [
     { label: "Dashboard", to: "/t-dashboard" },
@@ -12,14 +12,14 @@ const navLinks = [
 
 const TeacherHeader = () => {
     const location = useLocation();
-    const navigate = useNavigate(); // Hook for navigation
+    const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
     const toggleMenu = () => {
         setMenuOpen((prev) => !prev);
     };
 
-    // ✅ ADD THIS FUNCTION
     const handleLogout = async (e) => {
         e.preventDefault();
         try {
@@ -31,17 +31,29 @@ const TeacherHeader = () => {
         }
     };
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
-        <header className="head">
-            <img src={logo} alt="CCS Gadget Hub Logo" className="head-logo" />
+        <header className="TH-head">
+            <img src={logo} alt="Logo" className="TH-logo" />
 
-            <div className={`hamburger ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            {/* Hamburger */}
+            {isMobile && (
+                <div className={`TH-hamburger ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            )}
 
-            <nav className={`head-links ${menuOpen ? "show" : ""}`}>
+            {/* Navigation */}
+            <nav className={`TH-links ${menuOpen ? "show" : ""}`}>
                 {navLinks.map((link) => (
                     <Link
                         key={link.to}
@@ -49,16 +61,15 @@ const TeacherHeader = () => {
                         onClick={() => setMenuOpen(false)}
                         className={
                             location.pathname === link.to
-                                ? "head-link active-link"
-                                : "head-link"
+                                ? "TH-link active-link"
+                                : "TH-link"
                         }
                     >
                         {link.label}
                     </Link>
                 ))}
 
-                {/* ✅ UPDATED LOGOUT LINK */}
-                <a href="/" className="logout-link" onClick={handleLogout}>
+                <a href="/" className="TH-logout" onClick={handleLogout}>
                     Log Out
                 </a>
             </nav>
