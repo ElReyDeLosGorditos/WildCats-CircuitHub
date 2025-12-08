@@ -1,19 +1,23 @@
+/* MAIN CARD */
 .admin-items-item-card {
-    background-color: #b993d6; /* soft violet background */
+    background-color: #a888b5;
     width: 60vw;
     height: 80vh;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
     font-family: 'Segoe UI', sans-serif;
 }
 
+/* HEADER */
 .admin-items-card-header {
-    padding: 20px 30px;
-    background-color: #8a5ca0; /* darker purple header */
-    color: #eee;
+    padding: 18px 30px;
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,218 +29,139 @@
     margin: 0;
 }
 
+/* CONTENT WRAPPER */
 .admin-items-item-content {
     display: flex;
-    height: 100%;
+    flex: 1;
     padding: 30px;
-    gap: 30px;
-    background-color: #8a5ca0;
-    color: #222;
+    gap: 20px;
+    background-color: #a888b5;
+    border-radius: 0 0 16px 16px;
 }
 
-/* Image Container */
+/* IMAGE SECTION */
 .admin-items-image-container {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 12px;
-    background-color: rgba(158, 120, 176, 0);
-    padding: 20px;
+    padding: 10px;
 }
 
 .admin-items-equipment-image {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    border-radius: 12px;
-    background-color: transparent; /* Removed white background */
+    border-radius: 8px;
 }
 
-/* Right side: Form Fields */
+/* INFO SECTION */
 .admin-items-info-fields {
-    flex: 2;
+    flex: 1.2;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    padding-right: 10px;
+    gap: 1px;
+    justify-content: center;
 }
 
-/* Field Label + Input wrapper */
+/* FIELD GROUP */
 .admin-items-field-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    width: 100%;
 }
 
-/* Text Input Field */
+.admin-items-field-group label {
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+/* FIELD BOX */
 .admin-items-field-box {
-    background-color: #d9c2e5;
+    background-color: #d7bde2;
     border: none;
-    padding: 12px 16px;
+    padding: 12px;
     border-radius: 10px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
-    color: #333;
-    outline: none;
-}
-
-/* Description area */
-.admin-items-field-group.large .admin-items-field-box {
-    max-height: 100px;
-    height: 100px;
-    resize: none;
+    color: #4a2b58;
+    width: 100%;
+    max-height: 130px;
     overflow-y: auto;
-    scroll-behavior: smooth;
+    scrollbar-width: none;
 }
 
-/* Quantity & Condition: still same style */
-.admin-items-select-box {
-    background-color: #d9c2e5;
-    border: none;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    appearance: none;
-    outline: none;
-    background-image: url("data:image/svg+xml,%3Csvg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
+/* For description field */
+.admin-items-field-group.large .admin-items-field-box {
+    height: 100px;
+    overflow-y: auto;
 }
 
-/* Scrollbar hidden for cleaner look */
-.admin-items-info-fields::-webkit-scrollbar {
-    display: none;
+/* CHROME / EDGE / SAFARI – Modern Scrollbar */
+.admin-items-field-group.large .admin-items-field-box::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
 }
 
+.admin-items-field-group.large .admin-items-field-box::-webkit-scrollbar-track {
+    background: transparent;
+}
 
-/* --- Tablet & smaller desktops --- */
-@media (max-width: 1024px) {
+.admin-items-field-group.large .admin-items-field-box::-webkit-scrollbar-thumb {
+    background: rgba(150, 120, 220, 0.4);
+    border-radius: 50px;
+}
+
+.admin-items-field-group.large .admin-items-field-box::-webkit-scrollbar-thumb:hover {
+    background: rgba(150, 120, 220, 0.6);
+}
+
+/* Hide FireFox track */
+.admin-items-field-group.large .admin-items-field-box {
+    scrollbar-color: transparent transparent;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
     .admin-items-item-card {
-        width: 80vw;
+        width: 90vw;
         max-height: 90vh;
-        overflow-y: auto; /* Scroll if content exceeds max height */
+        padding: 15px;
+        overflow-y: auto;
     }
 
     .admin-items-item-content {
-        flex-direction: row; /* Keep image & info side by side */
-        flex-wrap: wrap; /* Allow wrapping on narrower widths */
+        flex-direction: column;
         padding: 15px;
         gap: 15px;
     }
 
     .admin-items-image-container {
-        flex: 1 1 40%; /* Take up ~40% width, shrinkable */
-        max-height: 300px;
-        padding: 10px;
+        width: 100%;
     }
 
     .admin-items-equipment-image {
-        max-width: 100%;
-        max-height: 100%;
+        max-height: 250px;
     }
 
     .admin-items-info-fields {
-        flex: 1 1 55%; /* Take up remaining width */
-        padding-right: 0;
-        gap: 12px;
-        min-width: 200px; /* Prevent too narrow fields */
-    }
-
-    .admin-items-page-title {
-        font-size: 22px;
-    }
-}
-
-/* Mobile & portrait tablets */
-@media (max-width: 768px) {
-    .admin-items-item-card {
-        width: 90vw;
-        max-height: 85vh;
-        border-radius: 12px;
-        overflow-y: auto;
+        width: 100%;
     }
 
     .admin-items-card-header {
-        padding: 12px 18px;
+        font-size: 22px;
+        padding: 12px 15px;
     }
 
     .admin-items-page-title {
         font-size: 20px;
-        text-align: center;
     }
 
-    .admin-items-item-content {
-        flex-direction: column; /* Stack vertically on small screens */
-        padding: 10px;
-        gap: 12px;
-    }
-
-    .admin-items-image-container {
-        width: 100%;
-        max-height: 220px;
-        padding: 8px;
-    }
-
-    .admin-items-equipment-image {
-        max-height: 100%;
-    }
-
-    .admin-items-info-fields {
-        width: 100%;
-        padding: 0;
-    }
-
-    .admin-items-field-box,
-    .admin-items-select-box {
-        font-size: 15px;
-        padding: 10px 12px;
-    }
-
-    .admin-items-field-group.large .admin-items-field-box {
-        height: 70px;
-        max-height: 70px;
-    }
-}
-
-/* Extra small devices (e.g., iPhone SE) */
-@media (max-width: 480px) {
-    .admin-items-item-card {
-        width: 95vw;
-        max-height: 80vh;
-        border-radius: 10px;
-        margin: 0;
-        overflow-y: auto;
-    }
-
-    .admin-items-card-header {
-        padding: 10px 12px;
-    }
-
-    .admin-items-page-title {
-        font-size: 18px;
-    }
-
-    .admin-items-image-container {
-        max-height: 150px;
-        padding: 5px;
-    }
-
-    .admin-items-equipment-image {
-        max-height: 100%;
-    }
-
-    .admin-items-field-box,
-    .admin-items-select-box {
+    .admin-items-field-box {
         font-size: 14px;
-        padding: 8px 10px;
-    }
-
-    .admin-items-field-group.large .admin-items-field-box {
-        height: 60px;
-        max-height: 60px;
+        padding: 10px;
     }
 }

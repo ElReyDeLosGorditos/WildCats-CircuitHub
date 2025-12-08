@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.example.CircuitHub.security.RoleAuthorization;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +33,18 @@ public class BorrowRequestController {
         this.borrowRequestService = borrowRequestService;
     }
 
+    // Students can create requests
+    @RoleAuthorization.AuthenticatedOnly
     @PostMapping
     public ResponseEntity<?> createRequest(@RequestBody BorrowRequest request) throws ExecutionException, InterruptedException {
+        // Verify the user is creating a request for themselves
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserId = auth.getName();
+        
+        if (!currentUserId.equals(request.getBorrowerId())) {
+            return ResponseEntity.status(403).body(Map.of("error", "You can only create requests for yourself"));
+        }
+        
         BorrowRequest createdRequest = borrowRequestService.createRequest(request);
         return ResponseEntity.ok(Map.of(
             "success", true,
@@ -40,58 +53,112 @@ public class BorrowRequestController {
         ));
     }
 
+    // Staff can view all requests, students see only their own
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping
     public ResponseEntity<?> getAllRequests(@RequestParam(required = false) String status) throws ExecutionException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserId = auth.getName();
+        boolean isStaff = auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
+                          a.getAuthority().equals("ROLE_TEACHER") ||
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
+        
         List<BorrowRequest> requests;
         
-        if (status != null && !status.equalsIgnoreCase("All")) {
-            requests = borrowRequestService.getRequestsByStatus(status);
+        if (isStaff) {
+            if (status != null && !status.equalsIgnoreCase("All")) {
+                requests = borrowRequestService.getRequestsByStatus(status);
+            } else {
+                requests = borrowRequestService.getAllRequests();
+            }
         } else {
-            requests = borrowRequestService.getAllRequests();
+            // Students see only their own requests
+            requests = borrowRequestService.getRequestsByBorrowerId(currentUserId);
         }
         
         return ResponseEntity.ok(requests);
     }
     
-    // NEW: Get requests pending teacher approval
+    // Teachers can view pending teacher approvals
+    @RoleAuthorization.AdminOrTeacher
     @GetMapping("/pending-teacher")
     public ResponseEntity<?> getPendingTeacherApproval() throws ExecutionException, InterruptedException {
         List<BorrowRequest> requests = borrowRequestService.getPendingTeacherApproval();
         return ResponseEntity.ok(requests);
     }
     
-    // NEW: Get requests pending lab assistant approval
+    // Lab assistants can view pending lab approvals
+    @RoleAuthorization.AdminOrLabAssistant
     @GetMapping("/pending-lab")
     public ResponseEntity<?> getPendingLabApproval() throws ExecutionException, InterruptedException {
         List<BorrowRequest> requests = borrowRequestService.getPendingLabApproval();
         return ResponseEntity.ok(requests);
     }
     
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping("/{id}")
     public ResponseEntity<?> getRequestById(@PathVariable String id) throws ExecutionException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserId = auth.getName();
+        boolean isStaff = auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
+                          a.getAuthority().equals("ROLE_TEACHER") ||
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
+        
         BorrowRequest request = borrowRequestService.getRequestById(id);
         
         if (request == null) {
             return ResponseEntity.notFound().build();
         }
         
+        // Users can only see their own requests unless they're staff
+        if (!isStaff && !currentUserId.equals(request.getBorrowerId())) {
+            return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+        }
+        
         return ResponseEntity.ok(request);
     }
     
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserRequests(@PathVariable String userId) throws ExecutionException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserId = auth.getName();
+        boolean isStaff = auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
+                          a.getAuthority().equals("ROLE_TEACHER") ||
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
+        
+        // Users can only view their own requests unless they're staff
+        if (!isStaff && !currentUserId.equals(userId)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+        }
+        
         List<BorrowRequest> userRequests = borrowRequestService.getRequestsByBorrowerId(userId);
         return ResponseEntity.ok(userRequests);
     }
     
-    // NEW: Get user's borrow history with late return tracking
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping("/user/{userId}/history")
     public ResponseEntity<?> getUserBorrowHistory(@PathVariable String userId) throws ExecutionException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserId = auth.getName();
+        boolean isStaff = auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
+                          a.getAuthority().equals("ROLE_TEACHER") ||
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
+        
+        if (!isStaff && !currentUserId.equals(userId)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+        }
+        
         Map<String, Object> history = borrowRequestService.getUserBorrowHistory(userId);
         return ResponseEntity.ok(history);
     }
 
-    // NEW: Teacher approval endpoint
+    // Only teachers can approve at teacher level
+    @RoleAuthorization.AdminOrTeacher
     @PutMapping("/{id}/teacher-approve")
     public ResponseEntity<?> teacherApprove(
             @PathVariable String id, 
@@ -120,7 +187,8 @@ public class BorrowRequestController {
         }
     }
     
-    // NEW: Lab assistant approval endpoint
+    // Only lab assistants can approve at lab level
+    @RoleAuthorization.AdminOrLabAssistant
     @PutMapping("/{id}/lab-approve")
     public ResponseEntity<?> labApprove(
             @PathVariable String id, 
@@ -149,6 +217,8 @@ public class BorrowRequestController {
         }
     }
 
+    // Staff can update request status
+    @RoleAuthorization.StaffOnly
     @PutMapping("/{id}")
     public ResponseEntity<?> updateRequest(@PathVariable String id, @RequestBody Map<String, String> updateData) throws ExecutionException, InterruptedException {
         String status = updateData.get("status");
@@ -177,8 +247,22 @@ public class BorrowRequestController {
         }
     }
     
+    // Staff or request owner can delete
+    @RoleAuthorization.AuthenticatedOnly
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRequest(@PathVariable String id) throws ExecutionException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserId = auth.getName();
+        boolean isStaff = auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || 
+                          a.getAuthority().equals("ROLE_TEACHER") ||
+                          a.getAuthority().equals("ROLE_LAB_ASSISTANT"));
+        
+        BorrowRequest request = borrowRequestService.getRequestById(id);
+        if (request != null && !isStaff && !currentUserId.equals(request.getBorrowerId())) {
+            return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+        }
+        
         boolean deleted = borrowRequestService.deleteRequest(id);
         
         if (deleted) {

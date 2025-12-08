@@ -44,6 +44,7 @@ public class BorrowRequest {
     // NEW: Late return tracking
     private Boolean isLate;              // Whether this return was late
     private Integer daysLate;            // Number of days late if applicable
+    private Integer hoursLate;           // Total number of hours late if applicable
     private String lateReturnNotes;      // Notes about late return
 
     // Additional tracking fields
@@ -124,6 +125,9 @@ public class BorrowRequest {
 
     public Integer getDaysLate() { return daysLate; }
     public void setDaysLate(Integer daysLate) { this.daysLate = daysLate; }
+
+    public Integer getHoursLate() { return hoursLate; }
+    public void setHoursLate(Integer hoursLate) { this.hoursLate = hoursLate; }
 
     public String getLateReturnNotes() { return lateReturnNotes; }
     public void setLateReturnNotes(String lateReturnNotes) { this.lateReturnNotes = lateReturnNotes; }

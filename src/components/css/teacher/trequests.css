@@ -1,3 +1,6 @@
+/* ===========================
+   MAIN LAYOUT
+=========================== */
 .TR-container {
     background-color: #e6e0f4;
     min-height: 100vh;
@@ -30,6 +33,9 @@
     color: black;
 }
 
+/* ===========================
+   ERRORS
+=========================== */
 .TR-error {
     color: #ff4d4f;
     text-align: center;
@@ -37,6 +43,9 @@
     font-weight: bold;
 }
 
+/* ===========================
+   FILTERS
+=========================== */
 .TR-filters {
     display: flex;
     justify-content: space-between;
@@ -62,6 +71,9 @@
     font-size: 15px;
 }
 
+/* ===========================
+   CARD GRID
+=========================== */
 .TR-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -74,6 +86,7 @@
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     transition: transform 0.2s;
+    cursor: pointer;
 }
 
 .TR-card:hover {
@@ -87,20 +100,33 @@
     color: #333;
 }
 
+/* ===========================
+   STATUS COLORS
+=========================== */
 .TR-status {
     font-size: 13px;
     font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
 }
 
-.TR-status.pending {
+.TR-status.pending-teacher {
     color: #f0ad4e;
 }
+
+.TR-status.pending-admin {
+    color: #0275d8;
+}
+
 .TR-status.approved {
     color: #5cb85c;
 }
+
 .TR-status.denied {
     color: #d9534f;
 }
+
 .TR-status.returned {
     color: #0275d8;
 }
@@ -111,8 +137,11 @@
     margin: 1rem 0 0.5rem;
 }
 
-/* Responsive */
+/* ===========================
+   MOBILE LAYOUT IMPROVED
+=========================== */
 @media (max-width: 768px) {
+    /* Filters stack */
     .TR-filters {
         flex-direction: column;
     }
@@ -121,36 +150,64 @@
     .TR-dropdown {
         width: 100%;
     }
+
+    /* ⬇ Mobile card layout: 1 column but compact rows */
+    .TR-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Compact card */
+    .TR-card {
+        padding: 14px 16px;
+        border-radius: 10px;
+    }
+
+    .TR-card-content h3 {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .TR-card-content p {
+        font-size: 13px;
+        margin: 4px 0;
+    }
+
+    /* Make cards more "list-like" for mobile */
+    .TR-card {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
 }
 
-/* Status badges */
-.TR-status {
-    font-size: 13px;
-    font-weight: bold;
-    padding: 3px 8px;
-    border-radius: 6px;
-    display: inline-block;
-}
+/* ===========================
+   EXTRA SMALL PHONES (≤480px)
+   3-row compact layout
+=========================== */
+@media (max-width: 480px) {
+    .TR-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
 
-/* Pending Teacher - Yellow */
-.TR-status.pending-teacher {
-    color: #f0ad4e; /* darker yellow text */
-}
+    .TR-card {
+        padding: 12px 14px;
+    }
 
-/* Pending Admin - Blue */
-.TR-status.pending-admin {
+    .TR-card-content h3 {
+        font-size: 14px;
+    }
 
-    color: #0275d8; /* darker blue text */
-}
+    .TR-card-content p {
+        font-size: 12px;
+    }
 
-/* Other statuses (existing) */
-.TR-status.approved {
-    color: #5cb85c;
+    /* 3-row compact density */
+    .TR-card-content {
+        display: grid;
+        grid-template-rows: repeat(3, auto);
+        row-gap: 3px;
+    }
 }
-.TR-status.denied {
-    color: #d9534f;
-}
-.TR-status.returned {
-    color: #0275d8;
-}
-

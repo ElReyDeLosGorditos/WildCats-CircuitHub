@@ -1,22 +1,44 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useAuth } from "../../contexts/AuthContext";
+import { signOut } from "firebase/auth"; // Import signOut
+import { auth } from "../../firebaseconfig"; // Import auth
 import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/admin/admin-header.css";
 
-const navLinks = [
-    { label: "Dashboard", to: "/admin-dashboard" },
-    { label: "Manage Items", to: "/admin-items" },
-    { label: "Requests", to: "/admin-requests" },
-    { label: "Maintenance", to: "/equipment-maintenance" },
-    { label: "Manage Users", to: "/admin-users" },
-];
-
 const AdminHeader = () => {
     const location = useLocation();
+    const navigate = useNavigate(); // Hook for navigation
+    const { userRole } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
+
+    // ... (getNavLinks logic remains the same) ...
+    const getNavLinks = () => {
+        const baseLinks = [
+            { label: "Dashboard", to: "/admin-dashboard", roles: ["admin"] },
+            { label: "Manage Items", to: "/admin-items", roles: ["admin"] },
+            { label: "Requests", to: "/admin-requests", roles: ["admin", "lab_assistant"] },
+            { label: "Maintenance", to: "/equipment-maintenance", roles: ["admin", "lab_assistant"] },
+            { label: "Manage Users", to: "/admin-users", roles: ["admin"] },
+        ];
+        return baseLinks.filter(link => link.roles.includes(userRole));
+    };
+    const navLinks = getNavLinks();
 
     const toggleMenu = () => {
         setMenuOpen((prev) => !prev);
+    };
+
+    // ✅ ADD THIS FUNCTION
+    const handleLogout = async (e) => {
+        e.preventDefault(); // Prevent immediate navigation
+        try {
+            await signOut(auth); // Clear Firebase Session
+            setMenuOpen(false);
+            navigate("/"); // Navigate after sign out
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
     };
 
     return (
@@ -34,7 +56,7 @@ const AdminHeader = () => {
                     <Link
                         key={link.to}
                         to={link.to}
-                        onClick={() => setMenuOpen(false)} // close menu on link click
+                        onClick={() => setMenuOpen(false)}
                         className={
                             location.pathname === link.to
                                 ? "head-link active-link"
@@ -44,9 +66,11 @@ const AdminHeader = () => {
                         {link.label}
                     </Link>
                 ))}
-                <Link to="/" className="logout-link" onClick={() => setMenuOpen(false)}>
+
+                {/* ✅ UPDATED LOGOUT LINK */}
+                <a href="/" className="logout-link" onClick={handleLogout}>
                     Log Out
-                </Link>
+                </a>
             </nav>
         </header>
     );

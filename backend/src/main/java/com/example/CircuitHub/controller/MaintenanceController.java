@@ -1,6 +1,7 @@
 package com.example.CircuitHub.controller;
 
 import com.example.CircuitHub.model.Maintenance;
+import com.example.CircuitHub.security.RoleAuthorization;
 import com.example.CircuitHub.service.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/maintenance")
-// @CrossOrigin(origins = "https://ccs-gadgethubb.onrender.com", allowCredentials = "true")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"}, allowCredentials = "true")
 public class MaintenanceController {
 
@@ -24,7 +24,8 @@ public class MaintenanceController {
         this.maintenanceService = maintenanceService;
     }
 
-    // Create a maintenance request
+    // Only admin and lab assistants can create maintenance requests
+    @RoleAuthorization.AdminOrLabAssistant
     @PostMapping("/request")
     public ResponseEntity<String> requestMaintenance(@RequestBody Maintenance maintenance) {
         System.out.println("Received Maintenance Data: " + maintenance.toString());
@@ -32,31 +33,22 @@ public class MaintenanceController {
         return ResponseEntity.ok("Maintenance request submitted successfully. ID: " + savedMaintenance.getMaintenanceId());
     }
 
-    // Get all maintenance records
+    // Staff can view all maintenance records
+    @RoleAuthorization.StaffOnly
     @GetMapping("/all")
     public ResponseEntity<List<Maintenance>> getAllMaintenance() throws ExecutionException, InterruptedException {
         return ResponseEntity.ok(maintenanceService.getAllMaintenance());
     }
 
-    // Get pending maintenance requests
+    // Staff can view pending requests
+    @RoleAuthorization.StaffOnly
     @GetMapping("/pending")
     public ResponseEntity<List<Maintenance>> getPendingRequests() throws ExecutionException, InterruptedException {
         return ResponseEntity.ok(maintenanceService.getPendingRequests());
     }
 
-    // Get under maintenance list
-//    @GetMapping("/in-progress")
-//    public ResponseEntity<List<Maintenance>> getUnderMaintenance() {
-//        return ResponseEntity.ok(maintenanceService.getUnderMaintenance());
-//    }
-
-    // Dashboard view
-//    @GetMapping("/dashboard")
-//    public ResponseEntity<List<Maintenance>> getDashboardOverview() {
-//        return ResponseEntity.ok(maintenanceService.getDashboardOverview());
-//    }
-
-    // Update status and progress
+    // Admin and lab assistants can update progress
+    @RoleAuthorization.AdminOrLabAssistant
     @PutMapping("/{id}/update-progress")
     public ResponseEntity<String> updateProgress(
             @PathVariable String id,
@@ -73,9 +65,10 @@ public class MaintenanceController {
         }
     }
 
-    // Delete maintenance by ID
+    // Admin and lab assistants can delete maintenance records
+    @RoleAuthorization.AdminOrLabAssistant
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMaintenance(@PathVariable String id) throws ExecutionException, InterruptedException {  // ID is now a String
+    public ResponseEntity<String> deleteMaintenance(@PathVariable String id) throws ExecutionException, InterruptedException {
         boolean deleted = maintenanceService.deleteMaintenance(id);
         if (deleted) {
             return ResponseEntity.ok("Maintenance request deleted.");
@@ -84,7 +77,8 @@ public class MaintenanceController {
         }
     }
 
-    // Get maintenance by ID
+    // Staff can view individual maintenance records
+    @RoleAuthorization.StaffOnly
     @GetMapping("/{id}")
     public ResponseEntity<Maintenance> getMaintenanceById(@PathVariable String id) throws ExecutionException, InterruptedException {
         Optional<Maintenance> maintenance = maintenanceService.getMaintenanceById(id);

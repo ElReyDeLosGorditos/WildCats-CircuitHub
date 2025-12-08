@@ -800,3 +800,13 @@ select.form-input:focus {
         font-size: 13px;
     }
 }
+
+/* When a modal is open, prevent scrolling */
+body.modal-open {
+    overflow: hidden !important;
+}
+
+/* Optional: freeze background interactions EVEN IF something leaks through */
+.modal-blurred {
+    pointer-events: none; /* disable all clicks behind modal */
+}

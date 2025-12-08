@@ -1,158 +1,238 @@
-/* Teacher View Request Modal (TVR) - TR Themed */
-
-/* Overlay */
+/* =====================================================
+   BASE OVERLAY + MODAL
+   ===================================================== */
 .TVR-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.35);
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 999;
+    backdrop-filter: blur(3px);
+    z-index: 9999;
 }
 
-/* Modal Box */
 .TVR-modal {
-    background: #f4f1fc; /* TR soft lavender-white */
-    width: 500px;
+    width: 520px;
     max-width: 90%;
+    background: #fff;
     border-radius: 16px;
-    padding: 35px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.4s ease-out;
-    font-family: 'Segoe UI', sans-serif;
-    border: 1px solid rgba(190, 175, 225, 0.55); /* soft pastel border */
+    padding: 28px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease-out;
 }
 
-/* Modal Title */
+/* Fade animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================
+   TITLES + TEXT
+   ===================================================== */
 .TVR-title {
-    margin-bottom: 25px;
-    text-align: center;
-    color: #3a3250; /* dark TR purple tone */
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
+    margin-bottom: 20px;
 }
 
-/* Small Label/Subtitle */
+.TVR-section {
+    background: #f9f5ff;
+    border-left: 4px solid #b08be6;
+    padding: 16px 18px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+}
+
 .TVR-subtitle {
     font-size: 17px;
-    color: #7a6a9b; /* muted TR purple */
-    margin-bottom: 10px;
     font-weight: 600;
-    padding-bottom: 5px;
-    border-bottom: 1px dashed rgba(175, 150, 225, 0.7);
+    margin-bottom: 10px;
 }
 
-/* Sections */
-.TVR-section {
-    margin-bottom: 25px;
+/* =====================================================
+   STATUS BADGES
+   ===================================================== */
+.TVR-status {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 6px;
+    font-weight: 600;
 }
 
-.TVR-section p {
-    margin: 8px 0;
-    font-size: 15px;
-    color: #333; /* TR text color */
+/* Standard statuses */
+.pending-admin,
+.pending-teacher,
+.pending {
+    background: #ffe8a6;
+    color: #7a5b00;
 }
 
-.TVR-section p strong {
-    color: #3e2f6e; /* purple highlight */
+.approved {
+    background: #d6ffd6;
+    color: #1a7a1a;
 }
 
-/* Buttons */
+.denied {
+    background: #ffd6d6;
+    color: #7a1a1a;
+}
+
+.returned {
+    background: #d6e8ff;
+    color: #003a7a;
+}
+
+.cancelled {
+    background: #e3e3e3;
+    color: #555;
+}
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
 .TVR-buttons {
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 30px;
-}
-
-/* Approve Button */
-.TVR-approve,
-.TVR-deny {
-    padding: 12px 25px;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 22px;
 }
 
 .TVR-approve {
-    background-color: #cce7d8; /* TR soft green */
-    color: #2f5b42;
+    flex: 1;
+    background: #7c53c3;
+    color: white;
+    border: none;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
 .TVR-approve:hover {
-    background-color: #b8d9c8;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background: #6945a8;
 }
 
-/* Deny Button */
 .TVR-deny {
-    background-color: #f7c8d0; /* pastel rose */
-    color: #7b3a45;
+    flex: 1;
+    background: #e04d4d;
+    color: white;
+    border: none;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
 .TVR-deny:hover {
-    background-color: #f3b6be;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background: #c23f3f;
 }
 
-/* Animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Teacher/Admin Status Colors for TVR */
-.TVR-status {
+.TVR-no-actions-text {
     font-size: 14px;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 4px;
-    display: inline-block;
+    opacity: 0.7;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
 }
 
-/* Pending for Teacher → Yellow */
-.TVR-status.pending-teacher {
-    color: #856404;
-
+/* Close button for error screen */
+.TVR-close-btn {
+    margin-top: 12px;
+    padding: 8px 14px;
+    background: #7c53c3;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
 }
 
-/* Pending for Admin → Blue */
-.TVR-status.pending-admin {
-    color: #004085;
-
+/* =====================================================
+   MODERN SCROLLBAR
+   ===================================================== */
+.TVR-modal::-webkit-scrollbar {
+    width: 6px;
 }
 
-/* Approved */
-.TVR-status.approved {
-    color: #155724;
-
+.TVR-modal::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-/* Denied */
-.TVR-status.denied {
-    color: #721c24;
-
+.TVR-modal::-webkit-scrollbar-thumb {
+    background: rgba(140, 105, 185, 0.35);
+    border-radius: 10px;
 }
 
-/* Returned */
-.TVR-status.returned {
-    color: #0c5460;
+/* =====================================================
+   MOBILE COMPACT DESIGN (≤ 480px)
+   ===================================================== */
+@media (max-width: 480px) {
 
+    .TVR-modal {
+        width: 95%;
+        padding: 22px;
+        border-radius: 12px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .TVR-title {
+        font-size: 20px;
+        margin-bottom: 18px;
+    }
+
+    .TVR-section {
+        background: #ffffff;
+        border-left: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        padding: 14px 15px;
+        border-radius: 10px;
+    }
+
+    .TVR-subtitle {
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+
+    .TVR-section p,
+    .TVR-section strong {
+        font-size: 13px;
+    }
+
+    .TVR-status {
+        font-size: 12px;
+        padding: 2px 6px;
+    }
+
+    .TVR-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .TVR-approve,
+    .TVR-deny {
+        width: 100%;
+        border-radius: 6px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .TVR-no-actions-text {
+        font-size: 13px;
+    }
+
+    /* Smooth scroll */
+    .TVR-modal::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .TVR-modal::-webkit-scrollbar-thumb {
+        background: rgba(140, 105, 185, 0.3);
+    }
 }
-

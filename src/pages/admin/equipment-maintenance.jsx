@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { api } from "../../services/api";
 import logo from "../../assets/circuithubLogo2.png";
 import AdminHeader from "./AdminHeader";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
@@ -28,16 +28,22 @@ const EquipmentMaintenance = () => {
     const [maintenanceData, setMaintenanceData] = useState([]);
     const [pendingData, setPendingData] = useState([]);
 
-    const fetchMaintenanceData = () => {
-        axios
-            .get("http://localhost:8080/api/maintenance/all")
-            .then((response) => setMaintenanceData(response.data))
-            .catch((error) => console.error("Error fetching maintenance data:", error));
+    const fetchMaintenanceData = async () => {
+        try {
+            console.log("Fetching maintenance data...");
+            const allResponse = await api.maintenance.getAll();
+            console.log("All maintenance:", allResponse.data);
+            setMaintenanceData(allResponse.data);
 
-        axios
-            .get("http://localhost:8080/api/maintenance/pending")
-            .then((response) => setPendingData(response.data))
-            .catch((error) => console.error("Error fetching pending data:", error));
+            const pendingResponse = await api.maintenance.getPending();
+            console.log("Pending maintenance:", pendingResponse.data);
+            setPendingData(pendingResponse.data);
+        } catch (error) {
+            console.error("Error fetching maintenance data:", error);
+            if (error.response?.status === 403) {
+                alert("Access denied. Please check your permissions.");
+            }
+        }
     };
 
     useEffect(() => {
@@ -103,7 +109,7 @@ const EquipmentMaintenance = () => {
         setShowSuggestions(false);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Log the form data before sending
@@ -135,66 +141,63 @@ const EquipmentMaintenance = () => {
         // Log the cleaned data that will be sent
         console.log("Data Sent to Backend:", requestData);
 
-        if (formMode === "add") {
-            // Add new maintenance request
-            axios
-                .post("http://localhost:8080/api/maintenance/request", requestData)
-                .then((response) => {
-                    alert("Maintenance request submitted successfully!");
-                    fetchMaintenanceData();
+        try {
+            if (formMode === "add") {
+                // Add new maintenance request
+                const response = await api.maintenance.create(requestData);
+                alert("Maintenance request submitted successfully!");
+                fetchMaintenanceData();
 
-                    // Push new data to maintenanceData
-                    setMaintenanceData(prev => [...prev, response.data]); // <-- add to state
+                // Push new data to maintenanceData
+                setMaintenanceData(prev => [...prev, response.data]); // <-- add to state
 
-                    setShowForm(false);
-                    setFormData({ equipmentName: "", issue: "", status: "", date: "" });
-                })
-                .catch((error) => {
-                    alert("Failed to submit the maintenance request.");
-                    console.error(error);
-                });
-        } else if (formMode === "edit") {
-            const maintenanceId = formData.maintenanceId;
-            axios
-                .put(
-                    `http://localhost:8080/api/maintenance/${formData.maintenanceId}/update-progress`,
-                    null,
+                setShowForm(false);
+                setFormData({ equipmentName: "", issue: "", status: "", date: "" });
+            } else if (formMode === "edit") {
+                await api.maintenance.updateProgress(
+                    formData.maintenanceId,
                     {
-                        params: {
-                            equipmentName,
-                            issue,
-                            status,
-                            requestDate: date
-                        }
+                        equipmentName,
+                        issue,
+                        status,
+                        requestDate: date
                     }
-                )
-                .then((response) => {
-                    alert("Maintenance request updated successfully!");
-                    fetchMaintenanceData();
-                    setShowForm(false);
-                })
-                .catch((error) => {
-                    alert("Failed to update maintenance request.");
-                    console.error(error);
-                });
+                );
+                alert("Maintenance request updated successfully!");
+                fetchMaintenanceData();
+                setShowForm(false);
+            }
+        } catch (error) {
+            console.error("Error submitting maintenance request:", error);
+            if (error.response?.status === 403) {
+                alert("Access denied. You don't have permission to perform this action.");
+            } else {
+                alert(`Failed to ${formMode === 'add' ? 'submit' : 'update'} the maintenance request.`);
+            }
         }
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         // Validate that id is not null or undefined
         if (id !== undefined && id !== null) {
-            axios
-                .delete(`http://localhost:8080/api/maintenance/${id}`)
-                .then((response) => {
-                    alert("Maintenance request deleted!");
-                    fetchMaintenanceData();
-                    // Remove from state to update the table
-                    setMaintenanceData(maintenanceData.filter((item) => item.maintenanceId !== id));
-                })
-                .catch((error) => {
+            if (!window.confirm("Are you sure you want to delete this maintenance request?")) {
+                return;
+            }
+
+            try {
+                await api.maintenance.delete(id);
+                alert("Maintenance request deleted!");
+                fetchMaintenanceData();
+                // Remove from state to update the table
+                setMaintenanceData(maintenanceData.filter((item) => item.maintenanceId !== id));
+            } catch (error) {
+                console.error("Error deleting maintenance request:", error);
+                if (error.response?.status === 403) {
+                    alert("Access denied. You don't have permission to delete this request.");
+                } else {
                     alert("Failed to delete maintenance request.");
-                    console.error(error);
-                });
+                }
+            }
         } else {
             console.error("Invalid ID:", id);
         }

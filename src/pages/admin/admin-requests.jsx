@@ -13,7 +13,7 @@ import AdminRequestReview from "./review-request.jsx";
 
 const AdminRequests = () => {
   const [requests, setRequests] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("Pending-Admin");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -24,6 +24,7 @@ const AdminRequests = () => {
 
   const fetchRequests = async () => {
     try {
+      console.log("Fetching all borrow requests...");
       const snapshot = await getDocs(collection(db, "borrowRequests"));
       const fetched = await Promise.all(
           snapshot.docs.map(async (docSnap) => {
@@ -45,6 +46,8 @@ const AdminRequests = () => {
             return data;
           })
       );
+      console.log("Fetched requests:", fetched);
+      console.log("Total requests:", fetched.length);
       setRequests(fetched);
     } catch (err) {
       console.error("Request fetch error:", err);
@@ -90,9 +93,15 @@ const AdminRequests = () => {
   const filteredRequests = requests.filter((req) => {
     const matchesStatus =
         statusFilter === "All" || req.status === statusFilter;
+    
+    // Handle both itemName (old) and items array (new)
+    const itemSearchText = Array.isArray(req.items) && req.items.length > 0
+        ? req.items.map(item => item.name).join(' ')
+        : req.itemName || '';
+    
     const matchesSearch =
         req.borrowerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        req.itemName?.toLowerCase().includes(searchTerm.toLowerCase());
+        itemSearchText.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
@@ -138,11 +147,12 @@ const AdminRequests = () => {
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
               >
-                <option value="Pending-Admin">Pending</option>
+                <option value="All">All Status</option>
+                <option value="Pending-Teacher">Pending (Teacher)</option>
+                <option value="Pending-Admin">Pending (Admin)</option>
                 <option value="Approved">Approved</option>
                 <option value="Denied">Denied</option>
                 <option value="Returned">Returned</option>
-                <option value="All">All</option>
               </select>
             </div>
 
@@ -162,7 +172,12 @@ const AdminRequests = () => {
                               {req.borrowerName || "Unknown"}
                             </h3>
                             <p>
-                              <strong>Item:</strong> {req.itemName || "Unknown"}
+                              <strong>Item(s):</strong>{" "}
+                              {Array.isArray(req.items) && req.items.length > 0
+                                  ? req.items.length > 1
+                                      ? `${req.items[0].name} (+${req.items.length - 1} more)`
+                                      : req.items[0].name
+                                  : req.itemName || "Unknown"}
                             </p>
                             <p>
                               <strong>Time Slot:</strong>{" "}
@@ -175,12 +190,19 @@ const AdminRequests = () => {
                                   className={`AR-status ${
                                       req.status === "Pending-Admin"
                                           ? "pending-admin"
-                                          : req.status.toLowerCase()
+                                          : req.status === "Pending-Teacher"
+                                              ? "pending-teacher"
+                                              : req.status === "Returned"
+                                                  ? "returned"
+                                                  : req.status.toLowerCase()
                                   }`}
                               >
-  {req.status === "Pending-Admin" ? "Pending" : req.status}
-</span>
-
+                                {req.status === "Pending-Admin"
+                                    ? "Pending (Admin)"
+                                    : req.status === "Pending-Teacher"
+                                        ? "Pending (Teacher)"
+                                        : req.status}
+                              </span>
                             </p>
                           </div>
                         </div>
@@ -194,7 +216,10 @@ const AdminRequests = () => {
         {selectedRequest && (
             <AdminRequestReview
                 request={selectedRequest}
-                onClose={() => setSelectedRequest(null)}
+                onClose={() => {
+                  setSelectedRequest(null);
+                  fetchRequests(); // Refresh the list after closing
+                }}
             />
         )}
       </div>

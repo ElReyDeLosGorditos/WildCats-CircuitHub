@@ -215,6 +215,21 @@ public class UserService {
         }
     }
 
+    public List<User> getAllUsers() {
+        try {
+            ApiFuture<QuerySnapshot> future = firestore.collection("users").get();
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            return documents.stream()
+                    .map(doc -> doc.toObject(User.class))
+                    .collect(Collectors.toList());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Error retrieving users: interrupted operation", e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException("Error retrieving users: execution failed", e);
+        }
+    }
+
     public String uploadProfileImage(MultipartFile file, String uid) throws IOException, ExecutionException, InterruptedException {
         if (uid == null || uid.trim().isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty");

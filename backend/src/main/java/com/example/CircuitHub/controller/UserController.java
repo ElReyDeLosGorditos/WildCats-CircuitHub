@@ -3,10 +3,13 @@ package com.example.CircuitHub.controller;
 import com.example.CircuitHub.dto.FirebaseUserDto;
 import com.example.CircuitHub.dto.ProfileUpdateDto;
 import com.example.CircuitHub.model.User;
+import com.example.CircuitHub.security.RoleAuthorization;
 import com.example.CircuitHub.service.UserService;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api") // No @CrossOrigin here; CORS is globally configured
+@RequestMapping("/api")
 public class UserController {
 
     private final UserService userService;
@@ -61,6 +64,7 @@ public class UserController {
         }
     }
 
+    @RoleAuthorization.AdminOnly
     @PostMapping("/sync/set-admin")
     public ResponseEntity<?> setAdmin(@RequestParam String uid) {
         try {
@@ -75,10 +79,22 @@ public class UserController {
         }
     }
 
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping("/users/{uid}/profile")
     public ResponseEntity<?> getUserProfile(@PathVariable String uid) {
         try {
             System.out.println("GET Profile requested for user: " + uid);
+            
+            // Check if user is accessing their own profile or is admin
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String currentUserId = auth.getName();
+            boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            if (!currentUserId.equals(uid) && !isAdmin) {
+                return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+            }
+            
             return userService.getUserByUid(uid)
                     .map(user -> {
                         System.out.println("Found user: " + user.getFirstName() + " " + user.getLastName());
@@ -92,12 +108,24 @@ public class UserController {
         }
     }
 
+    @RoleAuthorization.AuthenticatedOnly
     @PutMapping("/users/{uid}/profile")
     public ResponseEntity<?> updateUserProfile(
             @PathVariable String uid,
             @RequestBody ProfileUpdateDto profileUpdateDto) {
         try {
             System.out.println("PUT Profile update requested for user: " + uid);
+            
+            // Check if user is updating their own profile or is admin
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String currentUserId = auth.getName();
+            boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            if (!currentUserId.equals(uid) && !isAdmin) {
+                return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+            }
+            
             if (!uid.equals(profileUpdateDto.getUid())) {
                 return ResponseEntity.badRequest().body(Map.of("error", "User ID mismatch"));
             }
@@ -108,16 +136,28 @@ public class UserController {
         } catch (Exception e) {
             System.err.println("Error updating profile: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of(  "error", "Failed to update profile: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to update profile: " + e.getMessage()));
         }
     }
 
+    @RoleAuthorization.AuthenticatedOnly
     @PostMapping("/users/{uid}/profile-image")
     public ResponseEntity<?> uploadProfileImage(
             @PathVariable String uid,
             @RequestParam("image") MultipartFile file) {
         try {
             System.out.println("POST Profile image upload requested for user: " + uid);
+            
+            // Check if user is uploading their own image or is admin
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String currentUserId = auth.getName();
+            boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            if (!currentUserId.equals(uid) && !isAdmin) {
+                return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
+            }
+            
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Please upload a file"));
             }
@@ -132,6 +172,7 @@ public class UserController {
         }
     }
 
+    @RoleAuthorization.AuthenticatedOnly
     @GetMapping("/users/teachers")
     public ResponseEntity<?> getAllTeachers() {
         try {
@@ -142,6 +183,20 @@ public class UserController {
             System.err.println("Error fetching teachers: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("error", "Failed to fetch teachers: " + e.getMessage()));
+        }
+    }
+    
+    @RoleAuthorization.AdminOnly
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            System.out.println("GET All users requested");
+            java.util.List<User> users = userService.getAllUsers();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            System.err.println("Error fetching users: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to fetch users: " + e.getMessage()));
         }
     }
 }

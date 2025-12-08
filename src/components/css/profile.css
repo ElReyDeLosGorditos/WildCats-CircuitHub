@@ -10,7 +10,37 @@
 }
 
 /* Container for the main profile content */
-.profile-container {
+.profile-container {.profile-edit {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* center horizontally */
+    margin-bottom: 20px;
+}
+
+    .edit-btn {
+        background-color: #461955;
+        padding: 10px 28px;
+        border-radius: 8px;
+        color: white;
+        border: none;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+
+        /* better UI */
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        transition: all .2s ease;
+    }
+
+    .edit-btn:hover {
+        background-color: #5d2180;
+        transform: translateY(-2px);
+    }
+
+    .edit-btn:active {
+        transform: translateY(0);
+    }
+
     display: flex;
     gap: 40px; /* Reduced gap for a slightly tighter layout */
     margin: 40px auto; /* Centered container with more top margin */
@@ -55,35 +85,36 @@
 
 /* Edit button container */
 .profile-edit {
+    width: 100%;
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 25px; /* More space below the button */
+    justify-content: center; /* center horizontally */
+    margin-bottom: 20px;
 }
 
-/* Styling for the edit button */
 .edit-btn {
-    background-color: #4a7dff; /* A vibrant blue for primary actions */
+    background-color: #461955;
+    padding: 10px 28px;
+    border-radius: 8px;
     color: white;
-    padding: 10px 25px; /* More padding for a larger touch target */
-    border-radius: 8px; /* Slightly more rounded */
-    font-weight: 600;
-    font-size: 16px;
     border: none;
+    font-weight: 600;
+    font-size: 15px;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth hover effect */
+
+    /* better UI */
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: all .2s ease;
 }
 
 .edit-btn:hover {
-    background-color: #3b6adc; /* Darker blue on hover */
-    transform: translateY(-1px); /* Slight lift on hover */
+    background-color: #5d2180;
+    transform: translateY(-2px);
 }
 
 .edit-btn:active {
-    transform: translateY(0); /* Resets on click */
+    transform: translateY(0);
 }
+
 
 /* Profile name */
 .profile-name {
