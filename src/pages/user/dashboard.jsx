@@ -9,6 +9,7 @@ import "..//../components/css/dashboard.css"
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [items, setItems] = useState([]);
   const [userData, setUserData] = useState(null);
@@ -108,20 +109,28 @@ const Dashboard = () => {
             Wildcats <br/> Circuit Hub
           </span>
           </div>
-          <nav>
+
+          {/* Hamburger Icon */}
+          <div className="hamburger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          {/* Navigation Menu */}
+          <nav className={isMenuOpen ? "open" : ""}>
             {navLinks.map((link) => (
                 <Link
                     key={link.to}
                     to={link.to}
                     className={location.pathname === link.to ? "navbar-link active-link" : "navbar-link"}
+                    onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
             ))}
-          </nav>
-          <div style={{ marginLeft: "auto" }}>
             <button onClick={handleLogout} className="logout-link">Log Out</button>
-          </div>
+          </nav>
         </div>
 
         <div className="dashboard-container">

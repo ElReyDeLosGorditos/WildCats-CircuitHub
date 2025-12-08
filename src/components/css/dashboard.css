@@ -1,9 +1,7 @@
-/* This is the content you provided, which seems to be for an admin dashboard or a more general purpose */
-
 /* Dashboard Page */
 .dashboard-page {
     min-height: 100vh;
-    background-color: #f4f7f6 ; /* This background color is lighter than #E6E6FA */
+    background-color: #f4f7f6;
 }
 
 /* Navbar Base */
@@ -29,13 +27,13 @@
 }
 
 .navbar a {
-    color: white; /* Changed to white */
+    color: white;
     margin: 0 20px;
     transition: color 0.3s ease;
 }
 
 .navbar a:hover {
-    color: lightgray; /* Changed hover color for better contrast on black */
+    color: lightgray;
     text-decoration: none;
 }
 
@@ -61,25 +59,25 @@
     margin: 0 auto;
 }
 
-.dashboard-greeting { /* This class exists in your Dashboard.jsx */
+.dashboard-greeting {
     font-size: 28px;
     font-weight: bold;
     color: #213547;
 }
 
-.dashboard-subtext { /* This class is not in your Dashboard.jsx */
+.dashboard-subtext {
     margin-bottom: 20px;
     color: #444;
 }
 
 /* Summary Cards */
-.summary-cards { /* This class is not in your Dashboard.jsx, your JSX uses .overview-cards */
+.summary-cards {
     display: flex;
     gap: 20px;
     margin: 30px 0;
 }
 
-.summary-card { /* This class is not in your Dashboard.jsx, your JSX uses .card */
+.summary-card {
     flex: 1;
     background-color: white;
     border-radius: 10px;
@@ -95,7 +93,7 @@
 }
 
 /* Featured Section */
-.featured-header { /* This class is not in your Dashboard.jsx */
+.featured-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -103,12 +101,12 @@
     margin-bottom: 20px;
 }
 
-.featured-buttons { /* This class is not in your Dashboard.jsx */
+.featured-buttons {
     display: flex;
     gap: 10px;
 }
 
-.custom-button { /* This class is not in your Dashboard.jsx */
+.custom-button {
     background-color: var(--button-bg);
     color: white;
     padding: 10px 16px;
@@ -122,19 +120,19 @@
 }
 
 /* Featured Items */
-.featured-title { /* This class is not in your Dashboard.jsx */
+.featured-title {
     font-size: 25px;
     color: black;
 }
 
-.items-grid { /* This class is not in your Dashboard.jsx */
+.items-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     margin-top: 20px;
 }
 
-.item-box { /* This class is not in your Dashboard.jsx */
+.item-box {
     background-color: white;
     height: 150px;
     border-radius: 10px;
@@ -148,26 +146,119 @@
     margin-bottom: 10px;
 }
 
-.item-status { /* This class is not in your Dashboard.jsx */
+.item-status {
     font-size: 14px;
     color: #666;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Hamburger Menu */
+.navbar .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    z-index: 100;
+}
+
+.navbar .hamburger span {
+    width: 30px;
+    height: 4px;
+    background-color: white;
+    border-radius: 2px;
+    display: block;
+}
+
+/* Navigation */
+.nav {
+    display: flex;
+    gap: 20px;
+}
+
+/* MOBILE mode */
+@media(max-width: 768px) {
     .navbar {
-        flex-direction: column;
+        position: relative;
+        padding: 1rem;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 
+    .navbar img {
+        height: 60px;
+        margin-right: 0;
+    }
+
+    /* Show hamburger on mobile */
+    .navbar .hamburger {
+        display: flex !important;
+        order: 2;
+    }
+
+    /* Hide navigation by default on mobile */
     .navbar nav {
-        margin-top: 10px;
-    }
-
-    .summary-cards {
+        display: none;
         flex-direction: column;
+        gap: 15px;
+        background: black;
+        width: 100%;
+        padding: 15px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-left: 0;
+        z-index: 1000;
     }
 
+    /* Show navigation when open class is added */
+    .navbar nav.open {
+        display: flex;
+    }
+
+    .navbar a {
+        margin: 0;
+        padding: 10px;
+    }
+
+    /* Move logout button into hamburger menu on mobile */
+    .logout-link {
+        display: none;
+    }
+
+    .navbar nav .logout-link {
+        display: block;
+        text-align: left;
+        padding: 10px;
+        width: 100%;
+    }
+
+    /* Keep cards side by side on mobile */
+    .summary-cards,
+    .overview-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 15px;
+    }
+
+    .summary-card,
+    .card {
+        padding: 20px 15px;
+    }
+
+    .summary-card h3,
+    .card h3 {
+        font-size: 24px;
+    }
+
+    /* Adjust grid for mobile */
     .items-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Adjust dashboard greeting */
+    .dashboard-greeting {
+        font-size: 22px;
     }
 }

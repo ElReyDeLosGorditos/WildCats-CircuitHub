@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 import logo from "../../assets/circuithubLogo2.png";
-import "../../components/css/profile.css"
+import "../../components/css/profile.css";
 
 const navLinks = [
   { label: "Dashboard", to: "/dashboard" },
@@ -18,6 +18,8 @@ const Profile = () => {
   const navigate = useNavigate();
   const auth = getAuth();
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
@@ -26,20 +28,19 @@ const Profile = () => {
     year: "",
     role: "",
     createdAt: "",
-    lateReturnCount: 0
+    lateReturnCount: 0,
   });
 
   const [stats, setStats] = useState({
     totalRequests: 0,
     activeRequests: 0,
-    completedRequests: 0
+    completedRequests: 0,
   });
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          // Fetch user data
           const docRef = doc(db, "users", user.uid);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
@@ -52,32 +53,36 @@ const Profile = () => {
               year: data.year || "Not set",
               role: data.role || "student",
               createdAt: data.createdAt || "",
-              lateReturnCount: data.lateReturnCount || 0
+              lateReturnCount: data.lateReturnCount || 0,
             });
           } else {
-            setUserData(prev => ({ ...prev, email: user.email || "" }));
+            setUserData((prev) => ({ ...prev, email: user.email || "" }));
           }
 
-          // Fetch request statistics
           const requestsRef = collection(db, "borrowRequests");
-          const userRequestsQuery = query(requestsRef, where("userId", "==", user.uid));
+          const userRequestsQuery = query(
+              requestsRef,
+              where("userId", "==", user.uid)
+          );
           const requestsSnapshot = await getDocs(userRequestsQuery);
-          
-          const requests = requestsSnapshot.docs.map(doc => doc.data());
-          const activeCount = requests.filter(r => 
-            r.status === "Pending" || r.status === "Teacher-Approved" || r.status === "Approved"
+
+          const requests = requestsSnapshot.docs.map((doc) => doc.data());
+          const activeCount = requests.filter(
+              (r) =>
+                  r.status === "Pending" ||
+                  r.status === "Teacher-Approved" ||
+                  r.status === "Approved"
           ).length;
-          const completedCount = requests.filter(r => r.status === "Returned").length;
+          const completedCount = requests.filter(
+              (r) => r.status === "Returned"
+          ).length;
 
           setStats({
             totalRequests: requests.length,
             activeRequests: activeCount,
-            completedRequests: completedCount
+            completedRequests: completedCount,
           });
-
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
+        } catch (error) {}
       } else {
         navigate("/");
       }
@@ -90,16 +95,18 @@ const Profile = () => {
     try {
       await signOut(auth);
       navigate("/");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+    } catch (error) {}
   };
 
   const formatDate = (timestamp) => {
     if (!timestamp) return "N/A";
     try {
       const date = new Date(timestamp);
-      return date.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
     } catch {
       return "N/A";
     }
@@ -107,184 +114,169 @@ const Profile = () => {
 
   return (
       <div className="items-page">
-        {/* Navbar */}
         <div className="navbar">
           <div style={{ display: "flex", alignItems: "center" }}>
             <img src={logo} alt="CCS Gadget Hub Logo" />
-            <span style={{ color: "white", fontSize: "24px", fontWeight: "bold", marginLeft: "10px", lineHeight: "1.2" }}>
+            <span
+                style={{
+                  color: "white",
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  marginLeft: "10px",
+                  lineHeight: "1.2",
+                }}
+            >
             Wildcats <br /> Circuit Hub
           </span>
           </div>
-          <nav>
+
+          <div className="hamburger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <nav className={isMenuOpen ? "open" : ""}>
             {navLinks.map((link) => (
                 <Link
                     key={link.to}
                     to={link.to}
-                    className={location.pathname === link.to ? "navbar-link active-link" : "navbar-link"}
+                    className={
+                      location.pathname === link.to
+                          ? "navbar-link active-link"
+                          : "navbar-link"
+                    }
+                    onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
             ))}
+
+            <button onClick={handleLogout} className="logout-link">
+              Log Out
+            </button>
           </nav>
-          <div style={{ marginLeft: "auto" }}>
-            <button onClick={handleLogout} className="logout-link">Log Out</button>
-          </div>
         </div>
 
-        {/* Profile Content */}
         <div className="profile-page">
           <div className="profile-container">
-            <div className="profile-info" style={{ width: "100%", maxWidth: "800px", margin: "0 auto" }}>
-              <div className="profile-edit" style={{ textAlign: "right" }}>
+            <div
+                className="profile-info"
+                style={{ width: "100%", maxWidth: "800px", margin: "0 auto" }}
+            >
+              {userData.lateReturnCount > 0 && (
+                  <div
+                      style={{
+                        backgroundColor:
+                            userData.lateReturnCount >= 3 ? "#f8d7da" : "#fff3cd",
+                        border: `1px solid ${
+                            userData.lateReturnCount >= 3 ? "#f5c6cb" : "#ffc107"
+                        }`,
+                        borderRadius: "8px",
+                        padding: "15px",
+                        marginBottom: "20px",
+                      }}
+                  >
+                    <p
+                        style={{
+                          fontWeight: "600",
+                          fontSize: "15px",
+                        }}
+                    >
+                      ⚠ Late Return Warning
+                    </p>
+                  </div>
+              )}
+
+              <h2
+                  className="profile-name"
+                  style={{ fontSize: "28px", marginBottom: "5px" }}
+              >
+                {userData.firstName} {userData.lastName}
+              </h2>
+              <p
+                  style={{
+                    color: "#666",
+                    marginBottom: "25px",
+                    textTransform: "capitalize",
+                  }}
+              >
+                {userData.role}
+              </p>
+
+              <div
+                  className="profile-stats"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+                    gap: "15px",
+                    marginBottom: "30px",
+                  }}
+              >
+                <div>
+                  <p style={{ fontSize: "24px", fontWeight: "bold", color: "#461955", margin: 0 }}>
+                    {stats.totalRequests}
+                  </p>
+                  <p>Total Requests</p>
+                </div>
+
+                <div>
+                  <p style={{ fontSize: "24px", fontWeight: "bold", color: "#28a745", margin: 0 }}>
+                    {stats.activeRequests}
+                  </p>
+                  <p>Active</p>
+                </div>
+
+                <div>
+                  <p style={{ fontSize: "24px", fontWeight: "bold", color: "#6c757d", margin: 0 }}>
+                    {stats.completedRequests}
+                  </p>
+                  <p>Completed</p>
+                </div>
+              </div>
+
+              <div className="profile-grid">
+                <div>
+                  <p className="profile-label">Email Address</p>
+                  <p>{userData.email}</p>
+                </div>
+
+                <div>
+                  <p className="profile-label">Course</p>
+                  <p>{userData.course}</p>
+                </div>
+
+                <div>
+                  <p className="profile-label">Year Level</p>
+                  <p>{userData.year}</p>
+                </div>
+
+                <div>
+                  <p className="profile-label">Account Created</p>
+                  <p>{formatDate(userData.createdAt)}</p>
+                </div>
+              </div>
+
+              {/* BOTTOM EDIT PROFILE BUTTON */}
+              <div style={{ textAlign: "right", marginTop:"30px" }}>
                 <Link to="/usereditprofile">
-                  <button className="edit-btn" style={{ 
-                    padding: "8px 20px", 
-                    fontSize: "15px", 
-                    backgroundColor: "#d96528",
-                    border: "none",
-                    borderRadius: "5px",
-                    color: "white",
-                    cursor: "pointer"
-                  }}>
+                  <button
+                      className="edit-btn"
+                      style={{
+                        padding: "8px 20px",
+                        fontSize: "15px",
+                        backgroundColor: "#461955",
+                        border: "none",
+                        borderRadius: "5px",
+                        color: "white",
+                        cursor: "pointer",
+                      }}
+                  >
                     Edit Profile
                   </button>
                 </Link>
               </div>
 
-              {userData.lateReturnCount > 0 && (
-                  <div style={{
-                    backgroundColor: userData.lateReturnCount >= 3 ? "#f8d7da" : "#fff3cd",
-                    border: `1px solid ${userData.lateReturnCount >= 3 ? "#f5c6cb" : "#ffc107"}`,
-                    borderRadius: "8px",
-                    padding: "15px",
-                    marginBottom: "20px"
-                  }}>
-                    <p style={{ 
-                      color: userData.lateReturnCount >= 3 ? "#721c24" : "#856404", 
-                      margin: 0, 
-                      fontWeight: "600",
-                      fontSize: "15px"
-                    }}>
-                      {userData.lateReturnCount >= 3 ? "⛔" : "⚠️"} Late Return Warning
-                    </p>
-                    <p style={{ 
-                      color: userData.lateReturnCount >= 3 ? "#721c24" : "#856404", 
-                      margin: "8px 0 0 0",
-                      fontSize: "14px"
-                    }}>
-                      You have <strong>{userData.lateReturnCount}</strong> late return{userData.lateReturnCount > 1 ? 's' : ''} on record.
-                      {userData.lateReturnCount >= 3 && " Your borrowing privileges may be restricted."}
-                    </p>
-                    {userData.lastLateReturnDate && (
-                      <p style={{ 
-                        color: "#666", 
-                        margin: "5px 0 0 0",
-                        fontSize: "13px"
-                      }}>
-                        Last late return: {new Date(userData.lastLateReturnDate).toLocaleDateString()}
-                      </p>
-                    )}
-                  </div>
-              )}
-
-              <h2 className="profile-name" style={{ fontSize: "28px", marginBottom: "5px" }}>
-                {userData.firstName} {userData.lastName}
-              </h2>
-              <p style={{ 
-                color: "#666", 
-                marginBottom: "25px",
-                textTransform: "capitalize"
-              }}>
-                {userData.role}
-              </p>
-
-              {/* Quick Stats */}
-              <div className="profile-stats" style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-                gap: "15px",
-                marginBottom: "30px"
-              }}>
-                <div style={{
-                  backgroundColor: "#f8f9fa",
-                  padding: "15px",
-                  borderRadius: "8px",
-                  textAlign: "center"
-                }}>
-                  <p style={{ fontSize: "24px", fontWeight: "bold", color: "#d96528", margin: "0 0 5px 0" }}>
-                    {stats.totalRequests}
-                  </p>
-                  <p style={{ fontSize: "13px", color: "#666", margin: 0 }}>Total Requests</p>
-                </div>
-                <div style={{
-                  backgroundColor: "#f8f9fa",
-                  padding: "15px",
-                  borderRadius: "8px",
-                  textAlign: "center"
-                }}>
-                  <p style={{ fontSize: "24px", fontWeight: "bold", color: "#28a745", margin: "0 0 5px 0" }}>
-                    {stats.activeRequests}
-                  </p>
-                  <p style={{ fontSize: "13px", color: "#666", margin: 0 }}>Active</p>
-                </div>
-                <div style={{
-                  backgroundColor: "#f8f9fa",
-                  padding: "15px",
-                  borderRadius: "8px",
-                  textAlign: "center"
-                }}>
-                  <p style={{ fontSize: "24px", fontWeight: "bold", color: "#6c757d", margin: "0 0 5px 0" }}>
-                    {stats.completedRequests}
-                  </p>
-                  <p style={{ fontSize: "13px", color: "#666", margin: 0 }}>Completed</p>
-                </div>
-              </div>
-
-              {/* Detailed Information */}
-              <div className="profile-grid" style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: "20px"
-              }}>
-                <div>
-                  <p className="profile-label" style={{ color: "#666", fontSize: "13px", marginBottom: "5px" }}>
-                    Email Address
-                  </p>
-                  <p style={{ fontWeight: "600", wordBreak: "break-word" }}>{userData.email}</p>
-                </div>
-                
-                <div>
-                  <p className="profile-label" style={{ color: "#666", fontSize: "13px", marginBottom: "5px" }}>
-                    Course
-                  </p>
-                  <p style={{ fontWeight: "600" }}>{userData.course}</p>
-                </div>
-                
-                <div>
-                  <p className="profile-label" style={{ color: "#666", fontSize: "13px", marginBottom: "5px" }}>
-                    Year Level
-                  </p>
-                  <p style={{ fontWeight: "600" }}>{userData.year}</p>
-                </div>
-
-                <div>
-                  <p className="profile-label" style={{ color: "#666", fontSize: "13px", marginBottom: "5px" }}>
-                    Account Created
-                  </p>
-                  <p style={{ fontWeight: "600" }}>{formatDate(userData.createdAt)}</p>
-                </div>
-
-                {userData.lateReturnCount > 0 && (
-                  <div>
-                    <p className="profile-label" style={{ color: "#666", fontSize: "13px", marginBottom: "5px" }}>
-                      Late Returns
-                    </p>
-                    <p style={{ fontWeight: "600", color: "#dc3545" }}>
-                      ⚠️ {userData.lateReturnCount} {userData.lateReturnCount === 1 ? 'time' : 'times'}
-                    </p>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         </div>
