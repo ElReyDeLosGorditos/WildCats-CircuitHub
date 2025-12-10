@@ -10,8 +10,8 @@
 
     /* Grayscale & Text */
     --text-dark: #2c2c2e; /* Darkest text for headings */
-    --text-medium: #8e8e93; /* Medium gray for descriptions and labels */
-    --text-light: #ffffff; /* White text for buttons/dark backgrounds */
+    --text-medium: #1a1a1a; /* Medium gray for descriptions and labels */
+    --text-light: #1a1a1a; /* White text for buttons/dark backgrounds */
     --surface-white: #ffffff; /* Pure white for cards and modals */
     --surface-off-white: #fefefe; /* Very slight off-white for backgrounds within sections */
 

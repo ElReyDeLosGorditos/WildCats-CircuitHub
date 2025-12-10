@@ -3,12 +3,12 @@
     /* Define color variables for easier theming and consistency */
     --primary-purple: #3b2c45;
     --dark-purple-hover: #2a2030;
-    --accent-orange: #d96528;
-    --accent-orange-hover: #b8501b;
+    --accent-orange: #461955;
+    --accent-orange-hover: #461955;
     --background-light: #f4f7f6;
     --text-dark: #333;
-    --text-medium: #555;
-    --text-light: #666;
+    --text-medium: #1a1a1a;
+    --text-light: #1a1a1a;
     --border-light: #eee;
     --shadow-light: rgba(0, 0, 0, 0.06);
     --shadow-medium: rgba(0, 0, 0, 0.08);
