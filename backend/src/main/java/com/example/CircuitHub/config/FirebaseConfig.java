@@ -1,7 +1,6 @@
 package com.example.CircuitHub.config;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -20,39 +19,55 @@ public class FirebaseConfig {
     @PostConstruct
     public void initializeFirebase() {
         try {
+            // ✅ Read Firebase service account JSON from environment variable
             String firebaseConfigJson = System.getenv("FIREBASE_CONFIG_JSON");
-        if (firebaseConfigJson == null) {
-            System.err.println("❌ Environment variable FIREBASE_CONFIG_JSON is not set");
-        } else {
-            System.out.println("✅ Environment variable length: " + firebaseConfigJson.length());
-        }
+            
+            if (firebaseConfigJson == null || firebaseConfigJson.isEmpty()) {
+                System.err.println("❌ FIREBASE_CONFIG_JSON environment variable is not set!");
+                System.err.println("❌ Please set the environment variable with your service account JSON");
+                System.err.println("❌ Example: FIREBASE_CONFIG_JSON='{\"type\":\"service_account\",...}'");
+                throw new IllegalStateException(
+                    "FIREBASE_CONFIG_JSON environment variable is required but not set. " +
+                    "Please configure it in your IDE or deployment environment."
+                );
+            }
 
-        //InputStream serviceAccount = new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8));
+            System.out.println("✅ Found FIREBASE_CONFIG_JSON environment variable (length: " + 
+                              firebaseConfigJson.length() + " characters)");
 
-            // Deprecated method (commented out)
-            /*
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setStorageBucket("ccs-gadgethub.appspot.com")
-                    .build();
-            */
+            // ✅ Convert JSON string to InputStream
+            InputStream serviceAccount = new ByteArrayInputStream(
+                firebaseConfigJson.getBytes(StandardCharsets.UTF_8)
+            );
 
-            // ✅ Updated recommended builder usage
-            FileInputStream serviceAccount = new FileInputStream("backend/src/main/resources/firebase-service-account.json");
+            // ✅ Build Firebase options with credentials from environment
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setStorageBucket("circuithub-75f4a.firebasestorage.app")
                     .build();
 
+            // ✅ Initialize Firebase if not already initialized
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
-                FirestoreClient.getFirestore(); // test connection
-                System.out.println("✅ Firebase initialized via environment variable");
+                
+                // Test Firestore connection
+                FirestoreClient.getFirestore();
+                
+                System.out.println("✅ Firebase initialized successfully!");
+                System.out.println("✅ Storage Bucket: circuithub-75f4a.firebasestorage.app");
+                System.out.println("✅ Firestore connection verified");
+            } else {
+                System.out.println("ℹ️ Firebase already initialized");
             }
 
+        } catch (IllegalStateException e) {
+            System.err.println("❌ Configuration Error: " + e.getMessage());
+            throw e;
         } catch (Exception e) {
-            System.err.println("❌ Failed to initialize Firebase from env variable: " + e.getMessage());
+            System.err.println("❌ Failed to initialize Firebase: " + e.getMessage());
+            System.err.println("❌ Please check your FIREBASE_CONFIG_JSON format");
             e.printStackTrace();
+            throw new RuntimeException("Firebase initialization failed. Check your service account configuration.", e);
         }
     }
 }
