@@ -1,68 +1,163 @@
 package com.example.CircuitHub.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-@Getter
-@Setter
+/**
+ * BorrowRequest model matching Firestore database structure
+ * Supports multiple items per request with proper Timestamp handling
+ */
 public class BorrowRequest {
     private String id;
 
-    // Item information
+    // Request metadata
+    private Date createdAt;           // Firestore Timestamp - MUST be Date type
+    private String borrowDate;        // Date string for borrowing (e.g., "2025-12-17")
+    private String status;            // "Pending-Teacher", "Approved", "Rejected", etc.
+
+    // User information
+    private String userId;            // User making the request
+    private String userName;          // User's full name
+
+    // Teacher assignment
+    private String teacherAssigned;   // Teacher's name
+    private String teacherId;         // Teacher's UID
+
+    // Time slots
+    private String startTime;         // Start time (e.g., "3:00 PM")
+    private String returnTime;        // Return time (e.g., "4:30 PM")
+    private String timeRange;         // Full time range display (e.g., "3:00 PM - 4:00 PM")
+
+    // Request details
+    private String reason;            // Reason for borrowing
+    private List<String> groupMembers; // Array of group member names
+    
+    // Items - Array of maps with {id, name}
+    private List<Map<String, String>> items; // Each item has "id" and "name"
+
+    // Legacy single-item fields (kept for backward compatibility)
     private String itemId;
     private String itemName;
 
-    // Borrower information
-    private String borrowerId;    // Matches to userId in the frontend
-    private String borrowerName;  // Matches to userName in the frontend
+    // Additional borrower details
+    private String borrowerId;
+    private String borrowerName;
     private String borrowerEmail;
-    private String borrowerCourse;  // NEW: Student's course
-    private String borrowerYear;    // NEW: Student's year level
+    private String borrowerCourse;
+    private String borrowerYear;
 
-    // Request details
+    // Additional request details
     private String requestDate;
-    private String startDate;     // When borrowing starts
-    private String endDate;       // When borrowing ends
-    private String status;        // Pending, Teacher-Approved, Lab-Approved, Rejected, Returned, Overdue
-    private String purpose;       // Reason for borrowing
-    private String timeRange;     // Formatted time range for display
+    private String startDate;
+    private String endDate;
+    private String purpose;
+    private Integer requestedQuantity;
     
-    // NEW: Room tracking
-    private String roomNumber;    // Room where equipment will be used
-    private String labSection;    // Laboratory section (e.g., "Laboratory Area 1")
+    // Room tracking
+    private String roomNumber;
+    private String labSection;
 
     // Item details
     private String description;
-    private String itemCondition; // Matches to condition in the frontend
+    private String itemCondition;
 
-    // NEW: Approval workflow
-    private String teacherApprovedBy;      // Teacher who approved
-    private String teacherApprovedAt;      // Timestamp of teacher approval
-    private String labAssistantApprovedBy; // Lab assistant who approved
-    private String labAssistantApprovedAt; // Timestamp of lab approval
+    // Approval workflow
+    private String teacherApprovedBy;
+    private String teacherApprovedAt;
+    private String labAssistantApprovedBy;
+    private String labAssistantApprovedAt;
     
-    // NEW: Late return tracking
-    private Boolean isLate;              // Whether this return was late
-    private Integer daysLate;            // Number of days late if applicable
-    private Integer hoursLate;           // Total number of hours late if applicable
-    private String lateReturnNotes;      // Notes about late return
+    // Late return tracking
+    private Boolean isLate;
+    private Integer daysLate;
+    private Integer hoursLate;
+    private String lateReturnNotes;
 
     // Additional tracking fields
-    private String createdAt;
     private String updatedAt;
     private String returnedAt;
     private String adminNotes;
     private String borrowDurationDays;
 
+    // REQUIRED: Public no-argument constructor for Firestore deserialization
+    public BorrowRequest() {
+        // Firestore SDK requires this empty constructor to instantiate objects during deserialization
+    }
+
+    // Full constructor for convenience (optional)
+    public BorrowRequest(String id, Date createdAt, String borrowDate, String status,
+                        String userId, String userName, String teacherAssigned, String teacherId,
+                        String startTime, String returnTime, String timeRange, String reason,
+                        List<String> groupMembers, List<Map<String, String>> items) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.borrowDate = borrowDate;
+        this.status = status;
+        this.userId = userId;
+        this.userName = userName;
+        this.teacherAssigned = teacherAssigned;
+        this.teacherId = teacherId;
+        this.startTime = startTime;
+        this.returnTime = returnTime;
+        this.timeRange = timeRange;
+        this.reason = reason;
+        this.groupMembers = groupMembers;
+        this.items = items;
+    }
+
+    // Getters and Setters - ALL fields must have getters and setters for Firestore
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+
+    public String getBorrowDate() { return borrowDate; }
+    public void setBorrowDate(String borrowDate) { this.borrowDate = borrowDate; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
+    public String getTeacherAssigned() { return teacherAssigned; }
+    public void setTeacherAssigned(String teacherAssigned) { this.teacherAssigned = teacherAssigned; }
+
+    public String getTeacherId() { return teacherId; }
+    public void setTeacherId(String teacherId) { this.teacherId = teacherId; }
+
+    public String getStartTime() { return startTime; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
+
+    public String getReturnTime() { return returnTime; }
+    public void setReturnTime(String returnTime) { this.returnTime = returnTime; }
+
+    public String getTimeRange() { return timeRange; }
+    public void setTimeRange(String timeRange) { this.timeRange = timeRange; }
+
+    public String getReason() { return reason; }
+    public void setReason(String reason) { this.reason = reason; }
+
+    public List<String> getGroupMembers() { return groupMembers; }
+    public void setGroupMembers(List<String> groupMembers) { this.groupMembers = groupMembers; }
+
+    public List<Map<String, String>> getItems() { return items; }
+    public void setItems(List<Map<String, String>> items) { this.items = items; }
+
+    // Legacy single-item support
     public String getItemId() { return itemId; }
     public void setItemId(String itemId) { this.itemId = itemId; }
 
     public String getItemName() { return itemName; }
     public void setItemName(String itemName) { this.itemName = itemName; }
 
+    // Additional borrower info
     public String getBorrowerId() { return borrowerId; }
     public void setBorrowerId(String borrowerId) { this.borrowerId = borrowerId; }
 
@@ -87,14 +182,8 @@ public class BorrowRequest {
     public String getEndDate() { return endDate; }
     public void setEndDate(String endDate) { this.endDate = endDate; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
     public String getPurpose() { return purpose; }
     public void setPurpose(String purpose) { this.purpose = purpose; }
-
-    public String getTimeRange() { return timeRange; }
-    public void setTimeRange(String timeRange) { this.timeRange = timeRange; }
 
     public String getRoomNumber() { return roomNumber; }
     public void setRoomNumber(String roomNumber) { this.roomNumber = roomNumber; }
@@ -115,10 +204,14 @@ public class BorrowRequest {
     public void setTeacherApprovedAt(String teacherApprovedAt) { this.teacherApprovedAt = teacherApprovedAt; }
 
     public String getLabAssistantApprovedBy() { return labAssistantApprovedBy; }
-    public void setLabAssistantApprovedBy(String labAssistantApprovedBy) { this.labAssistantApprovedBy = labAssistantApprovedBy; }
+    public void setLabAssistantApprovedBy(String labAssistantApprovedBy) { 
+        this.labAssistantApprovedBy = labAssistantApprovedBy; 
+    }
 
     public String getLabAssistantApprovedAt() { return labAssistantApprovedAt; }
-    public void setLabAssistantApprovedAt(String labAssistantApprovedAt) { this.labAssistantApprovedAt = labAssistantApprovedAt; }
+    public void setLabAssistantApprovedAt(String labAssistantApprovedAt) { 
+        this.labAssistantApprovedAt = labAssistantApprovedAt; 
+    }
 
     public Boolean getIsLate() { return isLate; }
     public void setIsLate(Boolean isLate) { this.isLate = isLate; }
@@ -132,9 +225,6 @@ public class BorrowRequest {
     public String getLateReturnNotes() { return lateReturnNotes; }
     public void setLateReturnNotes(String lateReturnNotes) { this.lateReturnNotes = lateReturnNotes; }
 
-    public String getCreatedAt() { return createdAt; }
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
-
     public String getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 
@@ -146,4 +236,19 @@ public class BorrowRequest {
 
     public String getBorrowDurationDays() { return borrowDurationDays; }
     public void setBorrowDurationDays(String borrowDurationDays) { this.borrowDurationDays = borrowDurationDays; }
+
+    public Integer getRequestedQuantity() { return requestedQuantity; }
+    public void setRequestedQuantity(Integer requestedQuantity) { this.requestedQuantity = requestedQuantity; }
+
+    @Override
+    public String toString() {
+        return "BorrowRequest{" +
+                "id='" + id + '\'' +
+                ", borrowDate='" + borrowDate + '\'' +
+                ", status='" + status + '\'' +
+                ", userName='" + userName + '\'' +
+                ", items=" + (items != null ? items.size() : 0) + " items" +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
