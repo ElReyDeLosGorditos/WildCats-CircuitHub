@@ -32,7 +32,7 @@ backend/src/main/resources/firebase-service-account.json
 .env
 .env.local
 .env.development
-.env.production
+# .env.production is safe to commit (no secrets)
 
 # IDE
 /.idea
