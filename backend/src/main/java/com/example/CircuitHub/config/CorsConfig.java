@@ -19,6 +19,7 @@ public class CorsConfig {
         config.setAllowedOrigins(List.of(
                 "https://ccs-gadgethubb.onrender.com",
                 "https://ccs-gadgethubb-frontend.onrender.com",
+                "wildcats-circuit-hub.vercel.app", // ⚠️ REPLACE with your actual Vercel URL
                 "http://localhost:3000", // Common port for React/Vite
                 "http://localhost:5173",
                 "http://localhost:5174"
