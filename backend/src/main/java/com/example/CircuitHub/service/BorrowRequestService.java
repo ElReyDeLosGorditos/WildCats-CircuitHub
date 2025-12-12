@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,17 +22,96 @@ import java.util.stream.Collectors;
 public class BorrowRequestService {
 
     private final Firestore firestore;
+    private final ItemAvailabilityService availabilityService;
 
-    public BorrowRequestService() {
+    public BorrowRequestService(ItemAvailabilityService availabilityService) {
         this.firestore = FirestoreClient.getFirestore();
+        this.availabilityService = availabilityService;
     }
 
+    /**
+     * Create a new borrow request with race condition protection
+     * NOW SUPPORTS MULTIPLE ITEMS
+     * CRITICAL: This method performs a FINAL availability check immediately before saving
+     */
     public BorrowRequest createRequest(BorrowRequest request) throws ExecutionException, InterruptedException {
+        // Set default quantity if not provided (for backward compatibility)
+        if (request.getRequestedQuantity() == null || request.getRequestedQuantity() <= 0) {
+            request.setRequestedQuantity(1);
+        }
+        
+        // ✅ STEP 1: VALIDATE AVAILABILITY FOR ALL ITEMS
+        // Check if items array exists (new multi-item requests)
+        if (request.getItems() != null && !request.getItems().isEmpty()) {
+            System.out.println("✅ Processing multi-item request with " + request.getItems().size() + " items");
+            
+            // Validate availability for each item
+            for (Map<String, String> item : request.getItems()) {
+                String itemId = item.get("id");
+                String itemName = item.get("name");
+                
+                // ✅ FIX: Validate that item ID exists before processing
+                if (itemId == null || itemId.trim().isEmpty()) {
+                    System.err.println("❌ Item missing ID: " + itemName);
+                    throw new IllegalArgumentException("Item '" + itemName + "' is missing an ID. Please refresh and try again.");
+                }
+                
+                Integer quantity = 1; // Default quantity
+                
+                // Try to get quantity from the item map
+                try {
+                    if (item.containsKey("quantity")) {
+                        Object qtyObj = item.get("quantity");
+                        if (qtyObj instanceof String) {
+                            quantity = Integer.parseInt((String) qtyObj);
+                        } else if (qtyObj instanceof Number) {
+                            quantity = ((Number) qtyObj).intValue();
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("⚠️ Warning: Could not parse quantity for item " + itemName + ", using default 1");
+                }
+                
+                System.out.println("✅ Checking availability for item: " + itemName + " (ID: " + itemId + ", Qty: " + quantity + ")");
+                
+                ItemAvailabilityService.AvailabilityResult itemCheck = availabilityService.checkAvailability(
+                    itemId,
+                    quantity,
+                    request.getStartDate(),
+                    request.getEndDate()
+                );
+                
+                if (!itemCheck.isAvailable()) {
+                    throw new RuntimeException("Item '" + itemName + "' is not available: " + itemCheck.getMessage());
+                }
+            }
+        } else if (request.getItemId() != null && !request.getItemId().trim().isEmpty()) {
+            // ✅ Legacy single-item request support
+            System.out.println("✅ Processing legacy single-item request for item ID: " + request.getItemId());
+            
+            ItemAvailabilityService.AvailabilityResult initialCheck = availabilityService.checkAvailability(
+                request.getItemId(),
+                request.getRequestedQuantity(),
+                request.getStartDate(),
+                request.getEndDate()
+            );
+            
+            if (!initialCheck.isAvailable()) {
+                throw new RuntimeException("Booking not available: " + initialCheck.getMessage());
+            }
+        } else {
+            System.err.println("❌ No valid items specified in the request");
+            System.err.println("   Items array: " + (request.getItems() != null ? request.getItems() : "null"));
+            System.err.println("   ItemId: " + request.getItemId());
+            throw new IllegalArgumentException("No items specified in the request. Please select at least one item.");
+        }
+        
+        // ✅ STEP 2: CREATE THE REQUEST
         DocumentReference docRef = firestore.collection("borrowRequests").document();
         request.setId(docRef.getId());
         request.setRequestDate(LocalDateTime.now().toString());
-        request.setCreatedAt(LocalDateTime.now().toString());
-        request.setStatus("Pending");  // Initial status - waiting for teacher approval
+        request.setCreatedAt(new Date());  // Use Date for Firestore Timestamp
+        request.setStatus("Pending-Teacher");  // Initial status - waiting for teacher approval
         
         // Initialize late tracking fields
         request.setIsLate(false);
@@ -50,7 +130,16 @@ public class BorrowRequestService {
             }
         }
         
+        // Save the request to Firestore
         docRef.set(request).get();
+        
+        String itemInfo = request.getItems() != null && !request.getItems().isEmpty()
+            ? request.getItems().size() + " items"
+            : "item " + request.getItemId();
+        
+        System.out.println("✅ Successfully created borrow request " + request.getId() + 
+            " for " + itemInfo);
+        
         return request;
     }
 
@@ -157,7 +246,7 @@ public class BorrowRequestService {
             docRef.set(request).get();
             
             // Update item status to Borrowed
-            updateItemStatus(request.getItemId(), "Borrowed", request.getBorrowerId());
+            updateItemStatus(request.getItemId(), "Borrowed", request.getBorrowerId(), request.getRequestedQuantity());
             
             return request;
         } else {
@@ -201,7 +290,7 @@ public class BorrowRequestService {
                 }
                 
                 // Update item status back to Available
-                updateItemStatus(request.getItemId(), "Available", null);
+                updateItemStatus(request.getItemId(), "Available", null, request.getRequestedQuantity());
             }
             
             docRef.set(request).get();
@@ -237,9 +326,14 @@ public class BorrowRequestService {
         }
     }
 
-    private void updateItemStatus(String itemId, String status, String borrowerId) throws ExecutionException, InterruptedException {
+    private void updateItemStatus(String itemId, String status, String borrowerId, Integer requestedQuantity) throws ExecutionException, InterruptedException {
         if (itemId == null || itemId.isEmpty()) {
             return;
+        }
+        
+        // Default to 1 if quantity not specified
+        if (requestedQuantity == null || requestedQuantity <= 0) {
+            requestedQuantity = 1;
         }
 
         DocumentReference itemRef = firestore.collection("items").document(itemId);
@@ -250,21 +344,21 @@ public class BorrowRequestService {
             Long currentQuantity = document.getLong("quantity");
             if (currentQuantity == null) currentQuantity = 0L;
 
-            updates.put("status", status);
+            // Note: We don't change the status field anymore since multiple people can borrow
+            // Instead, we just track quantity changes
 
             if ("Borrowed".equals(status)) {
-                // Decrease quantity only if it's greater than 0
-                if (currentQuantity > 0) {
-                    updates.put("quantity", currentQuantity - 1);
-                }
-                updates.put("borrowedBy", borrowerId);
-                updates.put("borrowedAt", LocalDateTime.now().toString());
+                // Decrease quantity by requested amount
+                long newQuantity = Math.max(0, currentQuantity - requestedQuantity);
+                updates.put("quantity", newQuantity);
+                // Store the last borrower info
+                updates.put("lastBorrowedBy", borrowerId);
+                updates.put("lastBorrowedAt", LocalDateTime.now().toString());
 
             } else if ("Available".equals(status)) {
-                // Increase quantity back
-                updates.put("quantity", currentQuantity + 1);
-                updates.put("borrowedBy", null);
-                updates.put("returnedAt", LocalDateTime.now().toString());
+                // Increase quantity back by returned amount
+                updates.put("quantity", currentQuantity + requestedQuantity);
+                updates.put("lastReturnedAt", LocalDateTime.now().toString());
             }
 
             itemRef.update(updates).get();

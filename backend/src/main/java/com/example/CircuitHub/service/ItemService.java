@@ -49,7 +49,7 @@ public class ItemService {
             );
         }
 
-        String createdAt = LocalDateTime.now().toString();
+        Date now = new Date();
 
         Map<String, Object> data = new HashMap<>();
         data.put("id", itemId);
@@ -58,13 +58,14 @@ public class ItemService {
         data.put("condition", condition);
         data.put("status", "Available");
         data.put("imagePath", imageUrl);
-        data.put("createdAt", createdAt);
+        data.put("createdAt", now);  // Store as Timestamp in Firestore
+        data.put("updatedAt", now);  // Store as Timestamp in Firestore
         data.put("quantity", quantity);
 
         firestore.collection("items").document(itemId).set(data).get();
 
-        // Fixed constructor call - removed the colon and added the comma properly
-        return new Item(itemId, name, description, condition, "Available", imageUrl, createdAt, quantity);
+        // Return Item with proper Date objects
+        return new Item(itemId, name, description, condition, "Available", imageUrl, now, now, quantity);
     }
 
     public List<Item> getAllItems() throws ExecutionException, InterruptedException {
@@ -72,6 +73,10 @@ public class ItemService {
         ApiFuture<QuerySnapshot> future = firestore.collection("items").get();
         for (QueryDocumentSnapshot doc : future.get().getDocuments()) {
             Item item = doc.toObject(Item.class);
+            // ✅ FIX: Ensure the ID is always set from the document ID
+            if (item.getId() == null || item.getId().isEmpty()) {
+                item.setId(doc.getId());
+            }
             items.add(item);
         }
         return items;
@@ -79,6 +84,14 @@ public class ItemService {
 
     public Item getItemById(String id) throws ExecutionException, InterruptedException {
         DocumentSnapshot doc = firestore.collection("items").document(id).get().get();
-        return doc.exists() ? doc.toObject(Item.class) : null;
+        if (!doc.exists()) {
+            return null;
+        }
+        Item item = doc.toObject(Item.class);
+        // ✅ FIX: Ensure the ID is always set from the document ID
+        if (item != null && (item.getId() == null || item.getId().isEmpty())) {
+            item.setId(doc.getId());
+        }
+        return item;
     }
 }

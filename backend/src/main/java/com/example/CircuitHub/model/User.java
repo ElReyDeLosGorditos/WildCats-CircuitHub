@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
-@NoArgsConstructor // Required for Firestore deserialization
+//@NoArgsConstructor // Required for Firestore deserialization
 @AllArgsConstructor
 public class User {
     private String uid;             // Firebase UID

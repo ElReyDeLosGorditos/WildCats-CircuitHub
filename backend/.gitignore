@@ -32,5 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 
-# Firebase admin secret key
-#backend/src/main/resources/*.json
+### Firebase Service Account (NEVER COMMIT THIS!) ###
+src/main/resources/firebase-service-account.json
+**/firebase-service-account.json
+
+### Environment Variables ###
+.env
+.env.local

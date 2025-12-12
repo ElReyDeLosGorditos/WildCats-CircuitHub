@@ -92,6 +92,11 @@ export const api = {
     getUserHistory: (userId) => apiClient.get(`/requests/user/${userId}/history`),
     getPendingTeacher: () => apiClient.get('/requests/pending-teacher'),
     getPendingLab: () => apiClient.get('/requests/pending-lab'),
+    getAvailabilityCalendar: (itemId, startDate, endDate) => 
+      apiClient.get('/requests/availability-calendar', { 
+        params: { itemId, startDate, endDate } 
+      }),
+    checkAvailability: (availabilityData) => apiClient.post('/requests/check-availability', availabilityData),
     create: (requestData) => apiClient.post('/requests', requestData),
     teacherApprove: (id, approvalData) => 
       apiClient.put(`/requests/${id}/teacher-approve`, approvalData),

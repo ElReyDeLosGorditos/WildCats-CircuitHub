@@ -42,7 +42,7 @@ public class SecurityConfig {
 
                 // Admin only endpoints
                 .requestMatchers("/api/sync/set-admin").hasRole("ADMIN")
-                .requestMatchers("/api/items/**").hasAnyRole("ADMIN", "LAB_ASSISTANT")
+
 
                 // Teacher approval endpoints
                 .requestMatchers("/api/requests/*/teacher-approve").hasAnyRole("ADMIN", "TEACHER")
@@ -55,6 +55,7 @@ public class SecurityConfig {
                 // Authenticated users
                 .requestMatchers("/api/requests/**").authenticated()
                 .requestMatchers("/api/users/**").authenticated()
+                    .requestMatchers("/api/items/**").authenticated()
                 // Let @PreAuthorize handle maintenance authorization
                 .requestMatchers("/api/maintenance/**").authenticated()
 
