@@ -35,7 +35,7 @@ const AdminRegister = () => {
 
             // 4. Sync with backend (force role to Admin)
             await axios.post(
-                "http://localhost:8080/api/sync/user",
+                "https://wildcats-circuithub.onrender.com/api/sync/user",
                 {
                     uid: user.uid,
                     email: user.email,

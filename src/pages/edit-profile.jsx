@@ -30,7 +30,8 @@ const EditProfile = () => {
         try {
           const idToken = await user.getIdToken();
           const response = await axios.get(
-            `http://localhost:8080/api/users/${user.uid}/profile`,
+            /*`http://localhost:8080/api/users/${user.uid}/profile`*/
+              'https://wildcats-circuithub.onrender.com/api/users/${user.uid}/profile',
             {
               headers: {
                 Authorization: `Bearer ${idToken}`,

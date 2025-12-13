@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { auth } from '../firebaseconfig';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || /*'http://localhost:8080/api'*/
+    'https://wildcats-circuithub.onrender.com/api' ;
 
 // Create axios instance
 const apiClient = axios.create({

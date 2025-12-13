@@ -43,7 +43,7 @@ const Register = () => {
 
       // 4. Sync with backend
       await axios.post(
-        "http://localhost:8080/api/sync/user",
+        "https://wildcats-circuithub.onrender.com/api/sync/user",
         {
           uid: user.uid,
           email: user.email,
