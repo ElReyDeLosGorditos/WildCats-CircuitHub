@@ -75,8 +75,7 @@ public class SecurityConfig {
             "http://localhost:3000",
             "http://localhost:5173",
             "http://localhost:5174",
-            "https://ccs-gadgethubb-frontend.onrender.com",
-            "https://ccs-gadgethubb.onrender.com"
+            "https://wildcats-circuithub.onrender.com"
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
