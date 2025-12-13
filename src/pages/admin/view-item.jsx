@@ -42,7 +42,7 @@ const AdminViewItem = ({ id }) => {
         <div className="admin-items-item-content">
           <div className="admin-items-image-container">
             <img
-                src={item.imagePath?.startsWith("http") ? item.imagePath : `http://localhost:8080/${item.imagePath}`}
+                src={item.imagePath?.startsWith("http") ? item.imagePath : `https://wildcats-circuithub.onrender.com${item.imagePath}`}
                 alt={item.name}
                 className="admin-items-equipment-image"
                 onError={(e) => { e.target.src = "https://via.placeholder.com/150"; }}

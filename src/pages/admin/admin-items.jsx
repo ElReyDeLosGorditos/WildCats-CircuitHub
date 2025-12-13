@@ -110,7 +110,7 @@ const AdminManageItems = () => {
                               src={
                                 item.imagePath?.startsWith("http")
                                     ? item.imagePath
-                                    : `https://ccs-gadgethubb.onrender.com${item.imagePath}`
+                                    : `https://wildcats-circuithub.onrender.com${item.imagePath}`
                               }
                               alt={item.name}
                               className="items-image"
