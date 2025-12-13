@@ -15,7 +15,7 @@ const Login = () => {
 
   const redirectBasedOnRole = async (uid, token) => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/sync/get-by-uid?uid=${uid}`, {
+      const res = await axios.get(`https://wildcats-circuithub.onrender.com/api/sync/get-by-uid?uid=${uid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,7 +85,7 @@ const Login = () => {
 
       await axios.post(
         // "https://ccs-gadgethubb.onrender.com/api/sync/user",
-          "http://localhost:8080/api/sync/user",
+          "https://wildcats-circuithub.onrender.com/api/sync/user",
         {
           uid: user.uid,
           email: user.email,
