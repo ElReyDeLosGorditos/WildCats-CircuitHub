@@ -2,7 +2,7 @@ import { useState } from "react";
 import { auth, provider } from "../firebaseconfig";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import { api } from "../services/api";
 import logo from "../assets/circuithubLogo.png";
 import "../components/css/login.css"
 
@@ -13,13 +13,9 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const redirectBasedOnRole = async (uid, token) => {
+  const redirectBasedOnRole = async (uid) => {
     try {
-      const res = await axios.get(`https://wildcats-circuithub.onrender.com/api/sync/get-by-uid?uid=${uid}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await api.users.getUserByUid(uid);
 
       const user = res.data;
       if (user.role === "admin") {
@@ -49,23 +45,14 @@ const Login = () => {
       const firstName = nameParts[0] || "Unnamed";
       const lastName = nameParts.slice(1).join(" ") || "";
 
-      await axios.post(
-        // "https://ccs-gadgethubb.onrender.com/api/sync/user",
-          "https://wildcats-circuithub.onrender.com/api/sync/user",
-        {
-          uid: user.uid,
-          email: user.email,
-          firstName,
-          lastName,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.users.syncUser({
+        uid: user.uid,
+        email: user.email,
+        firstName,
+        lastName,
+      });
 
-      redirectBasedOnRole(user.uid, token);
+      redirectBasedOnRole(user.uid);
     } catch (err) {
       console.error("Login error:", err);
       setError(err.response?.data?.error || "Login failed. Please try again.");
@@ -83,23 +70,14 @@ const Login = () => {
       const firstName = nameParts[0] || "Unnamed";
       const lastName = nameParts.slice(1).join(" ") || "";
 
-      await axios.post(
-        // "https://ccs-gadgethubb.onrender.com/api/sync/user",
-          "https://wildcats-circuithub.onrender.com/api/sync/user",
-        {
-          uid: user.uid,
-          email: user.email,
-          firstName,
-          lastName,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.users.syncUser({
+        uid: user.uid,
+        email: user.email,
+        firstName,
+        lastName,
+      });
 
-      redirectBasedOnRole(user.uid, token);
+      redirectBasedOnRole(user.uid);
     } catch (err) {
       console.error("Google login error:", err);
       setError(err.response?.data?.error || "Google Sign-In failed.");

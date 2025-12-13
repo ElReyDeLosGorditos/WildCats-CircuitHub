@@ -20,11 +20,11 @@ public class CorsConfig {
                 "https://ccs-gadgethubb.onrender.com",
                 "https://ccs-gadgethubb-frontend.onrender.com",
                 "https://wildcats-circuithub.onrender.com",
-                "wildcats-circuit-hub.vercel.app", // ⚠️ REPLACE with your actual Vercel URL
-                "http://localhost:3000", // Common port for React/Vite
+                "https://wildcats-circuit-hub.vercel.app",
+                "https://wildcats-circuit-f555ebwg5-elreys-projects-7a62edbb.vercel.app", // Preview deployment
+                "http://localhost:3000",
                 "http://localhost:5173",
                 "http://localhost:5174"
-                // Add any other localhost ports your frontend might be using
         ));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");

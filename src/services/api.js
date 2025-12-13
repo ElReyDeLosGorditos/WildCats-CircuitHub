@@ -1,8 +1,11 @@
 import axios from 'axios';
 import { auth } from '../firebaseconfig';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || /*'http://localhost:8080/api'*/
-    'https://wildcats-circuithub.onrender.com/api' ;
+// Use environment variable, fallback to production URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://wildcats-circuithub.onrender.com/api';
+
+// Log the API URL being used (helpful for debugging)
+console.log('🌐 API Base URL:', API_BASE_URL);
 
 // Create axios instance
 const apiClient = axios.create({
