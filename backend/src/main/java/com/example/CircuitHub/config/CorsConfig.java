@@ -16,16 +16,17 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of(
+        
+        // Allow specific origins including Vercel domains
+        config.setAllowedOriginPatterns(List.of(
                 "https://ccs-gadgethubb.onrender.com",
                 "https://ccs-gadgethubb-frontend.onrender.com",
                 "https://wildcats-circuithub.onrender.com",
                 "https://wildcats-circuit-hub.vercel.app",
-                "https://wildcats-circuit-f555ebwg5-elreys-projects-7a62edbb.vercel.app", // Preview deployment
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "http://localhost:5174"
+                "https://*.vercel.app", // Allow all Vercel preview deployments
+                "http://localhost:*" // Allow all localhost ports
         ));
+        
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setMaxAge(3600L);
