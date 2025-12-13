@@ -71,11 +71,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000",
-            "http://localhost:5173",
-            "http://localhost:5174",
-            "https://wildcats-circuithub.onrender.com"
+        // Use allowedOriginPatterns to support wildcards
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+            "http://localhost:*",
+            "https://wildcats-circuithub.onrender.com",
+            "https://wildcats-circuit-hub.vercel.app",
+            "https://*.vercel.app" // Allow all Vercel preview deployments
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
