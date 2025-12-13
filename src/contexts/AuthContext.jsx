@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
           
           // Fetch user data from backend
           const response = await axios.get(
-            `http://localhost:8080/api/sync/get-by-uid?uid=${user.uid}`,
+            `https://wildcats-circuithub.onrender.com/api/sync/get-by-uid?uid=${user.uid}`,
             {
               headers: {
                 Authorization: `Bearer ${idToken}`,
