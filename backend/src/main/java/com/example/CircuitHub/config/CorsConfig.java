@@ -20,7 +20,6 @@ public class CorsConfig {
                 "https://ccs-gadgethubb.onrender.com",
                 "https://ccs-gadgethubb-frontend.onrender.com",
                 "https://wildcats-circuithub.onrender.com",
-                "https://wildcats-circuit-hub.vercel.app",
                 "https://wildcats-circuit-f555ebwg5-elreys-projects-7a62edbb.vercel.app", // Preview deployment
                 "http://localhost:3000",
                 "http://localhost:5173",
