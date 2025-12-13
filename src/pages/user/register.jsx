@@ -2,7 +2,7 @@ import { useState } from "react";
 import { auth } from "../../firebaseconfig";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import { api } from "../../services/api";
 import logo from "../../assets/circuithubLogo.png";
 
 const Register = () => {
@@ -42,22 +42,13 @@ const Register = () => {
       const token = await user.getIdToken();
 
       // 4. Sync with backend
-      await axios.post(
-        "https://wildcats-circuithub.onrender.com/api/sync/user",
-        {
-          uid: user.uid,
-          email: user.email,
-          firstName: firstName,
-          lastName: lastName,
-          role: role //may role na
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-        }
-      );
+      await api.users.syncUser({
+        uid: user.uid,
+        email: user.email,
+        firstName: firstName,
+        lastName: lastName,
+        role: role //may role na
+      });
 
       // 5. Navigate based on role
       // Set success message and delay navigation
