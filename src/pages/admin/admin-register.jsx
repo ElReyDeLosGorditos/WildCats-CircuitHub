@@ -18,10 +18,11 @@ const AdminRegister = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         setError("");
+        setSuccessMessage("");
         setIsLoading(true);
 
         try {
-            // 1. Create Firebase auth user
+            // 1. Create Firebase auth user (automatically logs them in!)
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
@@ -30,23 +31,23 @@ const AdminRegister = () => {
                 displayName: `${firstName} ${lastName}`
             });
 
-            // 3. Get the ID token
-            const token = await user.getIdToken();
-
-            // 4. Sync with backend (force role to Admin)
+            // 3. Sync with backend (force role to Admin)
             await api.users.syncUser({
                 uid: user.uid,
                 email: user.email,
                 firstName,
                 lastName,
-                role: "admin" // ⬅️ Force role to Admin
+                role: "admin" // Force role to Admin
             });
 
-            // 5. Show success, then redirect to admin dashboard
-            setSuccessMessage("Successfully registered as Admin! Redirecting to Admin Dashboard...");
+            // 4. Show success and auto-redirect to Admin Dashboard (no login needed!)
+            setSuccessMessage("Admin account created! Entering Admin Dashboard...");
+            
+            // 1.5 second timeout: Just enough to read the success message
             setTimeout(() => {
-                navigate("/");
-            }, 2000);
+                navigate("/admin-dashboard");
+            }, 1500);
+
         } catch (err) {
             console.error("Registration error:", err);
 

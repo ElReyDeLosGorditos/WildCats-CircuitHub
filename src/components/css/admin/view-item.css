@@ -124,6 +124,126 @@
     scrollbar-color: transparent transparent;
 }
 
+/* BUTTON GROUP */
+.admin-items-button-group {
+    display: flex;
+    gap: 12px;
+    padding: 20px 30px;
+    background-color: #a888b5;
+    justify-content: flex-end;
+}
+
+.admin-items-edit-btn,
+.admin-items-delete-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-items-edit-btn {
+    background-color: #7b68ee;
+    color: white;
+}
+
+.admin-items-edit-btn:hover {
+    background-color: #6a57d6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(123, 104, 238, 0.4);
+}
+
+.admin-items-delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.admin-items-delete-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* DELETE CONFIRMATION MODAL */
+.admin-items-delete-confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+.admin-items-delete-confirm-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+.admin-items-delete-confirm-content h3 {
+    color: #dc3545;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.admin-items-delete-confirm-content p {
+    color: #333;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.admin-items-delete-confirm-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.admin-items-cancel-btn,
+.admin-items-confirm-delete-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-items-cancel-btn {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+.admin-items-cancel-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.admin-items-confirm-delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.admin-items-confirm-delete-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .admin-items-item-card {
@@ -163,5 +283,16 @@
     .admin-items-field-box {
         font-size: 14px;
         padding: 10px;
+    }
+
+    .admin-items-button-group {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .admin-items-edit-btn,
+    .admin-items-delete-btn {
+        width: 100%;
+        justify-content: center;
     }
 }

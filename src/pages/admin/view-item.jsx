@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 import "../../components/css/admin/view-item.css";
 import AdminHeader from "./AdminHeader";
 
-const AdminViewItem = ({ id }) => {
+const AdminViewItem = ({ id, onDelete, onEdit }) => {
   const [item, setItem] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -29,6 +30,17 @@ const AdminViewItem = ({ id }) => {
 
     if (id) fetchItem();
   }, [id]);
+
+  const handleDelete = async () => {
+    try {
+      await deleteDoc(doc(db, "items", id));
+      setShowDeleteConfirm(false);
+      if (onDelete) onDelete();
+    } catch (err) {
+      console.error("Error deleting item:", err);
+      setError("Failed to delete item.");
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error || !item) return <p>{error || "Item not found"}</p>;
@@ -68,6 +80,32 @@ const AdminViewItem = ({ id }) => {
             </div>
           </div>
         </div>
+
+        <div className="admin-items-button-group">
+          <button className="admin-items-edit-btn" onClick={() => onEdit && onEdit(item)}>
+            ✏️ Edit
+          </button>
+          <button className="admin-items-delete-btn" onClick={() => setShowDeleteConfirm(true)}>
+            🗑️ Delete
+          </button>
+        </div>
+
+        {showDeleteConfirm && (
+          <div className="admin-items-delete-confirm-modal">
+            <div className="admin-items-delete-confirm-content">
+              <h3>Confirm Delete</h3>
+              <p>Are you sure you want to delete "{item.name}"? This action cannot be undone.</p>
+              <div className="admin-items-delete-confirm-buttons">
+                <button className="admin-items-cancel-btn" onClick={() => setShowDeleteConfirm(false)}>
+                  Cancel
+                </button>
+                <button className="admin-items-confirm-delete-btn" onClick={handleDelete}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
   );
 };

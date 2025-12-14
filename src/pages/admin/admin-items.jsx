@@ -19,6 +19,7 @@ const AdminManageItems = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editItem, setEditItem] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Toggle body scroll lock
   useEffect(() => {
@@ -65,6 +66,17 @@ const AdminManageItems = () => {
     } catch (err) {
       console.error("Failed to delete item:", err);
     }
+  };
+
+
+  const handleDeleteFromView = () => {
+    setSelectedItem(null);
+    fetchItems();
+  };
+
+  const handleEditFromView = (item) => {
+    setSelectedItem(null);
+    setEditItem(item);
   };
 
   return (
@@ -123,6 +135,12 @@ const AdminManageItems = () => {
                             <h3>{item.name || "Unnamed Item"}</h3>
                             <p className="items-description">{item.description || "No description provided."}</p>
                             <p className="items-quantity">Quantity: {item.quantity}</p>
+                            <p className="items-condition">
+                              <span className="condition-label">Condition:</span>{" "}
+                              <span className={`condition-badge ${item.condition?.toLowerCase()}`}>
+                                {item.condition || "N/A"}
+                              </span>
+                            </p>
                           </div>
                           <div className="items-status-section">
                             <p className="status-label">Borrow Status</p>
@@ -130,17 +148,7 @@ const AdminManageItems = () => {
                               {item.status === "Borrowed" ? "Not Available" : item.status}
                             </p>
                           </div>
-                          <div className="items-edit-icon">
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setEditItem(item);
-                                }}
-                            >
-                              ✏️
-                            </button>
-                          </div>
+
                         </div>
                       </div>
                   ))}
@@ -167,7 +175,11 @@ const AdminManageItems = () => {
         {selectedItem && (
             <div className="popup-modal-overlay" onClick={() => setSelectedItem(null)}>
               <div className="popup-modal-content" onClick={(e) => e.stopPropagation()}>
-                <AdminViewItem id={selectedItem.id} />
+                <AdminViewItem 
+                  id={selectedItem.id} 
+                  onDelete={handleDeleteFromView}
+                  onEdit={handleEditFromView}
+                />
               </div>
             </div>
         )}

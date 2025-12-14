@@ -5,11 +5,14 @@ import {
   doc,
   getDoc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 import "../../components/css/admin/admin-request.css";
 import AdminHeader from "./AdminHeader";
 import AdminRequestReview from "./review-request.jsx";
+import EditRequest from "./edit-request.jsx";
+import AddRequest from "./add-request.jsx";
 
 const AdminRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -17,6 +20,10 @@ const AdminRequests = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [editRequest, setEditRequest] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [requestToDelete, setRequestToDelete] = useState(null);
 
   useEffect(() => {
     fetchRequests();
@@ -94,7 +101,6 @@ const AdminRequests = () => {
     const matchesStatus =
         statusFilter === "All" || req.status === statusFilter;
     
-    // Handle both itemName (old) and items array (new)
     const itemSearchText = Array.isArray(req.items) && req.items.length > 0
         ? req.items.map(item => item.name).join(' ')
         : req.itemName || '';
@@ -122,14 +128,58 @@ const AdminRequests = () => {
       }
   );
 
+  const handleEditRequest = (req, e) => {
+    e.stopPropagation();
+    setEditRequest(req);
+  };
+
+  const handleCloseEdit = (shouldRefresh) => {
+    setEditRequest(null);
+    if (shouldRefresh) {
+      fetchRequests();
+    }
+  };
+
+  const handleDeleteRequest = (req, e) => {
+    e.stopPropagation();
+    setRequestToDelete(req);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteDoc(doc(db, "borrowRequests", requestToDelete.id));
+      setRequests((prev) => prev.filter((req) => req.id !== requestToDelete.id));
+      setShowDeleteConfirm(false);
+      setRequestToDelete(null);
+      // Close view modal if the deleted request was being viewed
+      if (selectedRequest?.id === requestToDelete.id) {
+        setSelectedRequest(null);
+      }
+    } catch (err) {
+      console.error("Failed to delete request:", err);
+      alert("Failed to delete request. Please try again.");
+    }
+  };
+
+  const handleAddClose = (shouldRefresh) => {
+    setShowAddModal(false);
+    if (shouldRefresh) {
+      fetchRequests();
+    }
+  };
+
   return (
       <div className="AR-container">
         <AdminHeader />
 
-        <div className={`AR-wrapper ${selectedRequest ? "blurred" : ""}`}>
+        <div className={`AR-wrapper ${selectedRequest || editRequest || showAddModal || showDeleteConfirm ? "blurred" : ""}`}>
           <div className="AR-content">
             <div className="AR-header">
               <h1 className="AR-title">Manage Borrow Requests</h1>
+              <button className="AR-add-btn" onClick={() => setShowAddModal(true)}>
+                + Create Request
+              </button>
             </div>
 
             {error && <p className="AR-error">{error}</p>}
@@ -165,8 +215,24 @@ const AdminRequests = () => {
                             key={req.id}
                             className="AR-card"
                             onClick={() => setSelectedRequest(req)}
-                            style={{ cursor: "pointer" }}
+                            style={{ cursor: "pointer", position: "relative" }}
                         >
+                          <div className="AR-card-actions">
+                            <button
+                              className="AR-edit-icon"
+                              onClick={(e) => handleEditRequest(req, e)}
+                              title="Edit Request"
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              className="AR-delete-icon"
+                              onClick={(e) => handleDeleteRequest(req, e)}
+                              title="Delete Request"
+                            >
+                              🗑️
+                            </button>
+                          </div>
                           <div className="AR-card-content">
                             <h3 className="AR-borrower">
                               {req.borrowerName || "Unknown"}
@@ -218,9 +284,48 @@ const AdminRequests = () => {
                 request={selectedRequest}
                 onClose={() => {
                   setSelectedRequest(null);
-                  fetchRequests(); // Refresh the list after closing
+                  fetchRequests();
                 }}
             />
+        )}
+
+        {editRequest && (
+            <EditRequest
+                request={editRequest}
+                onClose={handleCloseEdit}
+            />
+        )}
+
+        {showAddModal && (
+            <AddRequest onClose={handleAddClose} />
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && (
+            <div className="AR-delete-modal-overlay">
+              <div className="AR-delete-modal">
+                <h3>Confirm Delete</h3>
+                <p>
+                  Are you sure you want to delete the request from{" "}
+                  <strong>{requestToDelete?.borrowerName}</strong>?
+                </p>
+                <p className="AR-warning">This action cannot be undone.</p>
+                <div className="AR-delete-buttons">
+                  <button 
+                    className="AR-cancel-delete-btn" 
+                    onClick={() => setShowDeleteConfirm(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="AR-confirm-delete-btn" 
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
         )}
       </div>
   );

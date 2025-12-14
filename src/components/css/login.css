@@ -31,6 +31,12 @@
     width: 100%;
 }
 
+.login-button:disabled,
+.google-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .login-button,
 .google-button {
     width: 250px;
@@ -65,13 +71,44 @@
 }
 
 .login-error {
-    background-color: #ffe6e0;
-    padding: 10px;
-    color: #461955;
-    border-radius: 6px;
-    text-align: center;
+    background: linear-gradient(135deg, #ffe6e0 0%, #ffd4cc 100%);
+    padding: 14px 18px;
+    color: #8b0000;
+    border-radius: 8px;
+    text-align: left;
     font-size: 14px;
+    line-height: 1.5;
     width: 100%;
+    border-left: 4px solid #d32f2f;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.15);
+    animation: slideDown 0.3s ease-out;
+    font-weight: 500;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    padding: 14px 18px;
+    color: #1b5e20;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.5;
+    width: 100%;
+    border-left: 4px solid #4caf50;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.15);
+    animation: slideDown 0.3s ease-out;
+    font-weight: 500;
 }
 
 .login-register {

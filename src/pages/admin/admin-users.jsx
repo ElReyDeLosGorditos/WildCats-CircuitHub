@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 import AdminHeader from "./AdminHeader";
 import ViewUser from "./view-user.jsx";
@@ -13,8 +13,9 @@ const AdminManageUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
-  // ✅ Move fetchUsers outside useEffect so we can call it again
   const fetchUsers = async () => {
     try {
       const snapshot = await getDocs(collection(db, "users"));
@@ -42,17 +43,15 @@ const AdminManageUsers = () => {
 
   const handleCloseEditModal = () => {
     setShowEditModal(false);
-    // ✅ Do NOT reset selectedUser here
     setTimeout(() => {
-      fetchUsers(); // refresh after closing edit
+      fetchUsers();
     }, 300);
   };
-
 
   const handleCloseAddModal = () => {
     setShowAddModal(false);
     setTimeout(() => {
-      fetchUsers(); // ✅ Refresh after closing add modal
+      fetchUsers();
     }, 300);
   };
 
@@ -66,6 +65,28 @@ const AdminManageUsers = () => {
     }
   };
 
+  const handleDeleteUser = (user, e) => {
+    e.stopPropagation();
+    setUserToDelete(user);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteDoc(doc(db, "users", userToDelete.id));
+      setUsers((prev) => prev.filter((user) => user.id !== userToDelete.id));
+      setShowDeleteConfirm(false);
+      setUserToDelete(null);
+      // Close view modal if the deleted user was being viewed
+      if (selectedUser?.id === userToDelete.id) {
+        setSelectedUser(null);
+      }
+    } catch (err) {
+      console.error("Failed to delete user:", err);
+      alert("Failed to delete user. Please try again.");
+    }
+  };
+
   const filteredUsers = users.filter((user) => {
     const fullName = `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
     return (
@@ -76,13 +97,15 @@ const AdminManageUsers = () => {
 
   return (
       <div className="AU-container">
-        {/* Content Wrapper - This gets blurred */}
-        <div className={`AU-content-wrapper ${(selectedUser || showEditModal || showAddModal) ? "modal-blurred" : ""}`}>
+        <div className={`AU-content-wrapper ${(selectedUser || showEditModal || showAddModal || showDeleteConfirm) ? "modal-blurred" : ""}`}>
           <AdminHeader />
 
           <div className="AU-dashboard">
             <div className="AU-header-row">
               <h1 className="AU-title">Manage Users</h1>
+              <button className="AU-add-user-btn" onClick={() => setShowAddModal(true)}>
+                + Add User
+              </button>
             </div>
 
             <div className="AU-filters">
@@ -101,6 +124,7 @@ const AdminManageUsers = () => {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Actions</th>
               </tr>
               </thead>
               <tbody>
@@ -108,11 +132,25 @@ const AdminManageUsers = () => {
                   <tr
                       key={user.id}
                       className="AU-row"
-                      onClick={() => setSelectedUser(user)}
                   >
-                    <td>{user.firstName} {user.lastName}</td>
-                    <td>{user.email}</td>
-                    <td>{user.role}</td>
+                    <td onClick={() => setSelectedUser(user)} style={{ cursor: "pointer" }}>
+                      {user.firstName} {user.lastName}
+                    </td>
+                    <td onClick={() => setSelectedUser(user)} style={{ cursor: "pointer" }}>
+                      {user.email}
+                    </td>
+                    <td onClick={() => setSelectedUser(user)} style={{ cursor: "pointer" }}>
+                      {user.role}
+                    </td>
+                    <td>
+                      <button 
+                        className="AU-delete-icon-btn"
+                        onClick={(e) => handleDeleteUser(user, e)}
+                        title="Delete User"
+                      >
+                        🗑️
+                      </button>
+                    </td>
                   </tr>
               ))}
               </tbody>
@@ -120,7 +158,6 @@ const AdminManageUsers = () => {
           </div>
         </div>
 
-        {/* Modals - Outside the blurred wrapper */}
         {/* VIEW MODAL */}
         {selectedUser && !showEditModal && (
             <div className="modal-overlay" onClick={handleBackgroundClick}>
@@ -128,6 +165,7 @@ const AdminManageUsers = () => {
                   user={selectedUser}
                   onClose={handleCloseViewModal}
                   onEdit={handleOpenEditModal}
+                  onDelete={(e) => handleDeleteUser(selectedUser, e || new Event('click'))}
               />
             </div>
         )}
@@ -145,6 +183,31 @@ const AdminManageUsers = () => {
         {/* ADD MODAL */}
         {showAddModal && (
             <AddUser onClose={handleCloseAddModal} />
+        )}
+
+        {/* DELETE CONFIRMATION MODAL */}
+        {showDeleteConfirm && (
+            <div className="AU-delete-modal-overlay">
+              <div className="AU-delete-modal">
+                <h3>Confirm Delete</h3>
+                <p>Are you sure you want to delete <strong>{userToDelete?.firstName} {userToDelete?.lastName}</strong>?</p>
+                <p className="AU-warning">This action cannot be undone.</p>
+                <div className="AU-delete-buttons">
+                  <button 
+                    className="AU-cancel-delete-btn" 
+                    onClick={() => setShowDeleteConfirm(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="AU-confirm-delete-btn" 
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
         )}
       </div>
   );

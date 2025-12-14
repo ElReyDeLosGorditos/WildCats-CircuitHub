@@ -223,7 +223,7 @@ body {
 
 /* Details */
 .admin-items-container .items-details {
-    flex: 3; /* Give more space to details */
+    flex: 2; /* Give more space to details */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -301,7 +301,7 @@ body {
 
 /* Edit Icon */
 .admin-items-container .items-edit-icon {
-    width: 60px; /* Fixed width for the edit icon area */
+    width: 140px; /* Fixed width for the edit icon area */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -809,4 +809,61 @@ body.modal-open {
 /* Optional: freeze background interactions EVEN IF something leaks through */
 .modal-blurred {
     pointer-events: none; /* disable all clicks behind modal */
+}
+
+/* --- Condition Badge Styling --- */
+.admin-items-container .items-condition {
+    color: var(--text-medium);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-items-container .condition-label {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.admin-items-container .condition-badge {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+    text-transform: capitalize;
+}
+
+/* Condition-specific colors */
+.admin-items-container .condition-badge.excellent {
+    background-color: rgba(52, 199, 89, 0.15);
+    color: var(--accent-green);
+}
+
+.admin-items-container .condition-badge.good {
+    background-color: rgba(0, 122, 255, 0.15);
+    color: #007aff;
+}
+
+.admin-items-container .condition-badge.fair {
+    background-color: rgba(255, 204, 0, 0.15);
+    color: #cc9900;
+}
+
+.admin-items-container .condition-badge.poor {
+    background-color: rgba(255, 59, 48, 0.15);
+    color: var(--accent-red);
+}
+
+.admin-items-container .condition-badge.damaged {
+    background-color: rgba(255, 59, 48, 0.2);
+    color: #d32f2f;
+}
+
+/* Default for unknown conditions */
+.admin-items-container .condition-badge {
+    background-color: rgba(142, 142, 147, 0.15);
+    color: var(--text-medium);
 }

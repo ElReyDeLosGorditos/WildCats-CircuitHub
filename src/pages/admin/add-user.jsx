@@ -1,5 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import "../../components/css/admin/add-user.css"; // Still uses UU- classes
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { db, auth } from "../../firebaseconfig";
+import "../../components/css/admin/add-user.css";
 
 const AddUser = ({ onClose }) => {
   const modalRef = useRef();
@@ -7,9 +10,13 @@ const AddUser = ({ onClose }) => {
     firstName: "",
     lastName: "",
     email: "",
+    password: "",
     role: "Student",
+    yearLevel: "",
+    course: ""
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -26,17 +33,84 @@ const AddUser = ({ onClose }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { firstName, lastName, email, role } = formData;
+    setError("");
+    setLoading(true);
 
-    if (!firstName || !lastName || !email || !role) {
+    const { firstName, lastName, email, password, role, yearLevel, course } = formData;
+
+    // Validation
+    if (!firstName || !lastName || !email || !password || !role) {
       setError("All fields are required.");
+      setLoading(false);
       return;
     }
 
-    console.log("Creating user:", formData);
-    onClose();
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      setLoading(false);
+      return;
+    }
+
+    if (role === "Student" && (!yearLevel || !course)) {
+      setError("Year Level and Course are required for students.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Check if email already exists in Firestore
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        setError("A user with this email already exists.");
+        setLoading(false);
+        return;
+      }
+
+      // Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create user document in Firestore
+      const userData = {
+        firstName,
+        lastName,
+        email,
+        role,
+        createdAt: new Date(),
+        uid: user.uid
+      };
+
+      // Add student-specific fields
+      if (role === "Student") {
+        userData.yearLevel = yearLevel;
+        userData.course = course;
+      }
+
+      await addDoc(collection(db, "users"), userData);
+
+      console.log("User created successfully:", userData);
+      onClose();
+    } catch (err) {
+      console.error("Failed to create user:", err);
+      
+      // Handle specific Firebase errors
+      if (err.code === "auth/email-already-in-use") {
+        setError("This email is already registered.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("Invalid email format.");
+      } else if (err.code === "auth/weak-password") {
+        setError("Password is too weak.");
+      } else {
+        setError("Failed to create user. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,6 +133,7 @@ const AddUser = ({ onClose }) => {
                       value={formData.firstName}
                       onChange={handleChange}
                       required
+                      disabled={loading}
                   />
                   <input
                       type="text"
@@ -67,6 +142,7 @@ const AddUser = ({ onClose }) => {
                       value={formData.lastName}
                       onChange={handleChange}
                       required
+                      disabled={loading}
                   />
                 </div>
 
@@ -77,20 +153,70 @@ const AddUser = ({ onClose }) => {
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    disabled={loading}
                 />
 
-                <select name="role" value={formData.role} onChange={handleChange}>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password (min. 6 characters)"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    minLength="6"
+                    disabled={loading}
+                />
+
+                <select 
+                  name="role" 
+                  value={formData.role} 
+                  onChange={handleChange}
+                  disabled={loading}
+                >
                   <option value="Student">Student</option>
-                  <option value="Faculty">Faculty</option>
+                  <option value="Teacher">Teacher</option>
+                  <option value="Lab_Assistant">Lab Assistant</option>
                   <option value="Admin">Admin</option>
                 </select>
 
+                {formData.role === "Student" && (
+                  <>
+                    <input
+                        type="text"
+                        name="yearLevel"
+                        placeholder="Year Level (e.g., 1st Year)"
+                        value={formData.yearLevel}
+                        onChange={handleChange}
+                        required
+                        disabled={loading}
+                    />
+                    <input
+                        type="text"
+                        name="course"
+                        placeholder="Course (e.g., BSCS)"
+                        value={formData.course}
+                        onChange={handleChange}
+                        required
+                        disabled={loading}
+                    />
+                  </>
+                )}
+
                 <div className="UU-btn-row">
-                  <button type="button" className="UU-cancel-btn" onClick={onClose}>
+                  <button 
+                    type="button" 
+                    className="UU-cancel-btn" 
+                    onClick={onClose}
+                    disabled={loading}
+                  >
                     Cancel
                   </button>
-                  <button type="submit" className="UU-save-btn">
-                    Save
+                  <button 
+                    type="submit" 
+                    className="UU-save-btn"
+                    disabled={loading}
+                  >
+                    {loading ? "Creating..." : "Save"}
                   </button>
                 </div>
               </form>
