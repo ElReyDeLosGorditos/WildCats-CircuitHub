@@ -1,0 +1,234 @@
+/* Add Request Modal */
+.AddR-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.AddR-modal {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.AddR-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 24px;
+  border-radius: 12px 12px 0 0;
+}
+
+.AddR-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.AddR-form {
+  padding: 24px;
+}
+
+.AddR-error {
+  background: #fee;
+  color: #c33;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border: 1px solid #fcc;
+}
+
+.AddR-field {
+  margin-bottom: 20px;
+}
+
+.AddR-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.AddR-field input,
+.AddR-field select,
+.AddR-field textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.AddR-field input:focus,
+.AddR-field select:focus,
+.AddR-field textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.AddR-field textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.AddR-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Items Section */
+.AddR-items-section {
+  margin-bottom: 20px;
+}
+
+.AddR-items-section > label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+  font-size: 14px;
+}
+
+.AddR-item-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.AddR-item-select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.AddR-qty-input {
+  width: 80px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.AddR-remove-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.AddR-remove-btn:hover {
+  background: #ff7875;
+}
+
+.AddR-add-item-btn {
+  background: #f0f0f0;
+  color: #667eea;
+  border: 2px dashed #667eea;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.AddR-add-item-btn:hover {
+  background: #e8ebff;
+  border-color: #5568d3;
+}
+
+/* Buttons */
+.AddR-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.AddR-cancel-btn,
+.AddR-save-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.AddR-cancel-btn {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.AddR-cancel-btn:hover {
+  background: #e8e8e8;
+}
+
+.AddR-save-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.AddR-save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.AddR-save-btn:disabled,
+.AddR-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .AddR-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .AddR-field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .AddR-buttons {
+    flex-direction: column;
+  }
+
+  .AddR-cancel-btn,
+  .AddR-save-btn {
+    width: 100%;
+  }
+}

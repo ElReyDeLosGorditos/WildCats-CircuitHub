@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "../../components/css/admin/view-user.css";
 
-const ViewUser = ({ user, onClose, onEdit }) => {
+const ViewUser = ({ user, onClose, onEdit, onDelete }) => {
   const modalRef = useRef();
 
   useEffect(() => {
@@ -33,9 +33,12 @@ const ViewUser = ({ user, onClose, onEdit }) => {
                   <p><strong>Course:</strong> {user.course || "N/A"}</p>
                 </>
             )}
-            <p><strong>Name:</strong> {user.name || "N/A"}</p> {/* NEW FIELD */}
+            {user.name && <p><strong>Name:</strong> {user.name}</p>}
             <div className="VU-actions">
               <button className="VU-update-btn" onClick={() => onEdit(user)}>Update</button>
+              {onDelete && (
+                <button className="VU-delete-btn" onClick={(e) => onDelete(e)}>Delete</button>
+              )}
             </div>
           </div>
         </div>

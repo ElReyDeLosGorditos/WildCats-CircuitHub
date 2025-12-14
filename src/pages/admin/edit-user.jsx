@@ -70,7 +70,8 @@ const UpdateUser = ({ user, onClose }) => {
                             />
                             <select name="role" value={formData.role} onChange={handleChange}>
                                 <option value="Student">Student</option>
-                                <option value="Faculty">Faculty</option>
+                                <option value="Teacher">Teacher</option>
+                                <option value="Lab_Assistant">Lab Assistant</option>
                                 <option value="Admin">Admin</option>
                             </select>
 

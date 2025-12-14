@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebaseconfig";
-import { doc, getDoc, updateDoc, Timestamp, increment } from "firebase/firestore";
+import { doc, getDoc, updateDoc, deleteDoc, Timestamp, increment } from "firebase/firestore";
 import "../../components/css/admin/review-request.css";
 
 const AdminRequestReview = ({ request: propRequest, onClose }) => {
@@ -9,7 +9,8 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(!currentRequest);
-  const [teacher, setTeacher] = useState(null); // NEW: store teacher profile
+  const [teacher, setTeacher] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Late return modal state
   const [showReturnModal, setShowReturnModal] = useState(false);
@@ -40,7 +41,7 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
           }
         }
 
-        // ⭐ NEW — Fetch teacher profile
+        // Fetch teacher profile
         if (request?.teacherId) {
           const teacherSnap = await getDoc(doc(db, "users", request.teacherId));
           if (teacherSnap.exists()) {
@@ -62,10 +63,6 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
 
   const [successMsg, setSuccessMsg] = useState("");
 
-  // if (currentRequest?.status === "Approved" || currentRequest?.status === "Denied") {
-  //   onClose();
-  // }
-
   const updateStatus = async (status) => {
     try {
       console.log(`Updating request ${currentRequest.id} status from "${currentRequest.status}" to "${status}"`);
@@ -83,7 +80,7 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
       if (status === "Approved" || status === "Denied") {
         setTimeout(() => {
           onClose();
-        }, 500); // Small delay to show success
+        }, 500);
       }
     } catch (err) {
       console.error("❌ Status update failed:", err);
@@ -91,51 +88,58 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
     }
   };
 
-  // NEW: Calculate if return is late
-  const calculateLateReturn = () => {
-  if (!currentRequest.borrowDate || !currentRequest.returnTime) {
-  return { isLate: false, daysLate: 0, hoursLate: 0 };
-  }
-
-  try {
-  // Parse the borrow date
-  const borrowDateObj = new Date(currentRequest.borrowDate);
-  
-  // Parse return time (format: "3:40 PM")
-  const returnTimeParts = currentRequest.returnTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
-  if (returnTimeParts) {
-  let hours = parseInt(returnTimeParts[1]);
-  const minutes = parseInt(returnTimeParts[2]);
-  const meridiem = returnTimeParts[3].toUpperCase();
-  
-  if (meridiem === "PM" && hours !== 12) hours += 12;
-  if (meridiem === "AM" && hours === 12) hours = 0;
-  
-  borrowDateObj.setHours(hours, minutes, 0, 0);
-  }
-  
-  const now = new Date();
-  const diffMs = now - borrowDateObj;
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const remainingHours = diffHours % 24; // Hours after accounting for full days
-  
-  // Consider late if more than 1 hour past return time
-  const isLate = diffHours > 1;
-  
-  return { 
-  isLate, 
-  daysLate: Math.max(0, diffDays),
-    hoursLate: Math.max(0, diffHours),
-      remainingHours: Math.max(0, remainingHours)
+  const handleDelete = async () => {
+    try {
+      await deleteDoc(doc(db, "borrowRequests", currentRequest.id));
+      setShowDeleteConfirm(false);
+      onClose();
+    } catch (err) {
+      console.error("Failed to delete request:", err);
+      setError("Failed to delete request.");
+    }
   };
-  } catch (err) {
-    console.error("Error calculating late return:", err);
+
+  // Calculate if return is late
+  const calculateLateReturn = () => {
+    if (!currentRequest.borrowDate || !currentRequest.returnTime) {
+      return { isLate: false, daysLate: 0, hoursLate: 0 };
+    }
+
+    try {
+      const borrowDateObj = new Date(currentRequest.borrowDate);
+      
+      const returnTimeParts = currentRequest.returnTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (returnTimeParts) {
+        let hours = parseInt(returnTimeParts[1]);
+        const minutes = parseInt(returnTimeParts[2]);
+        const meridiem = returnTimeParts[3].toUpperCase();
+        
+        if (meridiem === "PM" && hours !== 12) hours += 12;
+        if (meridiem === "AM" && hours === 12) hours = 0;
+        
+        borrowDateObj.setHours(hours, minutes, 0, 0);
+      }
+      
+      const now = new Date();
+      const diffMs = now - borrowDateObj;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const remainingHours = diffHours % 24;
+      
+      const isLate = diffHours > 1;
+      
+      return { 
+        isLate, 
+        daysLate: Math.max(0, diffDays),
+        hoursLate: Math.max(0, diffHours),
+        remainingHours: Math.max(0, remainingHours)
+      };
+    } catch (err) {
+      console.error("Error calculating late return:", err);
       return { isLate: false, daysLate: 0, hoursLate: 0, remainingHours: 0 };
     }
   };
 
-  // NEW: Handle return button click
   const handleReturnClick = () => {
     const lateInfo = calculateLateReturn();
     setIsLateReturn(lateInfo.isLate);
@@ -144,46 +148,44 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
     setShowReturnModal(true);
   };
 
-  // NEW: Confirm return with late tracking
   const confirmReturn = async () => {
-  try {
-  console.log("Processing return...");
-  
-  const requestRef = doc(db, "borrowRequests", currentRequest.id);
-  const updateData = {
-  status: "Returned",
-  returnDate: Timestamp.now(),
-  isLate: isLateReturn,
-  daysLate: daysLate,
-  hoursLate: hoursLate,
-    lateReturnNotes: lateReturnNotes || ""
+    try {
+      console.log("Processing return...");
+      
+      const requestRef = doc(db, "borrowRequests", currentRequest.id);
+      const updateData = {
+        status: "Returned",
+        returnDate: Timestamp.now(),
+        isLate: isLateReturn,
+        daysLate: daysLate,
+        hoursLate: hoursLate,
+        lateReturnNotes: lateReturnNotes || ""
       };
 
-  await updateDoc(requestRef, updateData);
+      await updateDoc(requestRef, updateData);
       console.log("✅ Request marked as returned");
 
-  // If late, update user's late return count
-  if (isLateReturn && currentRequest.userId) {
-  console.log("Updating user late return count...");
-  const userRef = doc(db, "users", currentRequest.userId);
-  
-  await updateDoc(userRef, {
-  lateReturnCount: increment(1),
-    lastLateReturnDate: new Date().toISOString()
-  });
-  
-    console.log("✅ User late return count updated");
+      if (isLateReturn && currentRequest.userId) {
+        console.log("Updating user late return count...");
+        const userRef = doc(db, "users", currentRequest.userId);
+        
+        await updateDoc(userRef, {
+          lateReturnCount: increment(1),
+          lastLateReturnDate: new Date().toISOString()
+        });
+        
+        console.log("✅ User late return count updated");
       }
 
-  setShowReturnModal(false);
-  setCurrentRequest(prev => ({ ...prev, ...updateData }));
-  
-  setTimeout(() => {
-    onClose();
-    }, 500);
-  } catch (err) {
-  console.error("❌ Failed to process return:", err);
-    setError("Failed to process return. Please try again.");
+      setShowReturnModal(false);
+      setCurrentRequest(prev => ({ ...prev, ...updateData }));
+      
+      setTimeout(() => {
+        onClose();
+      }, 500);
+    } catch (err) {
+      console.error("❌ Failed to process return:", err);
+      setError("Failed to process return. Please try again.");
     }
   };
 
@@ -223,7 +225,16 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
       <>
       <div className="RR-overlay" onClick={onClose}>
         <div className="RR-modal" onClick={(e) => e.stopPropagation()}>
-          <h2 className="RR-title">Review Request</h2>
+          <div className="RR-header-with-actions">
+            <h2 className="RR-title">Review Request</h2>
+            <button 
+              className="RR-delete-btn-header"
+              onClick={() => setShowDeleteConfirm(true)}
+              title="Delete Request"
+            >
+              🗑️
+            </button>
+          </div>
 
           {/* TIMELINE */}
           <div className="RR-section">
@@ -252,14 +263,12 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
               {user ? `${user.firstName} ${user.lastName}` : "Unknown"}
             </p>
 
-            {/* NEW — TEACHER IN-CHARGE */}
             <p><strong>Teacher In-Charge: </strong>
               {teacher
                   ? `${teacher.firstName} ${teacher.lastName}`
                   : currentRequest.teacherName || "N/A"}
             </p>
 
-            {/* NEW — GROUP MEMBERS */}
             <p><strong>Group Members: </strong>
               {Array.isArray(currentRequest.groupMembers)
                   ? currentRequest.groupMembers.join(", ")
@@ -279,19 +288,16 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
                               : currentRequest.status?.toLowerCase()
                   }`}
               >
-    {currentRequest.status === "Pending-Teacher" ||
-    currentRequest.status === "Pending-Admin"
-        ? "Pending"
-        : currentRequest.status}
-</span>
-
+                {currentRequest.status === "Pending-Teacher" ||
+                currentRequest.status === "Pending-Admin"
+                    ? "Pending"
+                    : currentRequest.status}
+              </span>
             </p>
           </div>
 
           {/* BUTTONS */}
           <div className="RR-buttons">
-
-            {/* Admin can approve only when teacher has already approved */}
             {currentRequest.status === "Pending-Admin" && (
                 <>
                   <button
@@ -310,7 +316,6 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
                 </>
             )}
 
-            {/* Status after admin approval */}
             {currentRequest.status === "Approved" && (
                 <button
                     className="RR-return"
@@ -320,14 +325,12 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
                 </button>
             )}
 
-            {/* Show message when waiting for teacher */}
             {currentRequest.status === "Pending-Teacher" && (
                 <p className="RR-no-actions-text">
                   ⏳ Waiting for teacher approval.
                 </p>
             )}
 
-            {/* Admin cannot act on final states */}
             {["Returned", "Denied", "Cancelled"].includes(currentRequest.status) && (
                 <p className="RR-no-actions-text">
                   No further actions available for this request.
@@ -337,6 +340,30 @@ const AdminRequestReview = ({ request: propRequest, onClose }) => {
 
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="RR-overlay" style={{ zIndex: 10001 }}>
+          <div className="RR-modal RR-delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this request? This action cannot be undone.</p>
+            <div className="RR-delete-confirm-buttons">
+              <button 
+                className="RR-cancel-delete-btn" 
+                onClick={() => setShowDeleteConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                className="RR-confirm-delete-btn" 
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Return Modal */}
       {showReturnModal && (

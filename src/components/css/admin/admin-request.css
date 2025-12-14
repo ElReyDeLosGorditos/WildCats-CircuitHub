@@ -25,11 +25,37 @@
     max-width: 1000px;
 }
 
+/* --- Header with Add Button --- */
+.AR-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
 .AR-title {
     font-size: 28px;
     color: black;
     font-weight: 700;
-    margin-bottom: 20px;
+    margin: 0;
+}
+
+.AR-add-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.AR-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
 .AR-error {
@@ -78,10 +104,52 @@
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     transition: transform 0.2s;
+    position: relative;
 }
 
 .AR-card:hover {
     transform: translateY(-4px);
+}
+
+/* Card Actions */
+.AR-card-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.AR-edit-icon,
+.AR-delete-icon {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+.AR-edit-icon:hover {
+    background: #667eea;
+    border-color: #667eea;
+    transform: scale(1.1);
+}
+
+.AR-delete-icon:hover {
+    background: #ff4d4f;
+    border-color: #ff4d4f;
+    transform: scale(1.1);
+}
+
+.AR-card-content {
+    margin-top: 10px;
 }
 
 .AR-card-content p,
@@ -117,6 +185,16 @@
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
+    .AR-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .AR-add-btn {
+        width: 100%;
+    }
+
     .AR-filters {
         flex-direction: column;
     }
@@ -139,43 +217,112 @@
 
 /* Pending-Admin → Blue */
 .AR-status.pending-admin {
-
-    color: #265dff;              /* deep blue text */
-
+    color: #265dff;
 }
 
-/* Pending-Teacher (optional, in case you want later) */
+/* Pending-Teacher */
 .AR-status.pending-teacher {
-
     color: #b38300;
-
 }
 
 /* Approved */
 .AR-status.approved {
-
     color: #2e7d32;
-
 }
 
 /* Denied / Rejected */
 .AR-status.denied,
 .AR-status.rejected {
-
     color: #d32f2f;
-
 }
 
 /* Returned */
 .AR-status.returned {
-
     color: #0277bd;
-
 }
 
 /* Overdue */
 .AR-status.overdue {
-
     color: #e65100;
+}
 
+/* Delete Confirmation Modal */
+.AR-delete-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.AR-delete-modal {
+    background: white;
+    padding: 28px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.AR-delete-modal h3 {
+    margin: 0 0 16px 0;
+    font-size: 22px;
+    color: #333;
+    font-weight: 600;
+}
+
+.AR-delete-modal p {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.AR-warning {
+    color: #ff4d4f !important;
+    font-weight: 600;
+    font-size: 14px !important;
+}
+
+.AR-delete-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.AR-cancel-delete-btn,
+.AR-confirm-delete-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.AR-cancel-delete-btn {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.AR-cancel-delete-btn:hover {
+    background: #e8e8e8;
+}
+
+.AR-confirm-delete-btn {
+    background: #ff4d4f;
+    color: white;
+}
+
+.AR-confirm-delete-btn:hover {
+    background: #ff7875;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
 }
