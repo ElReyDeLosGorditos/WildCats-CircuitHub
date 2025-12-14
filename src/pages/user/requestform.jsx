@@ -65,32 +65,32 @@ const RequestForm = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const itemsResponse = await api.items.getAll();
-        const items = itemsResponse.data;
-        
-        const validItems = items.filter(item => {
-          if (!item.id) {
-            console.error("❌ Item missing ID:", item);
-            return false;
-          }
-          return true;
-        });
-        
-        setAllItems(validItems);
+      const itemsResponse = await api.items.getAll();
+      const items = itemsResponse.data;
+      
+      const validItems = items.filter(item => {
+      if (!item.id) {
+      console.error("❌ Item missing ID:", item);
+      return false;
+      }
+      return true;
+      });
+      
+      setAllItems(validItems);
 
-        if (itemId) {
-          const itemToSelect = validItems.find((item) => item.id === itemId);
-          if (itemToSelect) {
-            setSelectedItems([{ ...itemToSelect, requestedQty: 1 }]);
-          }
-        }
+      if (itemId) {
+      const itemToSelect = validItems.find((item) => item.id === itemId);
+      if (itemToSelect) {
+      setSelectedItems([{ ...itemToSelect, requestedQty: 1 }]);
+      }
+      }
 
-        const teachersResponse = await api.users.getAllTeachers();
-        setTeachers(teachersResponse.data);
+      const teachersResponse = await api.users.getAllTeachers();
+      setTeachers(teachersResponse.data);
       } catch (error) {
-        console.error("Error fetching initial data:", error);
-        setErrorMessage("Failed to load items or teachers. Please refresh the page.");
-        setShowErrorModal(true);
+      console.error("Error fetching initial data:", error);
+      setErrorMessage("⚠️ Failed to load items or teachers. Please refresh the page and try again.");
+      setShowErrorModal(true);
       }
     };
 
@@ -199,14 +199,14 @@ const RequestForm = () => {
 
   const addItem = (item) => {
     if (!item.id) {
-      setErrorMessage(`Cannot add item "${item.name}" - missing ID. Please refresh the page.`);
+      setErrorMessage(`📦 Cannot add item "${item.name}" - missing ID. Please refresh the page.`);
       setShowErrorModal(true);
       return;
     }
     
     const alreadySelected = selectedItems.find(si => si.id === item.id);
     if (alreadySelected) {
-      setErrorMessage("This item is already in your selection.");
+      setErrorMessage("📦 This item is already in your selection.");
       setShowErrorModal(true);
       return;
     }
@@ -260,19 +260,39 @@ const RequestForm = () => {
     e.preventDefault();
 
     if (selectedItems.length === 0) {
-      setErrorMessage("Please select at least one item.");
+      setErrorMessage("📦 Please select at least one item to borrow.");
       setShowErrorModal(true);
       return;
     }
     if (!selectedTeacherId) {
-      setErrorMessage("Please select a teacher.");
+      setErrorMessage("👨‍🏫 Please select a teacher who will approve your request.");
+      setShowErrorModal(true);
+      return;
+    }
+    if (!borrowDate) {
+      setErrorMessage("📅 Please select a date for borrowing.");
+      setShowErrorModal(true);
+      return;
+    }
+    if (!startBlock) {
+      setErrorMessage("⏰ Please select a start time for borrowing.");
+      setShowErrorModal(true);
+      return;
+    }
+    if (!durationBlocks) {
+      setErrorMessage("⏱️ Please select a duration for borrowing.");
+      setShowErrorModal(true);
+      return;
+    }
+    if (!reason || reason.trim().length === 0) {
+      setErrorMessage("✍️ Please provide a reason for borrowing.");
       setShowErrorModal(true);
       return;
     }
 
     const user = auth.currentUser;
     if (!user) {
-      setErrorMessage("User not logged in.");
+      setErrorMessage("🔐 You must be logged in to submit a request. Please log in and try again.");
       setShowErrorModal(true);
       return;
     }
@@ -286,7 +306,7 @@ const RequestForm = () => {
     try {
       const user = auth.currentUser;
       if (!user) {
-        setErrorMessage("Please log in first.");
+        setErrorMessage("🔐 Please log in first to submit a request.");
         setShowConfirmModal(false);
         setShowErrorModal(true);
         setIsSubmitting(false);
@@ -298,7 +318,7 @@ const RequestForm = () => {
       const selectedDate = new Date(borrowDate);
       selectedDate.setHours(0, 0, 0, 0);
       if (selectedDate < today) {
-        setErrorMessage("You cannot select a past date.");
+        setErrorMessage("📅 You cannot select a past date. Please choose today or a future date.");
         setShowConfirmModal(false);
         setShowErrorModal(true);
         setIsSubmitting(false);
@@ -312,7 +332,7 @@ const RequestForm = () => {
         (period) => startTimeNumeric < period.end && endTimeNumeric > period.start
       );
       if (conflictFound) {
-        setErrorMessage("The selected time slot conflicts with an unavailable period.");
+        setErrorMessage("⏰ The selected time slot conflicts with an unavailable period (Break time or closing hours). Please choose a different time.");
         setShowConfirmModal(false);
         setShowErrorModal(true);
         setIsSubmitting(false);
@@ -327,7 +347,7 @@ const RequestForm = () => {
 
       const itemsArray = selectedItems.map(item => {
         if (!item.id) {
-          throw new Error(`Item "${item.name}" is missing an ID. Please refresh the page and try again.`);
+          throw new Error(`📦 Item "${item.name}" is missing an ID. Please refresh the page and try again.`);
         }
         return {
           id: item.id,
@@ -386,18 +406,47 @@ const RequestForm = () => {
     } catch (error) {
       console.error("❌ Error submitting request:", error);
       
-      // ✅ FIX 1: Better error extraction
       let errorMsg = "";
-      if (error.response?.data?.error) {
-        errorMsg = error.response.data.error;
+      
+      // Check for specific error types
+      if (error.message && error.message.includes("missing an ID")) {
+        errorMsg = error.message;
+      } else if (error.response?.data?.error) {
+        const backendError = error.response.data.error;
+        
+        // Simplify item availability errors
+        if (backendError.includes("not available") || backendError.includes("Insufficient available quantity")) {
+          // Extract just the item name
+          const itemNameMatch = backendError.match(/Item '([^']+)'/);
+          const itemName = itemNameMatch ? itemNameMatch[1] : "This item";
+          errorMsg = `📦 ${itemName} is not available for the selected time. Please choose a different item or time slot.`;
+        } else if (backendError.includes("already booked") || backendError.includes("conflicting bookings")) {
+          errorMsg = `⏰ This time slot is already booked. Please select a different time.`;
+        } else {
+          errorMsg = backendError;
+        }
       } else if (error.response?.data && typeof error.response.data === 'string') {
-        errorMsg = error.response.data;
+        const dataStr = error.response.data;
+        if (dataStr.includes("not available") || dataStr.includes("Insufficient available quantity")) {
+          errorMsg = `📦 One or more items are not available for the selected time. Please choose different items or a different time slot.`;
+        } else {
+          errorMsg = dataStr;
+        }
       } else if (error.response?.data?.message) {
         errorMsg = error.response.data.message;
+      } else if (error.code === "ERR_NETWORK") {
+        errorMsg = "🌐 Network error. Please check your internet connection and try again.";
+      } else if (error.code === "ERR_BAD_REQUEST") {
+        errorMsg = "⚠️ Invalid request. Please check your selections and try again.";
       } else if (error.message) {
-        errorMsg = error.message;
+        errorMsg = `⚠️ ${error.message}`;
       } else {
-        errorMsg = "An unexpected error occurred. Please try again.";
+        errorMsg = "⚠️ Something went wrong. Please try again or contact support if the problem continues.";
+      }
+      
+      // Add emoji if not already present
+      if (!errorMsg.match(/^[\p{Emoji}]/u)) {
+        errorMsg = `⚠️ ${errorMsg}`;
       }
       
       setErrorMessage(errorMsg);
@@ -413,7 +462,7 @@ const RequestForm = () => {
       await signOut(auth);
       navigate("/");
     } catch (error) {
-      setErrorMessage("Failed to log out. Please try again.");
+      setErrorMessage("⚠️ Failed to log out. Please try again.");
       setShowErrorModal(true);
     }
   };
@@ -594,17 +643,56 @@ const RequestForm = () => {
         </div>
       )}
 
-      {/* ✅ FIX 1: Better Error Modal */}
+      {/* Enhanced Error Modal */}
       {showErrorModal && (
         <div className="modal-overlay">
-          <div className="modal" style={{ maxWidth: "500px" }}>
+          <div className="modal error-modal" style={{ maxWidth: "500px" }}>
             <div style={{ textAlign: "center", marginBottom: "20px" }}>
-              <div style={{ width: "60px", height: "60px", borderRadius: "50%", backgroundColor: "#fee", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 15px", fontSize: "30px" }}>⚠️</div>
-              <h3 style={{ color: "#dc3545", margin: "0 0 10px 0" }}>Error</h3>
-              <p style={{ color: "#666", fontSize: "15px", lineHeight: "1.6", margin: 0 }}>{errorMessage}</p>
+              <div style={{ 
+                width: "70px", 
+                height: "70px", 
+                borderRadius: "50%", 
+                backgroundColor: "#fee", 
+                display: "flex", 
+                alignItems: "center", 
+                justifyContent: "center", 
+                margin: "0 auto 15px", 
+                fontSize: "36px",
+                animation: "pulse 0.5s ease-in-out"
+              }}>⚠️</div>
+              <h3 style={{ color: "#dc3545", margin: "0 0 10px 0", fontSize: "22px" }}>Oops! Something went wrong</h3>
+              <p style={{ 
+                color: "#666", 
+                fontSize: "15px", 
+                lineHeight: "1.6", 
+                margin: 0,
+                textAlign: "left",
+                padding: "10px 20px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "8px",
+                border: "1px solid #e9ecef"
+              }}>{errorMessage}</p>
             </div>
             <div style={{ textAlign: "center" }}>
-              <button onClick={() => setShowErrorModal(false)} style={{ padding: "10px 30px", backgroundColor: "#461955", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", fontSize: "14px", fontWeight: "500" }}>OK</button>
+              <button 
+                onClick={() => setShowErrorModal(false)} 
+                style={{ 
+                  padding: "12px 40px", 
+                  backgroundColor: "#461955", 
+                  color: "white", 
+                  border: "none", 
+                  borderRadius: "8px", 
+                  cursor: "pointer", 
+                  fontSize: "15px", 
+                  fontWeight: "600",
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 2px 4px rgba(70, 25, 85, 0.2)"
+                }}
+                onMouseOver={(e) => e.target.style.transform = "translateY(-2px)"}
+                onMouseOut={(e) => e.target.style.transform = "translateY(0)"}
+              >
+                Got it
+              </button>
             </div>
           </div>
         </div>

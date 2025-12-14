@@ -11,6 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const redirectBasedOnRole = async (uid) => {
@@ -34,11 +35,11 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      const token = await user.getIdToken(); // Get the JWT token
 
       const displayName = user.displayName || "Unnamed User";
       const nameParts = displayName.split(" ");
@@ -55,15 +56,41 @@ const Login = () => {
       redirectBasedOnRole(user.uid);
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.response?.data?.error || "Login failed. Please try again.");
+      
+      // Firebase-specific error messages
+      if (err.code === "auth/user-not-found") {
+        setError("🚫 Account not found. Please check your email or register for a new account.");
+      } else if (err.code === "auth/wrong-password") {
+        setError("❌ Incorrect password. Please try again or reset your password.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("📧 Invalid email format. Please enter a valid email address.");
+      } else if (err.code === "auth/user-disabled") {
+        setError("🚫 This account has been disabled. Please contact support.");
+      } else if (err.code === "auth/too-many-requests") {
+        setError("⏱️ Too many failed login attempts. Please try again later or reset your password.");
+      } else if (err.code === "auth/network-request-failed") {
+        setError("🌐 Network error. Please check your internet connection and try again.");
+      } else if (err.code === "auth/invalid-credential") {
+        setError("❌ Invalid email or password. Please check your credentials and try again.");
+      } else {
+        setError(
+          err.response?.data?.error || 
+          err.message || 
+          "⚠️ Login failed. Please try again."
+        );
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
+    setError("");
+    setIsLoading(true);
+    
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const token = await user.getIdToken(); // Get the JWT token
 
       const displayName = user.displayName || "Unnamed User";
       const nameParts = displayName.split(" ");
@@ -80,7 +107,18 @@ const Login = () => {
       redirectBasedOnRole(user.uid);
     } catch (err) {
       console.error("Google login error:", err);
-      setError(err.response?.data?.error || "Google Sign-In failed.");
+      
+      if (err.code === "auth/popup-closed-by-user") {
+        setError("💬 Google Sign-In was cancelled. Please try again.");
+      } else if (err.code === "auth/popup-blocked") {
+        setError("🚫 Pop-up blocked. Please allow pop-ups for this site and try again.");
+      } else if (err.code === "auth/network-request-failed") {
+        setError("🌐 Network error. Please check your internet connection.");
+      } else {
+        setError(err.response?.data?.error || "⚠️ Google Sign-In failed. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,6 +134,7 @@ const Login = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
           required
         />
         <input
@@ -104,10 +143,17 @@ const Login = () => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
           required
         />
 
-        <button type="submit" className="login-button">Log In</button>
+        <button 
+          type="submit" 
+          className="login-button"
+          disabled={isLoading}
+        >
+          {isLoading ? "Logging in..." : "Log In"}
+        </button>
 
         <div className="login-register">
           No account yet? <Link to="/register">Register here</Link>

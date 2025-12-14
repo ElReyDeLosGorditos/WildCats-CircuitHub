@@ -25,11 +25,11 @@ const Register = () => {
     if (!email.toLowerCase().endsWith(requiredDomain)) {
       setError(`Invalid email address. Only school emails ending with "${requiredDomain}" are accepted.`);
       setIsLoading(false);
-      return; // Stop the registration process
+      return;
     }
 
     try {
-      // 1. Create Firebase auth user
+      // 1. Create Firebase auth user (automatically logs them in!)
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
@@ -38,24 +38,30 @@ const Register = () => {
         displayName: `${firstName} ${lastName}`
       });
 
-      // 3. Get the ID token
-      const token = await user.getIdToken();
-
-      // 4. Sync with backend
+      // 3. Sync with backend
       await api.users.syncUser({
         uid: user.uid,
         email: user.email,
         firstName: firstName,
         lastName: lastName,
-        role: role //may role na
+        role: role
       });
 
-      // 5. Navigate based on role
-      // Set success message and delay navigation
-      setSuccessMessage("Successfully registered! Redirecting to login page...");
+      // 4. Show success message and auto-redirect to dashboard (no login needed!)
+      setSuccessMessage("Account created successfully! Entering CircuitHub...");
+      
+      // 1.5 second timeout: Just enough to read the success message
       setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+        // Direct them to their specific dashboard based on role
+        if (role === "teacher") {
+          navigate("/t-dashboard");
+        } else if (role === "admin") {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/dashboard");
+        }
+      }, 1500);
+
     } catch (err) {
       console.error("Registration error:", err);
 
@@ -72,9 +78,8 @@ const Register = () => {
             "Registration failed. Please try again."
         );
       }
-
     } finally {
-      setIsLoading(false); // Always re-enable form elements and button
+      setIsLoading(false);
     }
   };
 
