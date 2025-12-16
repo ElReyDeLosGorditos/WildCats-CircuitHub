@@ -35,6 +35,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
+                .requestMatchers("/api/health").permitAll() // Health check for monitoring services
                 .requestMatchers("/api/sync/user").permitAll()
                 .requestMatchers("/api/sync/get-by-uid").permitAll()
                 .requestMatchers("/api/sync/test-firestore").permitAll()
