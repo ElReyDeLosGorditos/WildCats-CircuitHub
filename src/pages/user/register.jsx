@@ -10,6 +10,9 @@ const Register = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -20,6 +23,20 @@ const Register = () => {
     setError("");
     setSuccessMessage("");
     setIsLoading(true);
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setError("Passwords do not match. Please try again.");
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      setIsLoading(false);
+      return;
+    }
 
     const requiredDomain = "@cit.edu";
     if (!email.toLowerCase().endsWith(requiredDomain)) {
@@ -135,16 +152,75 @@ const Register = () => {
           <option value="teacher">Teacher</option>
         </select>
 
-        <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="login-input"
-            disabled={isLoading}
-            minLength="6"
-        />
+        {/* Password field with toggle */}
+        <div style={{ position: 'relative', width: '100%' }}>
+          <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password (minimum 6 characters)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="login-input"
+              disabled={isLoading}
+              minLength="6"
+              style={{ paddingRight: '45px' }}
+          />
+          <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={isLoading}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '18px',
+                color: '#666',
+                padding: '5px 10px'
+              }}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? '👁️' : '👁️‍🗨️'}
+          </button>
+        </div>
+
+        {/* Confirm Password field with toggle */}
+        <div style={{ position: 'relative', width: '100%' }}>
+          <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="login-input"
+              disabled={isLoading}
+              minLength="6"
+              style={{ paddingRight: '45px' }}
+          />
+          <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              disabled={isLoading}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '18px',
+                color: '#666',
+                padding: '5px 10px'
+              }}
+              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+          >
+            {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+          </button>
+        </div>
 
         <button
             type="submit"

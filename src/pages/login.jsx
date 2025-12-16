@@ -10,10 +10,13 @@ import "../components/css/login.css"
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Note: Auto-redirect for already authenticated users is handled by PublicRoute wrapper in App.jsx
+  // This function handles redirect immediately after successful login
   const redirectBasedOnRole = async (uid) => {
     try {
       const res = await api.users.getUserByUid(uid);
@@ -137,15 +140,40 @@ const Login = () => {
           disabled={isLoading}
           required
         />
-        <input
-          type="password"
-          className="login-input"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={isLoading}
-          required
-        />
+
+        {/* Password field with toggle */}
+        <div style={{ position: 'relative', width: '100%' }}>
+          <input
+            type={showPassword ? "text" : "password"}
+            className="login-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
+            required
+            style={{ paddingRight: '45px' }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            disabled={isLoading}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '18px',
+              color: '#666',
+              padding: '5px 10px'
+            }}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? '👁️' : '👁️‍🗨️'}
+          </button>
+        </div>
 
         <button 
           type="submit" 

@@ -1,21 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { LoadingSpinner } from './LoadingSpinner';
 
 // Generic protected route
 export const ProtectedRoute = ({ children }) => {
   const { currentUser, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <div>Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Verifying access..." />;
   }
 
   if (!currentUser) {
@@ -30,16 +22,7 @@ export const AdminRoute = ({ children }) => {
   const { currentUser, userRole, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <div>Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Verifying admin access..." />;
   }
 
   if (!currentUser) {
@@ -58,16 +41,7 @@ export const TeacherRoute = ({ children }) => {
   const { currentUser, userRole, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <div>Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Verifying teacher access..." />;
   }
 
   if (!currentUser) {
@@ -86,16 +60,7 @@ export const LabAssistantRoute = ({ children }) => {
   const { currentUser, userRole, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <div>Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Verifying lab assistant access..." />;
   }
 
   if (!currentUser) {
@@ -114,16 +79,7 @@ export const StaffRoute = ({ children }) => {
   const { currentUser, userRole, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <div>Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Verifying staff access..." />;
   }
 
   if (!currentUser) {
@@ -143,16 +99,7 @@ export const AdminOrLabRoute = ({ children }) => {
   const { currentUser, userRole, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <div>Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Verifying access..." />;
   }
 
   if (!currentUser) {
@@ -171,16 +118,7 @@ export const StudentRoute = ({ children }) => {
   const { currentUser, userRole, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <div>Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Verifying student access..." />;
   }
 
   if (!currentUser) {

@@ -8,6 +8,7 @@ import {
   StudentRoute,
   AdminOrLabRoute
 } from "./components/ProtectedRoute";
+import { PublicRoute } from "./components/AutoRedirect";
 
 import Login from "./pages/login";
 
@@ -54,14 +55,42 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/features" element={<FeaturesPage />} />
-          <Route path="/FAQs" element={<FaqsPage />} />
-          <Route path="/ContactUs" element={<ContactUsPage />} />
-          <Route path="/HowItWorks" element={<HowItWorksPage />} />
+          {/* Public Routes - Auto-redirect authenticated users */}
+          <Route path="/" element={
+            <PublicRoute>
+              <LandingPage />
+            </PublicRoute>
+          } />
+          <Route path="/register" element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          } />
+          <Route path="/login" element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          } />
+          <Route path="/features" element={
+            <PublicRoute>
+              <FeaturesPage />
+            </PublicRoute>
+          } />
+          <Route path="/FAQs" element={
+            <PublicRoute>
+              <FaqsPage />
+            </PublicRoute>
+          } />
+          <Route path="/ContactUs" element={
+            <PublicRoute>
+              <ContactUsPage />
+            </PublicRoute>
+          } />
+          <Route path="/HowItWorks" element={
+            <PublicRoute>
+              <HowItWorksPage />
+            </PublicRoute>
+          } />
 
           {/* Student/User Routes - Protected */}
           <Route path="/dashboard" element={
