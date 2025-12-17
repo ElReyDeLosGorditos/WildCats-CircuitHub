@@ -220,3 +220,89 @@
 .EM-suggestion-item:hover {
     background-color: #f3f3f3;
 }
+
+/* ================= MOBILE: 1 ITEM PER ROW ================= */
+@media screen and (max-width: 768px) {
+
+    /* Hide table header */
+    .EM-table thead {
+        display: none;
+    }
+
+    /* Stack items vertically */
+    .EM-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* Each row becomes a full-width card */
+    .EM-table tr {
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 18px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Content spacing */
+    .EM-table td {
+        border: none;
+        padding: 10px 0;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    /* Label above each value */
+    .EM-table td::before {
+        content: attr(data-label);
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        display: block;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    /* Action buttons row */
+    .EM-table td:last-child {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid #eee;
+    }
+
+    .EM-edit-btn,
+    .EM-delete-btn {
+        font-size: 22px;
+        padding: 6px;
+    }
+
+    /* Toolbar stacks nicely */
+    .EM-toolbar {
+        flex-direction: column;
+        gap: 14px;
+        align-items: stretch;
+    }
+
+    .EM-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .EM-add-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    /* Modal */
+    .EM-modal-content {
+        width: 92%;
+        padding: 24px;
+    }
+}

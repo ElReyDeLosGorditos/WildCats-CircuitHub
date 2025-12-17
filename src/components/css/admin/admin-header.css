@@ -11,17 +11,17 @@
 
 .head-logo {
     height: 48px;
-    z-index: 10;
+    z-index: 20;
 }
 
+/* Desktop nav */
 .head-links {
     display: flex;
     gap: 30px;
     align-items: center;
 }
 
-.head-link,
-.logout-link {
+.head-link {
     text-decoration: none;
     color: #fff;
     font-weight: 500;
@@ -31,60 +31,85 @@
     transition: background-color 0.2s;
 }
 
-.head-link:hover,
-.logout-link:hover {
+.head-link:hover {
     background-color: #222;
 }
 
 .active-link {
     background-color: #441752;
-    color: #fff;
 }
 
-/* Hamburger styles */
+/* Logout button */
+.logout-btn {
+    background: #a63b3b;
+    border: none;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.logout-btn:hover {
+    background: #c24b4b;
+}
+
+/* Hamburger */
 .hamburger {
     display: none;
     flex-direction: column;
-    justify-content: center;
-    cursor: pointer;
     gap: 5px;
-    z-index: 10;
+    cursor: pointer;
+    z-index: 20;
 }
 
 .hamburger span {
     width: 25px;
     height: 3px;
     background-color: #fff;
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
-/* Mobile */
+/* ================= MOBILE ================= */
 @media screen and (max-width: 768px) {
     .hamburger {
         display: flex;
     }
 
     .head-links {
-        position: absolute;
-        top: 100%;
+        position: fixed;
+        top: 0;
         right: 0;
+        height: 100vh;
+        width: 75%;
         background-color: #000;
         flex-direction: column;
-        align-items: flex-start;
-        padding: 12px 24px;
-        width: 40%;
+        justify-content: space-between;
+        padding: 80px 20px 20px;
         display: none;
-        border-top: 1px solid #333;
+        z-index: 15;
+        border-left: 1px solid #333;
     }
 
     .head-links.show {
         display: flex;
     }
 
-    .head-link,
-    .logout-link {
+    .head-links-top {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .head-link {
         width: 100%;
-        padding: 12px;
+        padding: 14px;
         font-size: 16px;
+    }
+
+    .head-links-bottom {
+        border-top: 1px solid #333;
+        padding-top: 16px;
     }
 }

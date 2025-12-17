@@ -200,3 +200,81 @@
         margin: 30px auto;
     }
 }
+
+/* ================= MOBILE: 1 USER PER ROW ================= */
+@media screen and (max-width: 768px) {
+
+    /* Hide table header */
+    .AU-table thead {
+        display: none;
+    }
+
+    /* Stack rows vertically */
+    .AU-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* Each row becomes a card */
+    .AU-table tr {
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 18px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Table cells */
+    .AU-table td {
+        border: none;
+        padding: 10px 0;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    /* Label above each value */
+    .AU-table td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    /* Header row stacks */
+    .AU-header-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+    .AU-add-button {
+        width: 100%;
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    /* Search full width */
+    .AU-search {
+        max-width: 100%;
+        font-size: 15px;
+        padding: 12px 14px;
+    }
+
+    /* Dashboard spacing */
+    .AU-dashboard {
+        margin: 24px auto;
+        padding: 0 16px;
+    }
+
+    /* Modal responsiveness */
+    .admin-user-modal {
+        width: 92%;
+        padding: 24px;
+    }
+}
