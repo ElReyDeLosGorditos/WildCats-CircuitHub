@@ -122,15 +122,21 @@ const HowItWorksPage = () => {
                         <div className="feature-block">
                             <h3 className="feature-title">Register an Account</h3>
                             <p className="feature-description">
-                                Click on the "Login" button and choose "Sign up with Google" using your school email address.
-                                This will automatically create your account in the system.
+                                In login page, at the bottom of the page to open the registration form click <strong>"Register
+                                here"</strong>.
+                                Complete the required fields, ensuring you <strong>use your official school email address ending in @cit.edu</strong>.
+                                This is <strong>mandatory</strong> to verify your status as a CIT-U student; accounts created with personal emails <strong>may
+                                be flagged or deleted</strong>.
+                                Finally, please specify whether you are registering as a Student or a Teacher before submitting.
                             </p>
                         </div>
 
                         <div className="feature-block">
                             <h3 className="feature-title">Login to Your Account</h3>
                             <p className="feature-description">
-                                On future visits, simply click "Login with Google" and you’ll be redirected to your dashboard instantly.
+                                For future visits, simply go to the login page, enter your credentials, and click <strong>Login</strong>.
+                                Please note: If the login process feels slow, it may be due to the limitations of our free hosting tier
+                                or your current internet connection strength.
                             </p>
                         </div>
                     </div>
@@ -156,7 +162,7 @@ const HowItWorksPage = () => {
                         <div className="feature-block">
                             <h3 className="feature-title">3. Wait for Approval</h3>
                             <p className="feature-description">
-                                After reserving, your request will be reviewed by the admin.
+                                After reserving, your request will be reviewed by the teacher, then the admin.
                                 Once approved, you may proceed to claim the equipment.
                             </p>
                         </div>
