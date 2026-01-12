@@ -867,3 +867,117 @@ body.modal-open {
     background-color: rgba(142, 142, 147, 0.15);
     color: var(--text-medium);
 }
+
+/* ================= MOBILE UX IMPROVEMENTS ================= */
+@media screen and (max-width: 768px) {
+
+    /* Reduce page padding */
+    .main-content-wrapper {
+        padding-bottom: 30px;
+    }
+
+    /* Inventory title + button */
+    .admin-items-container .inventory-title {
+        font-size: 24px;
+    }
+
+    /* Make Add button sticky-friendly */
+    .admin-items-container .add-item-btn {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Search & filter spacing */
+    .admin-items-container .inventory-search-bar {
+        margin-bottom: 12px;
+    }
+
+    /* Item cards: compact but readable */
+    .admin-items-container .items-card {
+        padding: 14px;
+        gap: 12px;
+        border-radius: 10px;
+    }
+
+    .admin-items-container .items-details h3 {
+        font-size: 16px;
+    }
+
+    .admin-items-container .items-description {
+        font-size: 13px;
+    }
+
+    .admin-items-container .items-quantity,
+    .admin-items-container .items-condition {
+        font-size: 13px;
+    }
+
+    /* Status badge centered */
+    .admin-items-container .items-status-section {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--border-light);
+        border-left: none;
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Status label smaller */
+    .admin-items-container .status-label {
+        font-size: 12px;
+    }
+
+    .admin-items-container .items-status {
+        font-size: 14px;
+        padding: 6px 14px;
+    }
+
+    /* Condition badges wrap nicely */
+    .admin-items-container .items-condition {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    /* Images slightly smaller */
+    .admin-items-container .items-image {
+        width: 70px;
+        height: 70px;
+    }
+
+    /* Prevent text overflow on very small phones */
+    .admin-items-container .items-details {
+        text-align: center;
+    }
+
+    /* Modal content fits screen better */
+    .popup-modal-content {
+        width: 95%;
+        padding: 22px;
+        border-radius: 14px;
+    }
+
+    /* Modal buttons stack nicely */
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal-actions button {
+        width: 100%;
+    }
+
+    /* Delete confirmation modal */
+    .admin-item-modal {
+        padding: 25px 20px;
+    }
+
+    .admin-item-modal-message {
+        font-size: 17px;
+    }
+
+    /* Make scrolling feel smooth */
+    .items-list {
+        scroll-behavior: smooth;
+    }
+}

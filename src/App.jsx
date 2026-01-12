@@ -32,10 +32,9 @@ import EditItem from "./pages/admin/edit-item";
 import Requests from "./pages/admin/admin-requests";
 import ReviewRequest from "./pages/admin/review-request";
 import AdminViewRequest from "./pages/admin/admin-view-request";
-import AdminManageUsers from "./pages/admin/admin-users"; 
-import ViewUser from "./pages/admin/view-user";
-import EditUser from "./pages/admin/edit-user";
+import AdminManageUsers from "./pages/admin/admin-users";
 import AddUser from "./pages/admin/add-user";
+import UserModal from "./pages/admin/admin-user-modal.jsx";
 import AdminRegister from "./pages/admin/admin-register.jsx";
 import EquipmentMaintenance from "./pages/admin/equipment-maintenance.jsx";
 
@@ -185,14 +184,9 @@ function App() {
               <AdminManageUsers />
             </AdminRoute>
           } />
-          <Route path="/view-user/:id" element={
+          <Route path="/admin-user-modal/:id" element={
             <AdminRoute>
-              <ViewUser />
-            </AdminRoute>
-          } />
-          <Route path="/edit-user/:id" element={
-            <AdminRoute>
-              <EditUser />
+              <UserModal />
             </AdminRoute>
           } />
           <Route path="/add-user" element={

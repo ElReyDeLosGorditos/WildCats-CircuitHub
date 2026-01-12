@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { signOut } from "firebase/auth"; // Import signOut
-import { auth } from "../../firebaseconfig"; // Import auth
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebaseconfig";
 import logo from "../../assets/circuithubLogo2.png";
 import "../../components/css/admin/admin-header.css";
 
 const AdminHeader = () => {
     const location = useLocation();
-    const navigate = useNavigate(); // Hook for navigation
+    const navigate = useNavigate();
     const { userRole } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
 
-    // ... (getNavLinks logic remains the same) ...
     const getNavLinks = () => {
         const baseLinks = [
             { label: "Dashboard", to: "/admin-dashboard", roles: ["admin"] },
@@ -23,19 +22,19 @@ const AdminHeader = () => {
         ];
         return baseLinks.filter(link => link.roles.includes(userRole));
     };
+
     const navLinks = getNavLinks();
 
     const toggleMenu = () => {
-        setMenuOpen((prev) => !prev);
+        setMenuOpen(prev => !prev);
     };
 
-    // ✅ ADD THIS FUNCTION
     const handleLogout = async (e) => {
-        e.preventDefault(); // Prevent immediate navigation
+        e.preventDefault();
         try {
-            await signOut(auth); // Clear Firebase Session
+            await signOut(auth);
             setMenuOpen(false);
-            navigate("/"); // Navigate after sign out
+            navigate("/");
         } catch (error) {
             console.error("Error logging out:", error);
         }
@@ -43,7 +42,7 @@ const AdminHeader = () => {
 
     return (
         <header className="head">
-            <img src={logo} alt="CCS Gadget Hub Logo" className="head-logo" />
+            <img src={logo} alt="CircuitHub Logo" className="head-logo" />
 
             <div className={`hamburger ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
                 <span></span>
@@ -52,25 +51,29 @@ const AdminHeader = () => {
             </div>
 
             <nav className={`head-links ${menuOpen ? "show" : ""}`}>
-                {navLinks.map((link) => (
-                    <Link
-                        key={link.to}
-                        to={link.to}
-                        onClick={() => setMenuOpen(false)}
-                        className={
-                            location.pathname === link.to
-                                ? "head-link active-link"
-                                : "head-link"
-                        }
-                    >
-                        {link.label}
-                    </Link>
-                ))}
+                <div className="head-links-top">
+                    {navLinks.map((link) => (
+                        <Link
+                            key={link.to}
+                            to={link.to}
+                            onClick={() => setMenuOpen(false)}
+                            className={
+                                location.pathname === link.to
+                                    ? "head-link active-link"
+                                    : "head-link"
+                            }
+                        >
+                            {link.label}
+                        </Link>
+                    ))}
+                </div>
 
-                {/* ✅ UPDATED LOGOUT LINK */}
-                <a href="/" className="logout-link" onClick={handleLogout}>
-                    Log Out
-                </a>
+                {/* ✅ MOBILE-FIXED LOGOUT */}
+                <div className="head-links-bottom">
+                    <button className="logout-btn" onClick={handleLogout}>
+                        Log Out
+                    </button>
+                </div>
             </nav>
         </header>
     );
